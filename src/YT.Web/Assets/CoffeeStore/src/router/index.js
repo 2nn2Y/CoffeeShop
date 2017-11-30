@@ -20,6 +20,16 @@ export default new Router({
                     component: r => require(["@/components/Coffee"], r)
                 },
                 {
+                    path: "/balance",
+                    name: "balance",
+                    component: r => require(["@/components/Balance"], r)
+                },
+                {
+                    path: "/mycard",
+                    name: "mycard",
+                    component: r => require(["@/components/MyCard"], r)
+                },
+                {
                     path: "/order",
                     name: "order",
                     component: r => require(["@/components/Order"], r)

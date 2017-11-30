@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      title: "故障处理",
+      title: "now",
       menus: {
         menu1: "a",
         menu2: "b"

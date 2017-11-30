@@ -7,9 +7,9 @@
       <p class="center">ddd</p>
     </blur>
     <group>
-      <cell title="余额(150)" link="/order" value="充值" is-link></cell>
+      <cell title="余额(150)" link="/balance" value="充值" is-link></cell>
      
-      <cell title="我的卡券" link="/order" value="" is-link></cell>
+      <cell title="我的卡券" link="/mycard" value="" is-link></cell>
     </group>
   </div>
 </template>
