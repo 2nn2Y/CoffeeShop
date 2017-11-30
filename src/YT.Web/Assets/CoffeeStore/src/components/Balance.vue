@@ -21,6 +21,9 @@ export default {
     Group,
     Divider
   },
+  created() {
+    this.callTitle("充值");
+  },
   methods: {
     change(value) {
       console.log("change:", value);

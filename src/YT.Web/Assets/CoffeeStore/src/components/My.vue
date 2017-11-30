@@ -26,6 +26,9 @@ export default {
     Group,
     Cell
   },
+  created() {
+    this.callTitle("我的");
+  },
   data() {
     return {
       url: "https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg"

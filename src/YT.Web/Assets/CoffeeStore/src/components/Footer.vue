@@ -1,7 +1,7 @@
 <template>  
-  <tabbar style="position: fixed">  
+  <tabbar  style="position: fixed">  
     <tabbar-item  link="/coffee">  
-      <img slot="icon" selected="true"  src="../assets/icons/a.png">  
+      <img slot="icon" selected  src="../assets/icons/a.png">  
       <span slot="label">咖啡房</span>  
     </tabbar-item>  
       <tabbar-item  link="/order">  

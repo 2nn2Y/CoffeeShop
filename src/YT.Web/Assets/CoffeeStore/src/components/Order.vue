@@ -16,6 +16,9 @@ export default {
     Group,
     Radio
   },
+  created() {
+    this.callTitle("订单");
+  },
   methods: {
     next() {
       this.showBox("xia", "下一页");

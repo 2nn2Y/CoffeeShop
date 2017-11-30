@@ -9,6 +9,7 @@
 
 <script>
 import { XHeader, Actionsheet, TransferDom } from "vux";
+import { mapState } from "vuex";
 
 export default {
   directives: {
@@ -18,9 +19,13 @@ export default {
     XHeader,
     Actionsheet
   },
+  computed: {
+    ...mapState({
+      title: state => state.title
+    })
+  },
   data() {
     return {
-      title: "now",
       menus: {
         menu1: "a",
         menu2: "b"

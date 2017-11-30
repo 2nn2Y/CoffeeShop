@@ -20,6 +20,9 @@ export default {
   components: {
     Masker
   },
+  created() {
+    this.callTitle("我的卡券");
+  },
   data() {
     return {
       list: [

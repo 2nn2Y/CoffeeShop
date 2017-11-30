@@ -24,19 +24,6 @@ Vue.use(router)
 FastClick.attach(document.body)
     // 输出日志
 Vue.config.productionTip = false
-    // 登录后跳转方法
-Vue.prototype.goBeforeLoginUrl = () => {
-    let url = sessionStorage.getItem("url")
-    if (!url || url.indexOf("/author") !== -1) {
-        router.push("/sign")
-    } else {
-        if (url === "/") {
-            url = "/sign"
-        }
-        router.push(url)
-        holdno.cookie.set("url", "")
-    }
-}
 Vue.prototype.showBox = function(title, content) {
     AlertModule.show({
         title: title,
@@ -45,7 +32,6 @@ Vue.prototype.showBox = function(title, content) {
             // onHide() {}
     })
 }
-
 Vue.prototype.wxConfig = function(url) {
     const service = "http://103.45.102.47:8888/api/sign/config";
     Vue.http.post(service + "?url=" + url).then(r => {
@@ -61,6 +47,9 @@ Vue.prototype.wxConfig = function(url) {
         }
     })
 }
+Vue.prototype.callTitle = function(value) {
+    this.$store.commit("calltitle", value)
+}
 Vue.prototype.toRight = function() {
     // http://coffee.leftins.com/?code=xj3cXRg9uTyfqrBZFJm1Jj2-am1sBFlqFCflhO8QGV0#/
     const paths = window.location.href.split("?");
@@ -69,21 +58,25 @@ Vue.prototype.toRight = function() {
     window.location.href = url
 }
 
+router.afterEach(() => {
+    store.commit("updateLoading", false)
+})
 router.beforeEach((to, from, next) => {
-        //  http://coffee.leftins.com/#/author?code=6LBU8kzK3EqGdVvnUl7YjqObuIrMgMzxvMsdeXsteuE
-        // const userId = sessionStorage.getItem("userId");
-        // if (window.location.href.indexOf("code") >= 0 && !userId) {
-        //     Vue.prototype.toRight();
-        // }
-        // if (to.path === "/author" && userId) {
-        //     next("/sign");
-        //     return false;
-        // }
-        // if (!userId && to.path !== "/author") {
-        //     sessionStorage.setItem("url", to.fullPath) // 保存用户进入的url
-        //     next("/author");
-        //     return false;
-        // }
+        store.commit("updateLoading", true)
+            //  http://coffee.leftins.com/#/author?code=6LBU8kzK3EqGdVvnUl7YjqObuIrMgMzxvMsdeXsteuE
+            // const userId = sessionStorage.getItem("userId");
+            // if (window.location.href.indexOf("code") >= 0 && !userId) {
+            //     Vue.prototype.toRight();
+            // }
+            // if (to.path === "/author" && userId) {
+            //     next("/sign");
+            //     return false;
+            // }
+            // if (!userId && to.path !== "/author") {
+            //     sessionStorage.setItem("url", to.fullPath) // 保存用户进入的url
+            //     next("/author");
+            //     return false;
+            // }
         next();
     })
     /* eslint-disable no-new */
