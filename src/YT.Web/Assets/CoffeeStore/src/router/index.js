@@ -12,30 +12,24 @@ export default new Router({
         {
             path: "/",
             name: "container",
-            redirect: "/sign",
+            redirect: "/coffee",
             component: r => require(["@/components/Container"], r),
             children: [{
-                    path: "/sign",
-                    name: "sign",
-                    component: r => require(["@/components/Sign"], r)
+                    path: "/coffee",
+                    name: "coffee",
+                    component: r => require(["@/components/Coffee"], r)
                 },
                 {
-                    path: "/accident",
-                    name: "accident",
-                    component: r => require(["@/components/Accident"], r)
+                    path: "/order",
+                    name: "order",
+                    component: r => require(["@/components/Order"], r)
                 },
                 {
-                    path: "/detail",
-                    name: "detail",
-                    component: r => require(["@/components/Detail"], r)
-                },
-                {
-                    path: "/map/:point",
-                    name: "map",
-                    component: r => require(["@/components/Map"], r)
+                    path: "/my",
+                    name: "my",
+                    component: r => require(["@/components/My"], r)
                 }
             ]
-
         }
     ]
 })

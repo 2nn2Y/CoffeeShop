@@ -71,19 +71,19 @@ Vue.prototype.toRight = function() {
 
 router.beforeEach((to, from, next) => {
         //  http://coffee.leftins.com/#/author?code=6LBU8kzK3EqGdVvnUl7YjqObuIrMgMzxvMsdeXsteuE
-        const userId = sessionStorage.getItem("userId");
-        if (window.location.href.indexOf("code") >= 0 && !userId) {
-            Vue.prototype.toRight();
-        }
-        if (to.path === "/author" && userId) {
-            next("/sign");
-            return false;
-        }
-        if (!userId && to.path !== "/author") {
-            sessionStorage.setItem("url", to.fullPath) // 保存用户进入的url
-            next("/author");
-            return false;
-        }
+        // const userId = sessionStorage.getItem("userId");
+        // if (window.location.href.indexOf("code") >= 0 && !userId) {
+        //     Vue.prototype.toRight();
+        // }
+        // if (to.path === "/author" && userId) {
+        //     next("/sign");
+        //     return false;
+        // }
+        // if (!userId && to.path !== "/author") {
+        //     sessionStorage.setItem("url", to.fullPath) // 保存用户进入的url
+        //     next("/author");
+        //     return false;
+        // }
         next();
     })
     /* eslint-disable no-new */

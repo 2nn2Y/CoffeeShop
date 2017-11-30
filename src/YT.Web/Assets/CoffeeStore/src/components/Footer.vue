@@ -1,12 +1,16 @@
 <template>  
   <tabbar style="position: fixed">  
-    <tabbar-item  link="/accident">  
-      <img slot="icon" :selected="select"  src="../assets/icons/a.png">  
-      <span slot="label">故障处理</span>  
+    <tabbar-item  link="/coffee">  
+      <img slot="icon" selected="true"  src="../assets/icons/a.png">  
+      <span slot="label">咖啡房</span>  
     </tabbar-item>  
-    <tabbar-item :selected="select" link="/sign">  
+      <tabbar-item  link="/order">  
+      <img slot="icon"   src="../assets/icons/a.png">  
+      <span slot="label">订单</span>  
+    </tabbar-item>  
+    <tabbar-item  link="/my">  
       <img slot="icon"  src="../assets/icons/b.png">  
-      <span slot="label">签到</span>  
+      <span slot="label">我的</span>  
     </tabbar-item>  
   </tabbar>  
 </template>  
@@ -25,10 +29,7 @@ export default {
     TabbarItem
   },
   data() {
-    return {
-      select: false,
-      msg: ""
-    };
+    return {};
   }
 };
 </script> 
