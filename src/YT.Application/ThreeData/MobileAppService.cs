@@ -165,8 +165,8 @@ namespace YT.ThreeData
         #region cache
         private async Task<List<Product>> GetProductFromCache()
         {
-            return await _cacheManager.GetCache(CacheName.ProductCache)
-                .GetAsync(CacheName.ProductCache, async () => await GetProductFromDb());
+            return await _cacheManager.GetCache(OrgCacheName.ProductCache)
+                .GetAsync(OrgCacheName.ProductCache, async () => await GetProductFromDb());
         }
         /// <summary>
         /// db product
@@ -179,8 +179,8 @@ namespace YT.ThreeData
         }
         private async Task<List<Point>> GetPointsFromCache()
         {
-            return await _cacheManager.GetCache(CacheName.PointCache)
-                .GetAsync(CacheName.PointCache, async () => await GetPointsFromDb());
+            return await _cacheManager.GetCache(OrgCacheName.PointCache)
+                .GetAsync(OrgCacheName.PointCache, async () => await GetPointsFromDb());
         }
         /// <summary>
         /// db product

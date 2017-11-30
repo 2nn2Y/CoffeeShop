@@ -175,7 +175,7 @@ namespace YT.Navigations
             {
                 await CreateMenuAsync(input.MenuEditDto);
             }
-            await _cachingAppService.ClearCache(new EntityDto<string>(CacheName.MenuCache));
+            await _cachingAppService.ClearCache(new EntityDto<string>(SystemCacheName.MenuCache));
         }
         /// <summary>
         /// 菜单移动
@@ -201,7 +201,7 @@ namespace YT.Navigations
             await ChangeMenuPermissions(menu, parent);
             menu.LevelCode = code;
             await _menuRepository.UpdateAsync(menu);
-            await _cachingAppService.ClearCache(new EntityDto<string>(CacheName.MenuCache));
+            await _cachingAppService.ClearCache(new EntityDto<string>(SystemCacheName.MenuCache));
         }
         /// <summary>
         /// 移动权限
@@ -294,7 +294,7 @@ namespace YT.Navigations
                 }).ToList();
             }
             await _permissionRepository.InsertAsync(temp);
-            await _cachingAppService.ClearCache(new EntityDto<string>(CacheName.PermissionCache));
+            await _cachingAppService.ClearCache(new EntityDto<string>(SystemCacheName.PermissionCache));
 
         }
         /// <summary>
@@ -332,7 +332,7 @@ namespace YT.Navigations
                 await _menuRepository.DeleteAsync(input.Id);
 
             }
-            await _cachingAppService.ClearCache(new EntityDto<string>(CacheName.MenuCache));
+            await _cachingAppService.ClearCache(new EntityDto<string>(SystemCacheName.MenuCache));
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace YT.Navigations
             {
                 await DeleteMenuAsync(new EntityDto(i));
             }
-            await _cachingAppService.ClearCache(new EntityDto<string>(CacheName.MenuCache));
+            await _cachingAppService.ClearCache(new EntityDto<string>(SystemCacheName.MenuCache));
         }
         #endregion
     }

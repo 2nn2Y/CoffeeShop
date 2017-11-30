@@ -69,7 +69,7 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<string> GetTokenFromCache()
         {
-            var result = await _cacheManager.GetCache(CacheName.WeChatToken).GetAsync(CacheName.WeChatToken,
+            var result = await _cacheManager.GetCache(OrgCacheName.WeChatToken).GetAsync(OrgCacheName.WeChatToken,
                 async () => await GetAccessToken());
             return result;
         }
@@ -80,7 +80,7 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<string> GetFullTokenFromCache()
         {
-            var result = await _cacheManager.GetCache(CacheName.FullToken).GetAsync(CacheName.FullToken,
+            var result = await _cacheManager.GetCache(OrgCacheName.FullToken).GetAsync(OrgCacheName.FullToken,
                 async () => await GetFullToken());
             return result;
         }
@@ -129,8 +129,8 @@ namespace YT.WebApi.Controllers
         {
             var result =
                 await
-                    _cacheManager.GetCache(CacheName.TicketToken)
-                        .GetAsync(CacheName.TicketToken, () => GetJsapiTicket());
+                    _cacheManager.GetCache(OrgCacheName.TicketToken)
+                        .GetAsync(OrgCacheName.TicketToken, () => GetJsapiTicket());
             var noncestr = Guid.NewGuid().ToString("D").Split('-').Last().ToLower();
             var timestamp = CreatenTimestamp();
             string sign = GetSignature(result, noncestr, timestamp, url);
@@ -150,8 +150,8 @@ namespace YT.WebApi.Controllers
         {
             var result =
                await
-                   _cacheManager.GetCache(CacheName.OrgUser)
-                       .GetAsync(CacheName.OrgUser, () => GetOrgUsers());
+                   _cacheManager.GetCache(OrgCacheName.OrgUser)
+                       .GetAsync(OrgCacheName.OrgUser, () => GetOrgUsers());
             return result;
         }
         /// <summary>
@@ -443,8 +443,8 @@ namespace YT.WebApi.Controllers
 
         private async Task<List<UserPoint>> GetUserPointsFromCache()
         {
-            return await _cacheManager.GetCache(CacheName.UserPointCache)
-                .GetAsync(CacheName.UserPointCache, async () => await GetUserPointsFromDb());
+            return await _cacheManager.GetCache(OrgCacheName.UserPointCache)
+                .GetAsync(OrgCacheName.UserPointCache, async () => await GetUserPointsFromDb());
         }
         /// <summary>
         /// db product

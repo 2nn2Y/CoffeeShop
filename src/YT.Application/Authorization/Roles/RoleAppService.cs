@@ -156,7 +156,7 @@ namespace YT.Authorization.Roles
             var permissions = await
                 _permissionRepository.GetAllListAsync(c => grantedPermissionNames.Any(e => e.Equals(c.Name)));
             await _roleManager.SetRoleGrantedPermissionsAsync(role, permissions);
-            await _cacheManager.ClearCache(new EntityDto<string>(CacheName.PermissionCache));
+            await _cacheManager.ClearCache(new EntityDto<string>(SystemCacheName.PermissionCache));
         }
 
     }

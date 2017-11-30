@@ -511,7 +511,11 @@ namespace YT.ThreeData.Exporting
                     }
                 });
         }
-
+        /// <summary>
+        /// µ¼³ö
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public FileDto ExportWarns(List<WarnDetailDto> input)
         {
             return CreateExcelPackage(

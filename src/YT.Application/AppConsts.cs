@@ -35,44 +35,72 @@ namespace YT
     /// <summary>
     /// 缓存定义
     /// </summary>
-    public class CacheName
+    public class SystemCacheName
     {
         /// <summary>
         /// 菜单权限
         /// </summary>
-        public const string MenuCache = "Milk.Cache.Menu";
-        /// <summary>
-        /// 微信token
-        /// </summary>
-        public const string WeChatToken = "Milk.WeChat.ACCESS_TOKEN";
-        /// <summary>
-        /// 全局token
-        /// </summary>
-        public const string FullToken = "Milk.WeChat.FullToken";
-        /// <summary>
-        /// jsapiticket
-        /// </summary>
-        public const string TicketToken = "Milk.WeChat.Jsapi_Ticket";
-        /// <summary>
-        /// 机构下人员
-        /// </summary>
-        public const string OrgUser = "Milk.WeChat.OrgUser";
+        public const string MenuCache = "System.Cache.Menu";
+   
         /// <summary>
         /// 权限const
         /// </summary>
-        public const string PermissionCache = "Milk.Cache.Permission";
+        public const string PermissionCache = "System.Cache.Permission";
+    }
+    /// <summary>
+    /// 缓存定义
+    /// </summary>
+    public class CoffeeCacheName
+    {
+        /// <summary>
+        /// 微信token
+        /// </summary>
+        public const string WeChatToken = "Org.WeChat.ACCESS_TOKEN";
+        /// <summary>
+        /// 全局token
+        /// </summary>
+        public const string FullToken = "Org.WeChat.FullToken";
+        /// <summary>
+        /// jsapiticket
+        /// </summary>
+        public const string TicketToken = "Org.WeChat.Jsapi_Ticket";
+      
+    }
+
+
+    /// <summary>
+    /// 缓存定义
+    /// </summary>
+    public class OrgCacheName
+    {
+        /// <summary>
+        /// 微信token
+        /// </summary>
+        public const string WeChatToken = "Org.WeChat.ACCESS_TOKEN";
+        /// <summary>
+        /// 全局token
+        /// </summary>
+        public const string FullToken = "Org.WeChat.FullToken";
+        /// <summary>
+        /// jsapiticket
+        /// </summary>
+        public const string TicketToken = "Org.WeChat.Jsapi_Ticket";
+        /// <summary>
+        /// 机构下人员
+        /// </summary>
+        public const string OrgUser = "Org.WeChat.OrgUser";
         /// <summary>
         /// 产品缓存
         /// </summary>
-        public const string ProductCache = "Milk.Three.ProductCache";
+        public const string ProductCache = "Org.Three.ProductCache";
         /// <summary>
         /// 点位缓存
         /// </summary>
-        public const string PointCache = "Milk.Three.PointCache";
+        public const string PointCache = "Org.Three.PointCache";
         /// <summary>
         /// 用户点位缓存
         /// </summary>
-        public const string UserPointCache = "Milk.Three.UserPointCache";
+        public const string UserPointCache = "Org.Three.UserPointCache";
 
     }
 }

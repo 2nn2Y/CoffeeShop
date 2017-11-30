@@ -182,6 +182,7 @@
   <ItemGroup>
     <Compile Include="WebApi\Controllers\FileController.cs" />
     <Compile Include="WebApi\Controllers\SignController.cs" />
+    <Compile Include="WebApi\Controllers\WechatController.cs" />
     <Compile Include="WebApi\Models\HttpHelper.cs" />
     <Compile Include="WebApi\Models\RegisterViewModel.cs" />
     <Compile Include="WebApi\Models\ResetPasswordFormViewModel.cs" />

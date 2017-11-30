@@ -80,8 +80,8 @@ namespace YT.Caching
         /// <returns></returns>
         public async Task<List<MenuEditDto>> GetMenuCache()
         {
-            return await _cacheManager.GetCache(CacheName.MenuCache)
-            .GetAsync(CacheName.MenuCache, () => GetMenusFromDb());
+            return await _cacheManager.GetCache(SystemCacheName.MenuCache)
+            .GetAsync(SystemCacheName.MenuCache, () => GetMenusFromDb());
         }
         /// <summary>
         /// 获取权限缓存
@@ -89,8 +89,8 @@ namespace YT.Caching
         /// <returns></returns>
         public async Task<ListResultDto<FlatPermissionWithLevelDto>> GetPermissionCache()
         {
-            return await _cacheManager.GetCache(CacheName.PermissionCache)
-               .GetAsync(CacheName.PermissionCache,()=> GetPermissionsFromDb());
+            return await _cacheManager.GetCache(SystemCacheName.PermissionCache)
+               .GetAsync(SystemCacheName.PermissionCache,()=> GetPermissionsFromDb());
         }
 
         private async Task<ListResultDto<FlatPermissionWithLevelDto>> GetPermissionsFromDb()
