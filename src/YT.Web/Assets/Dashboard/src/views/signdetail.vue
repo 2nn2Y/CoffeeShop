@@ -1,0 +1,201 @@
+<template>
+  <section class="content-wrap">
+    <Row>
+      <milk-table ref="list" :layout="[20,2,2]" :columns="cols" :search-api="searchApi" :params="params">
+        <template slot="search">
+          <Form ref="params" :model="params" inline :label-width="60">
+            <FormItem label="产品名">
+              <Input v-model="params.device" style="width: 140px" placeholder="请输入商品名"></Input>
+            </FormItem>
+            </FormItem>
+            <FormItem label="开始时间">
+              <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
+            </FormItem>
+            <FormItem label="截至时间">
+              <DatePicker type="date" :editable="false" v-model="params.end" placeholder="截至时间" style="width: 140px"></DatePicker>
+            </FormItem>
+          </Form>
+        </template>
+        <template slot="actions">
+          <Button @click="exportData" type="primary">导出</Button>
+        </template>
+      </milk-table>
+    </Row>
+    <Modal v-model="modal.map" title="地图展示" @on-ok="ok" @on-cancel="cancel">
+      <baidu-map :center="{lng: 116.404, lat: 39.915}" :zoom="zoom" class="bm-view">
+        <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
+        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+        <bm-marker :position="position" :dragging="false" animation="BMAP_ANIMATION_BOUNCE">
+        </bm-marker>
+      </baidu-map>
+    </Modal>
+    <Modal v-model="modal.image" title="图片展示" @on-ok="ok" @on-cancel="cancel">
+      <img v-for="(item,index) in images" :key="index" :src="item">
+    </Modal>
+  </section>
+</template>
+<script>
+import { getSignStaticial, exportSignStaticial } from "api/statical";
+export default {
+  name: "user",
+  data() {
+    return {
+      cols: [
+        {
+          title: "人员工号",
+          key: "userId"
+        },
+        {
+          title: "运维人员",
+          key: "userName"
+        },
+        {
+          title: "签到地",
+          key: "signLocation"
+        },
+        {
+          title: "是否签到",
+          key: "isSign",
+          render: (h, params) => {
+            return params.row.isSign ? "是" : "否";
+          }
+        },
+        {
+          title: "签到地点",
+          key: "timeSign",
+          render: (h, params) => {
+            if (params.row.dimension && params.row.longitude) {
+              return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.showMap(params.row);
+                      }
+                    }
+                  },
+                  "查看"
+                )
+              ]);
+            }
+          }
+        },
+        {
+          title: "签到图片",
+          key: "timeSign",
+          render: (h, params) => {
+            if (params.row.profiles) {
+              return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.showImage(params.row.profiles);
+                      }
+                    }
+                  },
+                  "查看"
+                )
+              ]);
+            }
+          }
+        },
+        {
+          title: "签到时间",
+          key: "creationTime",
+          render: (h, params) => {
+            return this.$fmtTime(params.row.creationTime);
+          }
+        },
+        {
+          title: "开始时间",
+          key: "date",
+          render: (h, params) => {
+            return this.$fmtTime(params.row.start);
+          }
+        },
+        {
+          title: "截止时间",
+          key: "date",
+          render: (h, params) => {
+            return this.$fmtTime(params.row.end);
+          }
+        }
+      ],
+      searchApi: getSignStaticial,
+      params: {
+        device: "",
+        start: null,
+        end: null
+      },
+      position: {
+        lng: 0,
+        lat: 0
+      },
+      images: [],
+      zoom: 14,
+      modal: {
+        map: false,
+        image: false
+      }
+    };
+  },
+  components: {},
+  created() {},
+  methods: {
+    exportData() {
+      exportSignStaticial(this.params)
+        .then(r => {
+          if (r.success) {
+            this.$down(
+              r.result.fileType,
+              r.result.fileToken,
+              r.result.fileName
+            );
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
+        });
+    },
+    showMap(row) {
+      this.modal.map = true;
+      this.position = { lng: row.longitude, lat: row.dimension };
+    },
+    showImage(images) {
+      this.images = images;
+      this.modal.image = true;
+    },
+    ok() {
+      this.modal.map = false;
+      this.modal.image = false;
+    },
+    cancel() {
+      this.modal.map = false;
+      this.modal.image = false;
+    }
+  }
+};
+</script>
+<style scoped>
+.bm-view {
+  width: 100%;
+  height: 300px;
+}
+</style>
