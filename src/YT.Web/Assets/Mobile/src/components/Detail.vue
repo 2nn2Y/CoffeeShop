@@ -9,7 +9,7 @@
     <divider>地图</divider>
     <baidu-map :center="map.center" :zoom="map.zoom" @ready="handler" class="bm-view">
       <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-      <bm-marker :position="model.position" :dragging="false" animation="BMAP_ANIMATION_BOUNCE">
+      <bm-marker :position="{ lng: warn.lat, lat: warn.log  }" :dragging="false" animation="BMAP_ANIMATION_BOUNCE">
       </bm-marker>
     </baidu-map>
   </div>
