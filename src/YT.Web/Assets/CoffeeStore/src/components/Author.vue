@@ -1,21 +1,21 @@
 <template>
   <div >
-    <img src="../assets/timg.jpg" :style="{width:width,height:height }">
+    <img src="../assets/timg.jpg" style="width:375px;height:620px;">
   </div>
 </template>
 <script >
 export default {
   activated() {
-    const userId = sessionStorage.getItem("userId");
+    const userId = sessionStorage.getItem("openid");
     if (userId) {
       this.$router.push({ path: "/coffee" });
     } else {
       if (window.location.href.indexOf("code") >= 0) {
         this.login();
       } else {
-        const url = encodeURI("http://coffee.leftins.com/#/author");
+        const url = encodeURI("http://coffee.leftins.com");
         // 跳转到微信授权页面
-        window.location.href = `http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+        window.location.href = `http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
       }
     }
   },
@@ -23,11 +23,11 @@ export default {
     if (window.location.href.indexOf("code") >= 0) {
       this.login();
     } else {
-      const userId = sessionStorage.getItem("userId");
+      const userId = sessionStorage.getItem("openid");
       if (!userId) {
-        const url = encodeURI("http://coffee.leftins.com/#/author");
+        const url = encodeURI("http://coffee.leftins.com");
         // 跳转到微信授权页面
-        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
       } else {
         this.$router.push({ path: "/coffee" });
       }
@@ -50,15 +50,17 @@ export default {
         .get(url)
         .then(response => {
           if (response && response.data) {
-            if (response.data.userid) {
-              sessionStorage.setItem("userId", response.data.userid);
+            if (response.data.openid) {
+              sessionStorage.setItem("openid", response.data.openid);
+              sessionStorage.setItem("nickname", response.data.nickname);
+              sessionStorage.setItem("headimgurl", response.data.headimgurl);
               window.location.href = "http://coffee.leftins.com/#/coffee";
             }
           } else {
             if (sessionStorage.getItem("userId")) {
-              const ww = encodeURI("http://coffee.leftins.com/#/author");
+              const ww = encodeURI("http://coffee.leftins.com");
               // 跳转到微信授权页面
-              window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+              window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
             }
           }
         })

@@ -4,7 +4,7 @@
       <p class="center">
         <img :src="url">
       </p>
-      <p class="center">ddd</p>
+      <p class="center">{{nickname}}</p>
     </blur>
     <group>
       <cell title="余额(150)" link="/balance" value="充值" is-link></cell>
@@ -31,7 +31,8 @@ export default {
   },
   data() {
     return {
-      url: "https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg"
+      url: sessionStorage.getItem("headimgurl"),
+      nickname: sessionStorage.getItem("nickname")
     };
   }
 };

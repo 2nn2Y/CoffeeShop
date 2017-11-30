@@ -62,7 +62,7 @@ router.afterEach(() => {
 })
 router.beforeEach((to, from, next) => {
         store.commit("updateLoading", true)
-        const userId = sessionStorage.getItem("userId");
+        const userId = sessionStorage.getItem("openid");
         if (window.location.href.indexOf("code") >= 0 && !userId) {
             Vue.prototype.toRight();
         }
