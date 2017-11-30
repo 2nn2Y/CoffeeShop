@@ -12,6 +12,7 @@
   "dependencies": {
     "fastclick": "^1.0.6",
     "js-base64": "^2.3.2",
+    "net": "^1.0.2",
     "vue": "^2.2.2",
     "vue-baidu-map": "^0.18.7",
     "vue-router": "^2.2.0",
