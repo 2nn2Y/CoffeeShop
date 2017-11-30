@@ -55,15 +55,15 @@ namespace YT
         /// <summary>
         /// Î¢ÐÅtoken
         /// </summary>
-        public const string WeChatToken = "Org.WeChat.ACCESS_TOKEN";
+        public const string WeChatToken = "Coffee.WeChat.ACCESS_TOKEN";
         /// <summary>
         /// È«¾Ötoken
         /// </summary>
-        public const string FullToken = "Org.WeChat.FullToken";
+        public const string UserToken = "Coffee.WeChat.UserToken";
         /// <summary>
         /// jsapiticket
         /// </summary>
-        public const string TicketToken = "Org.WeChat.Jsapi_Ticket";
+        public const string TicketToken = "Coffee.WeChat.Jsapi_Ticket";
       
     }
 

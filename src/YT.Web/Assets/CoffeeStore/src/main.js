@@ -33,7 +33,7 @@ Vue.prototype.showBox = function(title, content) {
     })
 }
 Vue.prototype.wxConfig = function(url) {
-    const service = "http://103.45.102.47:8888/api/sign/config";
+    const service = "http://103.45.102.47:8888/api/wechat/config";
     Vue.http.post(service + "?url=" + url).then(r => {
         if (r && r.data) {
             Vue.wechat.config({
@@ -51,10 +51,9 @@ Vue.prototype.callTitle = function(value) {
     this.$store.commit("calltitle", value)
 }
 Vue.prototype.toRight = function() {
-    // http://coffee.leftins.com/?code=xj3cXRg9uTyfqrBZFJm1Jj2-am1sBFlqFCflhO8QGV0#/
     const paths = window.location.href.split("?");
     const params = querystring.parse(paths[1].split("&")[0]);
-    const url = `http://wx.youyinkeji.cn/#/author?code=${params.code}`
+    const url = `http://coffee.leftins.com/#/author?code=${params.code}`
     window.location.href = url
 }
 
@@ -63,20 +62,18 @@ router.afterEach(() => {
 })
 router.beforeEach((to, from, next) => {
         store.commit("updateLoading", true)
-            //  http://coffee.leftins.com/#/author?code=6LBU8kzK3EqGdVvnUl7YjqObuIrMgMzxvMsdeXsteuE
-            // const userId = sessionStorage.getItem("userId");
-            // if (window.location.href.indexOf("code") >= 0 && !userId) {
-            //     Vue.prototype.toRight();
-            // }
-            // if (to.path === "/author" && userId) {
-            //     next("/sign");
-            //     return false;
-            // }
-            // if (!userId && to.path !== "/author") {
-            //     sessionStorage.setItem("url", to.fullPath) // 保存用户进入的url
-            //     next("/author");
-            //     return false;
-            // }
+        const userId = sessionStorage.getItem("userId");
+        if (window.location.href.indexOf("code") >= 0 && !userId) {
+            Vue.prototype.toRight();
+        }
+        if (to.path === "/author" && userId) {
+            next("/coffee");
+            return false;
+        }
+        if (!userId && to.path !== "/author") {
+            next("/author");
+            return false;
+        }
         next();
     })
     /* eslint-disable no-new */

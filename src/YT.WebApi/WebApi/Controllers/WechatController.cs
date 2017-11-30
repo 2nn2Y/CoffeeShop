@@ -17,11 +17,11 @@ namespace YT.WebApi.Controllers
     /// <summary>
     /// h5微信接口
     /// </summary>
-  public  class WechatController: AbpApiController
+    public class WechatController : AbpApiController
     {
-        private const string CorpId = "ww480b7545345a38f7";
-        private const string Secret = "SjF1kHm8EZfb35rNPn8wiTt-iTrJPegpzXI14yHwseg";
-        private const string SecretA = "yKribg1WopTnC1vLrvFT5vObFXZVUou6XAtt8sqgiJc";
+
+        private const string AppId = "wx734728844b17a945";
+        private const string Secret = "56a6e5b18dd44b397d1c80383a39cd01";
         private readonly ICacheManager _cacheManager;
         /// <summary>
         /// ctor
@@ -105,12 +105,12 @@ namespace YT.WebApi.Controllers
         /// 获取fulltoken
         /// </summary>
         /// <returns></returns>
-        private static async Task<string> GetFullToken()
+        private static async Task<JObject> GetUserToken(string code)
         {
             var url =
-              $"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={CorpId}&corpsecret={Secret}";
-            var result = await HttpHandler.GetAsync<dynamic>(url);
-            return result.access_token;
+              $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={AppId}&secret={Secret}&code={code}&grant_type=authorization_code";
+            var result = await HttpHandler.GetAsync<JObject>(url);
+            return result;
         }
         /// <summary>
         /// 获取accesstoken
@@ -118,9 +118,8 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         private static async Task<string> GetAccessToken()
         {
-
             var url =
-              $"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={CorpId}&corpsecret={SecretA}";
+              $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={Secret}";
             var result = await HttpHandler.GetAsync<dynamic>(url);
             return result.access_token;
         }
@@ -132,7 +131,7 @@ namespace YT.WebApi.Controllers
         {
 
             var token = await GetTokenFromCache();
-            var url = $"https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token={token}";
+            var url = $"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={token}&type=jsapi";
             var result = await HttpHandler.GetAsync<dynamic>(url);
             if (result != null)
             {
@@ -144,48 +143,26 @@ namespace YT.WebApi.Controllers
         /// 获取 accesstoken
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetFullTokenFromCache()
+        public async Task<JObject> GetUserTokenFromCache(string code)
         {
-            var result = await _cacheManager.GetCache(OrgCacheName.FullToken).GetAsync(OrgCacheName.FullToken,
-                async () => await GetFullToken());
+            var result = await _cacheManager.GetCache(CoffeeCacheName.UserToken).GetAsync(CoffeeCacheName.UserToken,
+                async () => await GetUserToken(code));
             return result;
         }
         /// <summary>
         /// 获取用户信息
         /// </summary>
         /// <param name="code"></param>
+        /// <param name="openId"></param>
         /// <returns></returns>
         public async Task<dynamic> GetInfoByCode(string code)
         {
-            var token = await GetTokenFromCache();
-            string url = $"https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token={token}&code={code}";
+            var model = await GetUserTokenFromCache(code);
+            var token = model.GetValue("access_token").ToString();
+            var openid = model.GetValue("openid").ToString();
+            string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
-            if (result.GetValue("user_ticket") == null)
-            {
-                return result;
-            }
-            var ticket = result.GetValue("user_ticket").ToString();
-            var info = $"https://qyapi.weixin.qq.com/cgi-bin/user/getuserdetail?access_token={token}";
-            var r = HttpHandler.PostJson<JObject>(info, JsonConvert.SerializeObject(new
-            {
-                user_ticket = ticket
-            }));
-            return r;
-        }
-        /// <summary>
-        /// 获取用户信息
-        /// </summary>
-        /// <param name="ticket"></param>
-        /// <returns></returns>
-        public async Task<AjaxResponse> GetInfoByTicket(string ticket)
-        {
-            var token = await GetTokenFromCache();
-            var info = $"https://qyapi.weixin.qq.com/cgi-bin/user/getuserdetail?access_token={token}";
-            var r = await HttpHandler.PostAsync<JObject>(info, new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("user_ticket", ticket)
-            });
-            return new AjaxResponse(r);
+            return result;
         }
         /// <summary>
         /// 获取验证信息
@@ -195,14 +172,14 @@ namespace YT.WebApi.Controllers
         {
             var result =
                 await
-                    _cacheManager.GetCache(OrgCacheName.TicketToken)
-                        .GetAsync(OrgCacheName.TicketToken, () => GetJsapiTicket());
+                    _cacheManager.GetCache(CoffeeCacheName.TicketToken)
+                        .GetAsync(CoffeeCacheName.TicketToken, () => GetJsapiTicket());
             var noncestr = Guid.NewGuid().ToString("D").Split('-').Last().ToLower();
             var timestamp = CreatenTimestamp();
             string sign = GetSignature(result, noncestr, timestamp, url);
             return new AjaxResponse(new
             {
-                appId = "ww480b7545345a38f7",
+                appId = AppId,
                 timestamp = timestamp,
                 nonceStr = noncestr,
                 signature = sign.ToLower()
