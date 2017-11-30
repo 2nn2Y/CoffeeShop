@@ -30,6 +30,7 @@ export default {
       list: [
         {
           src: "../assets/icons/a.png",
+          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
           title: "猫屎咖啡",
           desc: "由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。",
           url: "/order"
@@ -37,10 +38,16 @@ export default {
         {
           src: "../assets/icons/b.png",
           title: "牛屎咖啡",
+          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
           desc: "由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。",
           url: {
             path: "/order",
             replace: false
+          },
+          meta: {
+            source: "来源信息",
+            date: "时间",
+            other: "其他信息"
           }
         }
       ],
