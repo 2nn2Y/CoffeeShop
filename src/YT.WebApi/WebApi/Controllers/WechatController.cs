@@ -55,12 +55,7 @@ namespace YT.WebApi.Controllers
             return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
 
-        public async Task Unifiedorder(JsPayInput input)
-        {
-            var order = Guid.NewGuid().ToString("N");
-
-        var url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-        }
+      
      
         ///  <summary>
         ///  签名算法
