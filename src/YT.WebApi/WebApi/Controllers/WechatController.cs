@@ -11,6 +11,7 @@ using Abp.WebApi.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YT.Configuration;
+using YT.WebApi.Models;
 
 namespace YT.WebApi.Controllers
 {
@@ -22,6 +23,9 @@ namespace YT.WebApi.Controllers
 
         private const string AppId = "wx734728844b17a945";
         private const string Secret = "56a6e5b18dd44b397d1c80383a39cd01";
+        private const string MchId = "1481424252";
+        private const string SaleKey = "1q2w3e4r5t6y7u8i9o0p1q2w3e4r5t6y";
+        
         private readonly ICacheManager _cacheManager;
         /// <summary>
         /// ctor
@@ -50,6 +54,14 @@ namespace YT.WebApi.Controllers
         {
             return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
+
+        public async Task Unifiedorder(JsPayInput input)
+        {
+            var order = Guid.NewGuid().ToString("N");
+
+        var url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+        }
+     
         ///  <summary>
         ///  签名算法
         ///  </summary>

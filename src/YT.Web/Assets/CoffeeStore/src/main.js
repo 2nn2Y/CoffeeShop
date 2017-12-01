@@ -42,7 +42,7 @@ Vue.prototype.wxConfig = function(url) {
                 timestamp: r.data.result.timestamp, // 必填，生成签名的时间戳 由接口返回
                 nonceStr: r.data.result.nonceStr, // 必填，生成签名的随机串 由接口返回
                 signature: r.data.result.signature, // 必填，签名 由接口返回
-                jsApiList: ["chooseImage", "previewImage", "getLocation", "openLocation", "uploadImage"]
+                jsApiList: ["chooseWXPay", "getLocation", "openLocation"]
             });
         }
     })
