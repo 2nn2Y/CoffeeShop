@@ -489,17 +489,17 @@ namespace YT.WebApi.Models
          * @return 统一下单结果
          * @失败时抛异常Exception
          */
-        public WxPayData GetUnifiedOrderResult(string orderNum)
+        public WxPayData GetUnifiedOrderResult(string orderNum,string body,string tags)
         {
             //统一下单
             WxPayData data = new WxPayData();
-            data.SetValue("body", "test");
+            data.SetValue("body", body);
             data.SetValue("attach", "test");
             data.SetValue("out_trade_no", orderNum);
             data.SetValue("total_fee", TotalFee);
             data.SetValue("time_start", DateTime.Now.ToString("yyyyMMddHHmmss"));
             data.SetValue("time_expire", DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"));
-            data.SetValue("goods_tag", "test");
+            data.SetValue("goods_tag", "tags");
             data.SetValue("trade_type", "JSAPI");
             data.SetValue("openid", Openid);
 

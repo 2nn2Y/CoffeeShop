@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -55,6 +56,19 @@ namespace YT.WebApi.Controllers
             return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
 
+        public string PrevPay(string openId,int price)
+        {
+            var ordernum = Guid.NewGuid().ToString("N");
+            JsApiPay jsApiPay = new JsApiPay
+            {
+                Openid = openId,
+                TotalFee = price
+            };
+            WxPayData data =
+                jsApiPay.GetUnifiedOrderResult(ordernum,"咖啡机","猫屎");
+            var param = jsApiPay.GetJsApiParameters();
+            return param;
+        }
       
      
         ///  <summary>
