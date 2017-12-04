@@ -536,27 +536,32 @@ namespace YT.ThreeData
         public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetOrderInput input)
         {
             var query = _warnRepository.GetAll();
-            var count = await query.CountAsync();
-            var warns = await query.OrderByDescending(c=>c.WarnTime).Skip(input.SkipCount).Take(input.MaxResultCount)
-                .ToListAsync();
+          
+
+            var tempa = from c in query
+                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
+                select new {c, pointName= d.PointName};
+            var warns = await tempa.OrderByDescending(c => c.c.WarnTime)
+                .Skip(input.SkipCount).Take(input.MaxResultCount)
+             .ToListAsync();
+            var count =  tempa.Count();
 
             var temp = from c in warns
-                       join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                       join e in await GetUserPointsFromCache() on c.DeviceNum equals e.PointId
+                       join e in await GetUserPointsFromCache() on c.c.DeviceNum equals e.PointId
                        into h
                        from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
                        {
-                           Id = c.Id,
-                           DeviceNum = c.DeviceNum,
-                           IsSolve = c.State,
-                           PointName = d.PointName,
-                           SolveDate = c.DealTime,
-                           SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
-                           State = c.WarnNum,
+                           Id = c.c.Id,
+                           DeviceNum = c.c.DeviceNum,
+                           IsSolve = c.c.State,
+                           PointName =c?.pointName,
+                           SolveDate = c.c.DealTime,
+                           SolveTime = c.c.DealTime.HasValue ? (c.c.DealTime.Value - c.c.WarnTime).Minutes : 0,
+                           State = c.c.WarnNum,
                            UserName = tt?.UserName,
-                           WarnDate = c.WarnTime,
-                           WarnType = c.WarnNum,
+                           WarnDate = c.c.WarnTime,
+                           WarnType = c.c.WarnNum,
                        };
             return new PagedResultDto<WarnDetailDto>(count, temp.ToList());
         }

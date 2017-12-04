@@ -120,7 +120,9 @@ export default {
           title: "签到时间",
           key: "creationTime",
           render: (h, params) => {
-            return this.$fmtTime(params.row.creationTime);
+            return params.row.creationTime
+              ? this.$fmtTime(params.row.creationTime)
+              : "";
           }
         },
         {
