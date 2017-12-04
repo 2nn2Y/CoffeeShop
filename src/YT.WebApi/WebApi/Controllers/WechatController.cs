@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Abp.Domain.Repositories;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -12,6 +13,7 @@ using Abp.WebApi.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YT.Configuration;
+using YT.Models;
 using YT.WebApi.Models;
 
 namespace YT.WebApi.Controllers
@@ -28,13 +30,16 @@ namespace YT.WebApi.Controllers
         private const string SaleKey = "1q2w3e4r5t6y7u8i9o0p1q2w3e4r5t6y";
         
         private readonly ICacheManager _cacheManager;
+        private readonly IRepository<StoreUser> _useRepository;
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="cacheManager"></param>
-        public WechatController(ICacheManager cacheManager)
+        /// <param name="useRepository"></param>
+        public WechatController(ICacheManager cacheManager, IRepository<StoreUser> useRepository)
         {
             _cacheManager = cacheManager;
+            _useRepository = useRepository;
         }
 
         /// <summary>
@@ -43,10 +48,34 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<string> GetTokenFromCache()
         {
-            var result = await _cacheManager.GetCache(OrgCacheName.WeChatToken).GetAsync(OrgCacheName.WeChatToken,
+            var result = await _cacheManager.GetCache(CoffeeCacheName.WeChatToken).GetAsync(CoffeeCacheName.WeChatToken,
                 async () => await GetAccessToken());
             return result;
         }
+        /// <summary>
+        /// 获取卡圈ticket
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GetCardTicketFromCache()
+        {
+            var result = await _cacheManager.GetCache(CoffeeCacheName.CardToken).GetAsync(CoffeeCacheName.CardToken,
+               async () => await GetCardToken());
+            return result;
+         
+        }
+
+        private async Task<string> GetCardToken()
+        {
+            var token = await GetTokenFromCache();
+            var url = $"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={token}&type=wx_card";
+            var result = await HttpHandler.GetAsync<dynamic>(url);
+            if (result != null)
+            {
+                return result.ticket;
+            }
+            throw new UserFriendlyException("card票据不存在");
+        }
+
         /// <summary>
         /// 创建时间戳
         /// </summary>
@@ -55,21 +84,37 @@ namespace YT.WebApi.Controllers
         {
             return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
-
-        public string PrevPay(string openId,int price)
+        /// <summary>
+        /// 获取用户余额
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<dynamic> GetUserBalance(string openId)
         {
-            var ordernum = Guid.NewGuid().ToString("N");
-            JsApiPay jsApiPay = new JsApiPay
-            {
-                Openid = openId,
-                TotalFee = price
-            };
-            WxPayData data =
-                jsApiPay.GetUnifiedOrderResult(ordernum,"咖啡机","猫屎");
-            var param = jsApiPay.GetJsApiParameters();
-            return param;
+            var user =await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            if(user==null)throw new  UserFriendlyException("用户信息不存在");
+            return user;
         }
-      
+
+
+        /// <summary>
+        /// 获取用户卡圈列表
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        [HttpGet]
+
+        public async Task<dynamic> GetUserCards(string openId)
+        {
+            var token = await GetTokenFromCache();
+            var url = $"https://api.weixin.qq.com/card/user/getcardlist?access_token={token}";
+            var result =  HttpHandler.PostJson<JObject>(url, JsonConvert.SerializeObject(new
+            {
+                openid=openId
+            }));
+            return result;
+        }
      
         ///  <summary>
         ///  签名算法
@@ -160,6 +205,8 @@ namespace YT.WebApi.Controllers
             }
             throw new UserFriendlyException("票据不存在");
         }
+
+      
         /// <summary>
         /// 获取 accesstoken
         /// </summary>
@@ -174,7 +221,6 @@ namespace YT.WebApi.Controllers
         /// 获取用户信息
         /// </summary>
         /// <param name="code"></param>
-        /// <param name="openId"></param>
         /// <returns></returns>
         public async Task<dynamic> GetInfoByCode(string code)
         {
@@ -183,6 +229,21 @@ namespace YT.WebApi.Controllers
             var openid = model.GetValue("openid").ToString();
             string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
+            var openId = result.GetValue("openid").ToString();
+            var user =await _useRepository.FirstOrDefaultAsync(c=>c.OpenId.Equals(openId));
+            if (user == null)
+            {
+                var t=new StoreUser()
+                {
+                    Balance=0,OpenId=openId
+                };
+                await _useRepository.InsertAsync(t);
+                result.Add("balance", 0);
+            }
+            else
+            {
+                result.Add("balance",user.Balance);
+            }
             return result;
         }
         /// <summary>

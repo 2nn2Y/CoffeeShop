@@ -7,7 +7,7 @@
       <p class="center">{{nickname}}</p>
     </blur>
     <group>
-      <cell title="余额(150)" link="/balance" value="充值" is-link></cell>
+      <cell :title="title" link="/balance" value="充值" is-link></cell>
      
       <cell title="我的卡券" link="/mycard" value="" is-link></cell>
     </group>
@@ -28,12 +28,31 @@ export default {
   },
   created() {
     this.callTitle("我的");
+    this.init();
   },
   data() {
     return {
       url: sessionStorage.getItem("headimgurl"),
-      nickname: sessionStorage.getItem("nickname")
+      nickname: sessionStorage.getItem("nickname"),
+      balance: 0
     };
+  },
+  computed: {
+    title() {
+      return `余额(${this.balance})`;
+    }
+  },
+  methods: {
+    init() {
+      const url =
+        "http://103.45.102.47:8888/api/Wechat/GetUserBalance?openId=" +
+        sessionStorage.getItem("openid");
+      this.$http.get(url).then(r => {
+        if (r.data && r.data.has_share_card) {
+          this.balance = r.data.balance;
+        }
+      });
+    }
   }
 };
 </script>

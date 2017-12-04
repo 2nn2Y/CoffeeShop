@@ -64,7 +64,11 @@ namespace YT
         /// jsapiticket
         /// </summary>
         public const string TicketToken = "Coffee.WeChat.Jsapi_Ticket";
-      
+        /// <summary>
+        /// ¿¨È¦ticket
+        /// </summary>
+        public const string CardToken = "Coffee.WeChat.CardToken";
+
     }
 
 

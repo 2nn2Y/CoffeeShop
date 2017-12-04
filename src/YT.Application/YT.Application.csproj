@@ -169,6 +169,7 @@
     <Compile Include="Navigations\IMenuAppService.cs" />
     <Compile Include="Navigations\MenuAppService.cs" />
     <Compile Include="Navigations\MenuManager.cs" />
+    <Compile Include="ThreeData\Dtos\CoffeeProduct.cs" />
     <Compile Include="ThreeData\Dtos\DeviceWarnDto.cs" />
     <Compile Include="ThreeData\Dtos\FilterDto.cs" />
     <Compile Include="ThreeData\Dtos\GetOrderInput.cs" />

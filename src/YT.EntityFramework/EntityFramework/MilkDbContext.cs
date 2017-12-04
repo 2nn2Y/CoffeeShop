@@ -62,6 +62,14 @@ namespace YT.EntityFramework
         /// 用户点位对应
         /// </summary>
         public virtual  IDbSet<UserPoint> UserPoints { get; set; }
+        /// <summary>
+        /// 商品订单
+        /// </summary>
+        public virtual  IDbSet<StoreOrder> StoreOrders { get; set; }
+        /// <summary>
+        /// 用户
+        /// </summary>
+        public virtual  IDbSet<StoreUser> StoreUsers { get; set; }
         
         public MilkDbContext()
             : base("Default")

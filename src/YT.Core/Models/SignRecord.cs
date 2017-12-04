@@ -194,4 +194,72 @@ namespace YT.Models
         /// </summary>
         public DateTime? DealTime { get; set; }
     }
+    /// <summary>
+    /// 商城订单
+    /// </summary>
+    [Table("StoreOrder")]
+    public class StoreOrder : CreationAuditedEntity
+    {
+        /// <summary>
+        /// 用户id
+        /// </summary>
+        public string OpenId { get; set; }
+        /// <summary>
+        /// 订单编号
+        /// </summary>
+        public string OrderNum { get; set; }
+        /// <summary>
+        /// 微信支付订单
+        /// </summary>
+        public string WechatOrder { get; set; }
+        /// <summary>
+        /// 支付方式
+        /// </summary>
+        public PayType PayType { get; set; }
+        /// <summary>
+        /// 支付状态
+        /// </summary>
+        public bool? PayState { get; set; }
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public bool? OrderState { get; set; }
+        /// <summary>
+        /// 机器编号
+        /// </summary>
+
+        public string DeviceNum { get; set; }
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// 商品id
+        /// </summary>
+        public int ProductId { get; set; }
+        /// <summary>
+        /// 提货码
+        /// </summary>
+        public string Code { get; set; }
+        /// <summary>
+        /// 快捷码
+        /// </summary>
+        public string FastCode { get; set; }
+    }
+    [Table("StoreUser")]
+    public class StoreUser : CreationAuditedEntity
+    {
+        /// <summary>
+        /// openid
+        /// </summary>
+        public string OpenId { get; set; }
+        /// <summary>
+        /// 昵称
+        /// </summary>
+        public string NickName { get; set; }
+        /// <summary>
+        /// 余额
+        /// </summary>
+        public int Balance { get; set; }
+    }
 }

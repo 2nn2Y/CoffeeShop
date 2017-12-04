@@ -26,6 +26,24 @@ namespace YT
         Enterprise=2
     }
     /// <summary>
+    /// 支付方式
+    /// </summary>
+    public enum PayType
+    {
+        /// <summary>
+        /// 余额支付
+        /// </summary>
+        BalancePay=1,
+        /// <summary>
+        /// 在线支付
+        /// </summary>
+        LinePay=2,
+        /// <summary>
+        /// 充值
+        /// </summary>
+        PayCharge=3
+    }
+    /// <summary>
     /// 
     /// </summary>
     public static class AbpSessionExtensions

@@ -77,6 +77,10 @@
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LitJson, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LitJson.0.9.0\lib\LitJson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -140,6 +144,7 @@
     <Compile Include="BaseEnum.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Configuration\HttpHandler.cs" />
+    <Compile Include="JsPayInput.cs" />
     <Compile Include="Managers\PermissionChecker.cs" />
     <Compile Include="Managers\Roles\RoleManager.cs" />
     <Compile Include="Managers\Roles\RoleStore.cs" />

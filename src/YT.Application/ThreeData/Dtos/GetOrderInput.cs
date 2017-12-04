@@ -41,6 +41,7 @@ namespace YT.ThreeData.Dtos
             }
         }
     }
+
     /// <summary>
     /// 产品销量input
     /// </summary>

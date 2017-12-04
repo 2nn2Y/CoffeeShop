@@ -3,21 +3,21 @@
     <panel :header="'商品详情'" :list="list" :type="'5'"></panel>
     <divider>咖啡配置</divider>
     <group>
-      <x-number title="浓度" :min="0" :max="5" v-model="value"></x-number>
-      <x-number title="奶度" :min="0" :max="5" v-model="value"></x-number>
-      <x-number title="糖度" :min="0" :max="5" v-model="value"></x-number>
-      <selector title="选择代金券" :options="cards" v-model="value"></selector>
-      <cell title="总金额" v-model="value"></cell>
+      <x-number title="浓度" :min="0" :max="5" v-model="call.o"></x-number>
+      <x-number title="奶度" :min="0" :max="5" v-model="call.m"></x-number>
+      <x-number title="糖度" :min="0" :max="5" v-model="call.t"></x-number>
+      <selector title="选择代金券" :options="cards" v-model="selectCard"></selector>
+      <cell title="总金额" v-model="model.price"></cell>
     </group>
     <grid>
       <grid-item>
         <box gap="10px 10px">
-          <x-button type="primary">余额支付</x-button>
+          <x-button type="primary" @click.native="balancepay">余额支付</x-button>
         </box>
       </grid-item>
       <grid-item>
         <box gap="10px 10px">
-          <x-button type="primary">在线支付</x-button>
+          <x-button type="primary" @click.native="linepay">在线支付</x-button>
         </box>
       </grid-item>
     </grid>
@@ -54,40 +54,61 @@ export default {
   },
   created() {
     this.callTitle("咖啡店");
+    this.init();
+    this.getCard();
+  },
+  computed: {
+    fastcode() {
+      return this.call.o + "" + this.call.m + "" + this.call.s;
+    }
   },
   methods: {
-    next() {
-      this.showBox("xia", "下一页");
+    init() {
+      const url =
+        "http://103.45.102.47:8888/api/services/app/mobile/GetProduct";
+      this.$http.post(url, { id: this.$route.params.id }).then(r => {
+        if (r.data && r.data.result) {
+          const element = r.data.result;
+          this.model = element;
+          this.list.push({
+            src: element.imageUrl,
+            fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
+            title: element.productName,
+            desc: element.description,
+            url: "/detail/" + element.id
+          });
+        }
+      });
     },
-    detail(item) {
-      this.showBox("详情", item.title);
+    balancepay() {
+      console.log(1);
+    },
+    getCard() {
+      const url =
+        "http://103.45.102.47:8888/api/Wechat/GetUserCards?openId=" +
+        sessionStorage.getItem("openid");
+      this.$http.get(url).then(r => {
+        if (r.data && r.data.has_share_card) {
+          this.cards = r.data.card_list;
+        }
+      });
+    },
+    linepay() {
+      console.log(1);
     }
   },
 
   data() {
     return {
-      cards: [
-        {
-          key: 1,
-          value: "打折券"
-        },
-        {
-          key: 2,
-          value: "满减券"
-        }
-      ],
-      type: "1",
-      list: [
-        {
-          src: "../assets/icons/a.png",
-          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
-          title: "猫屎咖啡",
-          desc: "由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。"
-        }
-      ],
-      footer: {
-        title: "显示更多"
-      }
+      call: {
+        o: 0,
+        m: 0,
+        s: 0
+      },
+      selectCard: null,
+      model: {},
+      cards: [],
+      list: []
     };
   }
 };

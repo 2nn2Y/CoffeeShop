@@ -9,7 +9,7 @@ using System.Text;
 using System.Xml;
 using LitJson;
 
-namespace YT.WebApi.Models
+namespace YT
 {
     /// <summary>
     /// http连接基础类，负责底层的http通信

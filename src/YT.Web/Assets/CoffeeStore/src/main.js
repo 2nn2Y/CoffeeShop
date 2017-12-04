@@ -4,7 +4,6 @@ import Vue from "vue"
 import FastClick from "fastclick"
 import router from "./router"
 import App from "./App"
-import BaiduMap from "vue-baidu-map"
 import store from "./store"
 // 微信支持
 import {
@@ -16,9 +15,6 @@ import {
 Vue.use(AjaxPlugin)
 Vue.use(WechatPlugin)
 Vue.use(AlertModule)
-Vue.use(BaiduMap, {
-    ak: "pYjoSR2GThuatLt06MlaKzRgSWy4Zztq"
-})
 Vue.use(router)
     // 点击延迟
 FastClick.attach(document.body)
@@ -37,12 +33,12 @@ Vue.prototype.wxConfig = function(url) {
     Vue.http.post(service + "?url=" + url).then(r => {
         if (r && r.data) {
             Vue.wechat.config({
-                debug: false,
+                debug: true,
                 appId: r.data.result.appId, // 必填，公众号的唯一标识   由接口返回
                 timestamp: r.data.result.timestamp, // 必填，生成签名的时间戳 由接口返回
                 nonceStr: r.data.result.nonceStr, // 必填，生成签名的随机串 由接口返回
                 signature: r.data.result.signature, // 必填，签名 由接口返回
-                jsApiList: ["chooseWXPay", "getLocation", "openLocation"]
+                jsApiList: ["chooseWXPay", "getLocation", "openLocation", "onMenuShareTimeline", "onMenuShareAppMessage"]
             });
         }
     })
@@ -61,19 +57,21 @@ router.afterEach(() => {
     store.commit("updateLoading", false)
 })
 router.beforeEach((to, from, next) => {
-        // store.commit("updateLoading", true)
-        // const userId = sessionStorage.getItem("openid");
-        // if (window.location.href.indexOf("code") >= 0 && !userId) {
-        //     Vue.prototype.toRight();
-        // }
-        // if (to.path === "/author" && userId) {
-        //     next("/coffee");
-        //     return false;
-        // }
-        // if (!userId && to.path !== "/author") {
-        //     next("/author");
-        //     return false;
-        // }
+        store.commit("updateLoading", true)
+        const userId = sessionStorage.getItem("openid");
+        if (window.location.href.indexOf("code") >= 0 && !userId) {
+            Vue.prototype.toRight();
+        }
+        if (to.path === "/author" && userId) {
+            next("/coffee");
+            return false;
+        }
+        if (!userId && to.path !== "/author") {
+            // 保存用户进入的url
+            sessionStorage.setItem("beforeUrl", to.fullPath);
+            next("/author");
+            return false;
+        }
         next();
     })
     /* eslint-disable no-new */

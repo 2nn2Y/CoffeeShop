@@ -5,7 +5,7 @@
       <div slot="content" class="card-padding">
       </div>
     </card>
-    <panel :header="'商品列表'" :footer="footer" :list="list" @on-click-item="detail" :type="'5'" @on-click-footer="next"></panel>
+    <panel :header="'商品列表'"  :list="list"  :type="'5'" @on-click-footer="next"></panel>
   </div>
 </template>
 
@@ -22,43 +22,35 @@ export default {
   },
   created() {
     this.callTitle("咖啡店");
+    this.init();
   },
   methods: {
+    init() {
+      const url =
+        "http://103.45.102.47:8888/api/services/app/mobile/GetProducts";
+      this.$http.post(url, {}).then(r => {
+        if (r.data && r.data.result) {
+          r.data.result.forEach(element => {
+            this.list.push({
+              src: element.imageUrl,
+              fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
+              title: element.productName,
+              desc: element.description,
+              url: "/detail/" + element.id
+            });
+          });
+        }
+      });
+    },
     next() {
       this.showBox("xia", "下一页");
-    },
-    detail(item) {
-      this.showBox("详情", item.title);
     }
   },
 
   data() {
     return {
       type: "1",
-      list: [
-        {
-          src: "../assets/icons/a.png",
-          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
-          title: "猫屎咖啡",
-          desc: "由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。",
-          url: "/detail/1"
-        },
-        {
-          src: "../assets/icons/b.png",
-          title: "牛屎咖啡",
-          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
-          desc: "由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。",
-          url: {
-            path: "/detail/2",
-            replace: false
-          },
-          meta: {
-            source: "来源信息",
-            date: "时间",
-            other: "其他信息"
-          }
-        }
-      ],
+      list: [],
       footer: {
         title: "显示更多"
       }

@@ -27,8 +27,8 @@ export default {
   data() {
     return {
       menus: {
-        menu1: "a",
-        menu2: "b"
+        menu1: "分享到朋友圈",
+        menu2: "分享给微信好友"
       },
       showMenus: false
     };

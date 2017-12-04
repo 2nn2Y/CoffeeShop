@@ -54,7 +54,9 @@ export default {
               sessionStorage.setItem("openid", response.data.openid);
               sessionStorage.setItem("nickname", response.data.nickname);
               sessionStorage.setItem("headimgurl", response.data.headimgurl);
-              window.location.href = "http://coffee.leftins.com/#/coffee";
+              const beforeUrl = sessionStorage.getItem("beforeUrl");
+              //  window.location.href = "http://coffee.leftins.com/#/coffee";
+              window.location.href = beforeUrl;
             }
           } else {
             if (sessionStorage.getItem("userId")) {
