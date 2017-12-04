@@ -67,14 +67,14 @@ export default {
           title: "开始时间",
           key: "date",
           render: (h, params) => {
-            return this.$fmtTime(params.row.start);
+            return params.row.start ? this.$fmtTime(params.row.start) : "";
           }
         },
         {
           title: "截止时间",
           key: "date",
           render: (h, params) => {
-            return this.$fmtTime(params.row.end);
+            return params.row.end ? this.$fmtTime(params.row.end) : "";
           }
         }
       ],

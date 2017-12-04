@@ -61,7 +61,9 @@ export default {
           title: "解决时间",
           key: "solveDate",
           render: (h, params) => {
-            return this.$fmtTime(params.row.solveDate);
+            return params.row.solveDate
+              ? this.$fmtTime(params.row.solveDate)
+              : "";
           }
         },
         {
