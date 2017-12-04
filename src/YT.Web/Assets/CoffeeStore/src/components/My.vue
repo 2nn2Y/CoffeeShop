@@ -8,8 +8,8 @@
     </blur>
     <group>
       <cell :title="title" link="/balance" value="充值" is-link></cell>
-     
       <cell title="我的卡券" link="/mycard" value="" is-link></cell>
+      <cell title="我的订单" link="/order" value="" is-link></cell>
     </group>
   </div>
 </template>
@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     title() {
-      return `余额(${this.balance})`;
+      return `咖啡券(${this.balance})`;
     }
   },
   methods: {

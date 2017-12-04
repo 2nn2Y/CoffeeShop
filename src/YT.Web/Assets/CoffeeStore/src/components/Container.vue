@@ -1,12 +1,12 @@
-<template>  
-  <div style="height:100%;">  
-     <view-box ref="viewBox">
-    <app-header></app-header>  
-    <router-view></router-view>
-    <app-footer></app-footer>  
+<template>
+  <div style="height:100%;">
+    <view-box ref="viewBox">
+      <app-header></app-header>
+      <router-view></router-view>
+      <!-- <app-footer></app-footer> -->
     </view-box>
-  </div>  
-</template>  
+  </div>
+</template>
 
 <script>
 import { Tab, TabItem, ViewBox } from "vux";

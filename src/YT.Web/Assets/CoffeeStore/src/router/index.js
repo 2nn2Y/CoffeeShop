@@ -12,14 +12,8 @@ export default new Router({
         {
             path: "/",
             name: "container",
-            redirect: "/coffee",
             component: r => require(["@/components/Container"], r),
             children: [{
-                    path: "/coffee",
-                    name: "coffee",
-                    component: r => require(["@/components/Coffee"], r)
-                },
-                {
                     path: "/balance",
                     name: "balance",
                     component: r => require(["@/components/Balance"], r)
@@ -39,7 +33,6 @@ export default new Router({
                     name: "order",
                     component: r => require(["@/components/Order"], r)
                 },
-
                 {
                     path: "/my",
                     name: "my",

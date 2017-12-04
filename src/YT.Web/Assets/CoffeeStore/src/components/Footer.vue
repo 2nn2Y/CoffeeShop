@@ -2,7 +2,7 @@
   <tabbar  style="position: fixed">  
     <tabbar-item  link="/coffee">  
       <img slot="icon" selected  src="../assets/icons/a.png">  
-      <span slot="label">咖啡房</span>  
+      <span slot="label">扫一扫</span>  
     </tabbar-item>  
       <tabbar-item  link="/order">  
       <img slot="icon"   src="../assets/icons/a.png">  

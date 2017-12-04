@@ -5,20 +5,6 @@
 </template>
 <script >
 export default {
-  activated() {
-    const userId = sessionStorage.getItem("openid");
-    if (userId) {
-      this.$router.push({ path: "/coffee" });
-    } else {
-      if (window.location.href.indexOf("code") >= 0) {
-        this.login();
-      } else {
-        const url = encodeURI("http://coffee.leftins.com");
-        // 跳转到微信授权页面
-        window.location.href = `http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
-      }
-    }
-  },
   created() {
     if (window.location.href.indexOf("code") >= 0) {
       this.login();
@@ -29,7 +15,7 @@ export default {
         // 跳转到微信授权页面
         window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
       } else {
-        this.$router.push({ path: "/coffee" });
+        this.$router.push({ path: "/my" });
       }
     }
   },
@@ -55,8 +41,12 @@ export default {
               sessionStorage.setItem("nickname", response.data.nickname);
               sessionStorage.setItem("headimgurl", response.data.headimgurl);
               const beforeUrl = sessionStorage.getItem("beforeUrl");
-              //  window.location.href = "http://coffee.leftins.com/#/coffee";
-              window.location.href = beforeUrl;
+              if (beforeUrl) {
+                window.location.href =
+                  "http://coffee.leftins.com/#" + beforeUrl;
+              } else {
+                window.location.href = "http://coffee.leftins.com/#/my";
+              }
             }
           } else {
             if (sessionStorage.getItem("userId")) {
