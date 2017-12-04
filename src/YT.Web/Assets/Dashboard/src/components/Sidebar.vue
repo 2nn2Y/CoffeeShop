@@ -43,7 +43,6 @@ export default {
             { content: "产品销量", url: "/productsale" },
             { content: "设备销量", url: "/devicesale" },
             { content: "区域销量", url: "/areasale" },
-            { content: "购买方式", url: "/paytype" },
             { content: "支付渠道", url: "/paytype" },
             { content: "时段销量", url: "/timearea" }
           ]
