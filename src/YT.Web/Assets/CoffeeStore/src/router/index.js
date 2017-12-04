@@ -25,6 +25,11 @@ export default new Router({
                     component: r => require(["@/components/Balance"], r)
                 },
                 {
+                    path: "/detail/:id",
+                    name: "detail",
+                    component: r => require(["@/components/Detail"], r)
+                },
+                {
                     path: "/mycard",
                     name: "mycard",
                     component: r => require(["@/components/MyCard"], r)
@@ -34,6 +39,7 @@ export default new Router({
                     name: "order",
                     component: r => require(["@/components/Order"], r)
                 },
+
                 {
                     path: "/my",
                     name: "my",

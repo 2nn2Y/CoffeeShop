@@ -61,19 +61,19 @@ router.afterEach(() => {
     store.commit("updateLoading", false)
 })
 router.beforeEach((to, from, next) => {
-        store.commit("updateLoading", true)
-        const userId = sessionStorage.getItem("openid");
-        if (window.location.href.indexOf("code") >= 0 && !userId) {
-            Vue.prototype.toRight();
-        }
-        if (to.path === "/author" && userId) {
-            next("/coffee");
-            return false;
-        }
-        if (!userId && to.path !== "/author") {
-            next("/author");
-            return false;
-        }
+        // store.commit("updateLoading", true)
+        // const userId = sessionStorage.getItem("openid");
+        // if (window.location.href.indexOf("code") >= 0 && !userId) {
+        //     Vue.prototype.toRight();
+        // }
+        // if (to.path === "/author" && userId) {
+        //     next("/coffee");
+        //     return false;
+        // }
+        // if (!userId && to.path !== "/author") {
+        //     next("/author");
+        //     return false;
+        // }
         next();
     })
     /* eslint-disable no-new */
