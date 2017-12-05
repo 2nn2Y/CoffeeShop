@@ -23,11 +23,6 @@ namespace YT.WebApi.Controllers
     /// </summary>
     public class WechatController : AbpApiController
     {
-
-        private const string AppId = "wx9065b59568dcf5a8";
-        private const string Secret = "1601ed25787773835390a2a87dcdee9c";
- 
-        
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<StoreUser> _useRepository;
         /// <summary>
@@ -173,7 +168,7 @@ namespace YT.WebApi.Controllers
         private static async Task<JObject> GetUserToken(string code)
         {
             var url =
-              $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={AppId}&secret={Secret}&code={code}&grant_type=authorization_code";
+              $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
             var result = await HttpHandler.GetAsync<JObject>(url);
             return result;
         }
@@ -184,7 +179,7 @@ namespace YT.WebApi.Controllers
         private static async Task<string> GetAccessToken()
         {
             var url =
-              $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={Secret}";
+              $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}";
             var result = await HttpHandler.GetAsync<dynamic>(url);
             return result.access_token;
         }
@@ -260,7 +255,7 @@ namespace YT.WebApi.Controllers
             string sign = GetSignature(result, noncestr, timestamp, url);
             return new AjaxResponse(new
             {
-                appId = AppId,
+                appId = WxPayConfig.Appid,
                 timestamp = timestamp,
                 nonceStr = noncestr,
                 signature = sign.ToLower()

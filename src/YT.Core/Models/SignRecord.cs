@@ -239,10 +239,6 @@ namespace YT.Models
         /// </summary>
         public int ProductId { get; set; }
         /// <summary>
-        /// 提货码
-        /// </summary>
-        public string Code { get; set; }
-        /// <summary>
         /// 快捷码
         /// </summary>
         public string FastCode { get; set; }

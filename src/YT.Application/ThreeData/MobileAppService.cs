@@ -182,21 +182,49 @@ namespace YT.ThreeData
             var p = List.First(c => c.Id == input.ProductId);
             var order = new StoreOrder()
             {
-                Code = GenderCode(),
                 FastCode = input.FastCode,
                 OpenId = input.OpenId,
                 PayType = PayType.LinePay,
                 WechatOrder = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
-                Price = input.Price,
-                ProductId = input.ProductId
+                Price = p.Price,
+                ProductId = p.Id
             };
             await _storeRepository.InsertAsync(order);
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
-                TotalFee = input.Price
+                TotalFee = p.Price
+            };
+            jsApiPay.GetUnifiedOrderResult(order.WechatOrder, p.ProductName, p.Description);
+            var param = jsApiPay.GetJsApiParameters();
+            return param;
+        }
+
+        /// <summary>
+        /// 卡券支付
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<string> CardPay(InsertOrderInput input)
+        {
+            var p = List.First(c => c.Id == 9990);
+            var order = new StoreOrder()
+            {
+                OpenId = input.OpenId,
+                PayType = PayType.LinePay,
+                WechatOrder = Guid.NewGuid().ToString("N"),
+                OrderState = null,
+                PayState = null,
+                Price = p.Price,
+                ProductId = p.Id
+            };
+            await _storeRepository.InsertAsync(order);
+            JsApiPay jsApiPay = new JsApiPay
+            {
+                Openid = input.OpenId,
+                TotalFee = p.Price
             };
             jsApiPay.GetUnifiedOrderResult(order.WechatOrder, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();
@@ -555,5 +583,12 @@ namespace YT.ThreeData
         /// </summary>
         /// <returns></returns>
         Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input);
+
+        /// <summary>
+        /// 卡券支付
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<string> CardPay(InsertOrderInput input);
     }
 }
