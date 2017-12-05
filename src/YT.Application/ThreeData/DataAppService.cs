@@ -516,7 +516,7 @@ namespace YT.ThreeData
                            IsSign = r != null,
                            Start = input.Start,
                            End = input.End,
-                           CreationTime = r != null ? r.CreationTime : DateTime.Now,
+                           CreationTime =r?.CreationTime,
                            Dimension = r != null ? r.Dimension : 0,
                            Longitude = r != null ? r.Longitude : 0,
                            SignLocation = r != null ? r.Point.PointName : "",
@@ -536,32 +536,28 @@ namespace YT.ThreeData
         public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetOrderInput input)
         {
             var query = _warnRepository.GetAll();
-          
-
-            var tempa = from c in query
-                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                select new {c, pointName= d.PointName};
-            var warns = await tempa.OrderByDescending(c => c.c.WarnTime)
-                .Skip(input.SkipCount).Take(input.MaxResultCount)
-             .ToListAsync();
-            var count =  tempa.Count();
+            var count = await query.CountAsync();
+            var warns = await query.OrderByDescending(c => c.WarnTime).Skip(input.SkipCount).Take(input.MaxResultCount)
+                .ToListAsync();
 
             var temp = from c in warns
-                       join e in await GetUserPointsFromCache() on c.c.DeviceNum equals e.PointId
+                     join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
+                     into ff from fff in ff.DefaultIfEmpty()
+                     join e in await GetUserPointsFromCache() on c.DeviceNum equals e.PointId
                        into h
                        from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
                        {
-                           Id = c.c.Id,
-                           DeviceNum = c.c.DeviceNum,
-                           IsSolve = c.c.State,
-                           PointName =c?.pointName,
-                           SolveDate = c.c.DealTime,
-                           SolveTime = c.c.DealTime.HasValue ? (c.c.DealTime.Value - c.c.WarnTime).Minutes : 0,
-                           State = c.c.WarnNum,
-                           UserName = tt?.UserName,
-                           WarnDate = c.c.WarnTime,
-                           WarnType = c.c.WarnNum,
+                           Id = c.Id,
+                           DeviceNum = c.DeviceNum,
+                           IsSolve = c.State,
+                           PointName = fff!=null?fff.PointName:"",
+                           SolveDate = c.DealTime,
+                           SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
+                           State = c.WarnNum,
+                           WarnDate = c.WarnTime,
+                           WarnType = c.WarnNum,
+                           UserName=tt!=null?tt.UserName:""
                        };
             return new PagedResultDto<WarnDetailDto>(count, temp.ToList());
         }

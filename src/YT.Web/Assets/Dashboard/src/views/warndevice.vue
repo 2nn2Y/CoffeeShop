@@ -58,20 +58,6 @@ export default {
         {
           title: "运维人员",
           key: "userName"
-        },
-        {
-          title: "开始时间",
-          key: "start",
-          render: (h, params) => {
-            return params.row.start ? this.$fmtTime(params.row.start) : "";
-          }
-        },
-        {
-          title: "截止时间",
-          key: "end",
-          render: (h, params) => {
-            return params.row.end ? this.$fmtTime(params.row.end) : "";
-          }
         }
       ],
       searchApi: getWarnByDevice,

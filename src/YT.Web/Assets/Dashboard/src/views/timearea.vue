@@ -47,21 +47,6 @@ export default {
           render: (h, params) => {
             return params.row.price / 100;
           }
-        },
-
-        {
-          title: "开始时间",
-          key: "date",
-          render: (h, params) => {
-            return params.row.start ? this.$fmtTime(params.row.start) : "";
-          }
-        },
-        {
-          title: "截止时间",
-          key: "date",
-          render: (h, params) => {
-            return params.row.end ? this.$fmtTime(params.row.end) : "";
-          }
         }
       ],
       searchApi: getTimeAreaSale,
