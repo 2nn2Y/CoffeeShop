@@ -16,6 +16,9 @@ export default {
     Group,
     Radio
   },
+  created() {
+    this.init();
+  },
   methods: {
     next() {
       this.current++;
@@ -29,13 +32,14 @@ export default {
         maxResultCount: 10
       };
       this.$http.post(url, params).then(r => {
-        if (r.data && r.data.result) {
-          r.data.result.forEach(element => {
+        if (r.data && r.data.result && r.data.result.items) {
+          r.data.result.items.forEach(element => {
+            const code = element.fastCode.split("");
             this.list.push({
               src: element.imageUrl,
               fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
               title: element.productName,
-              desc: element.description
+              desc: `浓度${code[0]} 奶度${code[1]} 糖度${code[2]}`
             });
           });
         }
@@ -46,24 +50,7 @@ export default {
     return {
       type: "1",
       current: 1,
-      list: [
-        {
-          src: "../assets/icons/a.png",
-          fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
-          title: "猫屎咖啡",
-          desc: "口味一",
-          url: "/order"
-        },
-        {
-          src: "../assets/icons/b.png",
-          title: "牛屎咖啡",
-          desc: "口味二",
-          url: {
-            path: "/order",
-            replace: false
-          }
-        }
-      ],
+      list: [],
       footer: {
         title: "显示更多"
       }
