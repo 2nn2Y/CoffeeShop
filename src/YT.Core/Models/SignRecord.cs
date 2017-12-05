@@ -216,6 +216,7 @@ namespace YT.Models
         /// 支付方式
         /// </summary>
         public PayType PayType { get; set; }
+        public OrderType OrderType { get; set; }
         /// <summary>
         /// 支付状态
         /// </summary>
@@ -254,12 +255,35 @@ namespace YT.Models
         /// </summary>
         public string OpenId { get; set; }
         /// <summary>
-        /// 昵称
-        /// </summary>
-        public string NickName { get; set; }
-        /// <summary>
         /// 余额
         /// </summary>
         public int Balance { get; set; }
+    }
+    /// <summary>
+    /// 用戶卡券
+    /// </summary>
+    [Table("UserCard")]
+    public class UserCard : CreationAuditedEntity
+    {
+        /// <summary>
+        /// openid
+        /// </summary>
+        public string OpenId { get; set; }
+        /// <summary>
+        /// 券名
+        /// </summary>
+        public string ProductName { get; set; }
+        /// <summary>
+        /// 抵扣金额
+        /// </summary>
+        public  int Cost { get; set; }
+        /// <summary>
+        /// 唯一編號
+        /// </summary>
+        public  Guid Key { get; set; }
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public bool State { get; set; }
     }
 }

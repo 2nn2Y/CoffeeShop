@@ -48,7 +48,7 @@ export default {
         "http://103.45.102.47:8888/api/Wechat/GetUserBalance?openId=" +
         sessionStorage.getItem("openid");
       this.$http.get(url).then(r => {
-        if (r.data && r.data.has_share_card) {
+        if (r.data) {
           this.balance = r.data.balance;
         }
       });

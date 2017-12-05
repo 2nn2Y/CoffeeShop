@@ -70,6 +70,10 @@ namespace YT.EntityFramework
         /// 用户
         /// </summary>
         public virtual  IDbSet<StoreUser> StoreUsers { get; set; }
+        /// <summary>
+        /// 用户卡券
+        /// </summary>
+        public virtual  IDbSet<UserCard> UserCards { get; set; }
         
         public MilkDbContext()
             : base("Default")

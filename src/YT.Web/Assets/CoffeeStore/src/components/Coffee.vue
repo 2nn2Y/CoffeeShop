@@ -9,8 +9,6 @@
   </div>
 </template>
 
-
-
 <script>
 import { Panel, Group, Radio, Card } from "vux";
 export default {

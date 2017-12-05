@@ -25,23 +25,35 @@ namespace YT.ThreeData
 
     public class MobileAppService : ApplicationService, IMobileAppService
     {
+        private static string _defaultImage = @"http://103.45.102.47:8888\Files\Images\a.jpg";
+
+        private readonly IRepository<UserCard> _cardRepository;
         /// <summary>
         /// 产品列集合
         /// </summary>
         private static List<CoffeeProduct> List => new List<CoffeeProduct>()
         {
-            new CoffeeProduct(1,"猫屎咖啡","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",4730),
-              new CoffeeProduct(2,"墨菲","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",1730),
-               new CoffeeProduct(3,"拿铁A","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",2730),
-                new CoffeeProduct(4,"猫屎咖啡B","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",4730),
-              new CoffeeProduct(5,"墨菲C","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",1730),
-               new CoffeeProduct(6,"拿铁D","上流人士必备咖啡,搭配香菜大蒜是不可多得的美味",
-                @"http://103.45.102.47:8888\Files\Images\a.jpg",2730)
+            new CoffeeProduct(102,"热卡布奇诺","",_defaultImage, 1110),
+            new CoffeeProduct(933,"冰卡布奇诺","",_defaultImage, 1110),
+            new CoffeeProduct(246,"热拿铁","",_defaultImage, 1110),
+            new CoffeeProduct(934,"冰拿铁","",_defaultImage, 1110),
+            new CoffeeProduct(103,"热意式浓缩咖啡","",_defaultImage, 1110),
+            new CoffeeProduct(930,"冰美式咖啡","",_defaultImage, 1110),
+            new CoffeeProduct(105,"热美式咖啡","",_defaultImage, 1110),
+            new CoffeeProduct(283,"热摩卡","",_defaultImage, 1110),
+            new CoffeeProduct(938,"冰日式抹茶拿铁","",_defaultImage, 1110),
+            new CoffeeProduct(245,"热日式抹茶拿铁","",_defaultImage, 1110),
+            new CoffeeProduct(701,"热港式丝袜奶茶","",_defaultImage, 1110),
+            new CoffeeProduct(802,"热可可牛奶","",_defaultImage, 1110),
+            new CoffeeProduct(240,"热玛琪雅朵","",_defaultImage, 1110),
+            new CoffeeProduct(104,"热港式鸳鸯","",_defaultImage, 1110),
+            new CoffeeProduct(810,"热香醇牛奶","",_defaultImage, 1110),
+            new CoffeeProduct(800,"热香浓巧克力","",_defaultImage, 1110),
+            new CoffeeProduct(204,"热长咖啡","",_defaultImage, 1110),
+            new CoffeeProduct(700,"热锡兰红茶","",_defaultImage, 1110),
+            new CoffeeProduct(9990,"7.88元代金券","",_defaultImage, 300),
+            new CoffeeProduct(9991,"17.88元代金券","",_defaultImage, 700),
+            new CoffeeProduct(9992,"50元代金券","",_defaultImage, 3000),
         };
         private readonly IRepository<Warn> _warnRepository;
         private readonly IRepository<StoreUser> _userRepository;
@@ -62,8 +74,9 @@ namespace YT.ThreeData
         /// <param name="userpointRepository"></param>
         /// <param name="storeRepository"></param>
         /// <param name="userRepository"></param>
+        /// <param name="cardRepository"></param>
         public MobileAppService(IRepository<Warn> warnRepository,
-            ICacheManager cacheManager, IRepository<Product> productRepository, IRepository<Point> pointRepository, IRepository<SignRecord> signRepository, IRepository<UserPoint> userpointRepository, IRepository<StoreOrder> storeRepository, IRepository<StoreUser> userRepository)
+            ICacheManager cacheManager, IRepository<Product> productRepository, IRepository<Point> pointRepository, IRepository<SignRecord> signRepository, IRepository<UserPoint> userpointRepository, IRepository<StoreOrder> storeRepository, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository)
         {
             _warnRepository = warnRepository;
             _cacheManager = cacheManager;
@@ -73,6 +86,7 @@ namespace YT.ThreeData
             _userpointRepository = userpointRepository;
             _storeRepository = storeRepository;
             _userRepository = userRepository;
+            _cardRepository = cardRepository;
         }
         #region H5商城
         /// <summary>
@@ -81,15 +95,41 @@ namespace YT.ThreeData
         /// <returns></returns>
         public List<CoffeeProduct> GetProducts()
         {
-            return List;
+            return List.Where(c => c.Id <= 8999).ToList();
         }
         /// <summary>
-        /// 获取产品列表
+        /// 获取卡圈列表
         /// </summary>
         /// <returns></returns>
-        public CoffeeProduct GetProduct(EntityDto input)
+        public List<CoffeeProduct> GetCards()
         {
-            return List.First(c => c.Id == input.Id);
+            return List.Where(c => c.Id > 8999).ToList();
+        }
+        /// <summary>
+        /// 获取我的列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<KeyValuePair<Guid,string>>> GetUserCards(EntityDto<string> input)
+        {
+            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id));
+            return cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
+        }
+        /// <summary>
+        /// 获取产品详情
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ProductAndCardDto> GetProduct(FilterDto input)
+        {
+            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.UserId));
+            var model = new ProductAndCardDto()
+            {
+                Product = List.First(c => c.Id == input.ProductId),
+            };
+            if (cards.Any())
+            {
+                model.Cards = cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
+            }
+            return model;
         }
         /// <summary>
         /// 余额支付
@@ -103,17 +143,33 @@ namespace YT.ThreeData
             if (user.Balance < input.Price) throw new UserFriendlyException("用户余额不足");
             var order = new StoreOrder()
             {
-                Code = GenderCode(),
+                OrderNum = input.Order,
                 FastCode = input.FastCode,
+                DeviceNum = input.Device,
                 OpenId = input.OpenId,
                 OrderState = null,
                 PayType = PayType.BalancePay,
+                OrderType = input.OrderType,
                 PayState = null,
                 Price = input.Price,
                 ProductId = input.ProductId
             };
             await _storeRepository.InsertAsync(order);
-            user.Balance -= input.Price;
+            //使用优惠券
+            if (input.Key.HasValue)
+            {
+                var card = await _cardRepository.FirstOrDefaultAsync(c => c.Key == input.Key.Value);
+                if (card != null)
+                {
+                    user.Balance -= input.Price;
+                    user.Balance += card.Cost;
+                    card.State = true;
+                }
+            }
+            else
+            {
+                user.Balance -= input.Price;
+            }
             order.PayState = true;
         }
         /// <summary>
@@ -416,12 +472,13 @@ namespace YT.ThreeData
     /// </summary>
     public interface IMobileAppService : IApplicationService
     {
+
+        #region 报警相关
         /// <summary>
         /// 签到
         /// </summary>
         /// <returns></returns>
         Task Sign(SignDto input);
-
         /// <summary>
         /// 获取报警信息
         /// </summary>
@@ -450,19 +507,19 @@ namespace YT.ThreeData
         /// <returns></returns>
         Task<List<SignPointDto>> GetSignList(FilterDto input);
 
+        #endregion
+
         /// <summary>
         /// 获取产品列表
         /// </summary>
         /// <returns></returns>
         List<CoffeeProduct> GetProducts();
-
         /// <summary>
         /// 获取订单列表
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Task<PagedResultDto<StoreOrderDto>> GetOrders(GetOrderInput input);
-
         /// <summary>
         /// 提货
         /// </summary>
@@ -470,11 +527,10 @@ namespace YT.ThreeData
         Task PickOrder(PickOrderInput input);
 
         /// <summary>
-        /// 获取产品列表
+        /// 获取产品详情
         /// </summary>
         /// <returns></returns>
-        CoffeeProduct GetProduct(EntityDto input);
-
+        Task<ProductAndCardDto> GetProduct(FilterDto input);
         /// <summary>
         /// 余额支付
         /// </summary>
@@ -488,5 +544,16 @@ namespace YT.ThreeData
         /// <param name="input"></param>
         /// <returns></returns>
         Task<string> LinePay(InsertOrderInput input);
+        /// <summary>
+        /// 获取卡圈列表
+        /// </summary>
+        /// <returns></returns>
+        List<CoffeeProduct> GetCards();
+
+        /// <summary>
+        /// 获取我的列表
+        /// </summary>
+        /// <returns></returns>
+        Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input);
     }
 }

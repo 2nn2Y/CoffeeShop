@@ -17,6 +17,10 @@ namespace YT.ThreeData.Dtos
         /// 用户id
         /// </summary>
         public string UserId { get; set; }
+        /// <summary>
+        /// 产品id
+        /// </summary>
+        public int ProductId { get; set; }
     }
     /// <summary>
     /// 报警集合

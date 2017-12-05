@@ -1,12 +1,12 @@
 <template>
   <div>
     <div style="margin: 10px;overflow: hidden;" :key="item" v-for="item in list">
-      <masker style="border-radius: 2px;">
-        <div class="m-img" :style="{backgroundImage: 'url(' + item.img + ')'}"></div>
+      <masker  style="border-radius: 2px;">
+        <div class="m-img" style="background-image:url(https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg)"></div>
         <div slot="content" class="m-title">
-          {{item.title}}
+          {{item.value}}
           <br/>
-          <span class="m-time">有效期:{{item.time}}</span>
+          <span class="m-time">{{item.key}}</span>
         </div>
       </masker>
     </div>
@@ -21,31 +21,27 @@ export default {
     Masker
   },
   created() {
-    this.callTitle("我的卡券");
+    this.init();
   },
   data() {
     return {
-      list: [
-        {
-          title: "抵扣券",
-          time: "2017-03-10",
-          img:
-            "https://cdn.xiaotaojiang.com/uploads/82/1572ec37969ee263735262dc017975/_.jpg"
-        },
-        {
-          title: "满减券",
-          time: "2017-04-10",
-          img:
-            "https://cdn.xiaotaojiang.com/uploads/59/b22e0e62363a4a652f28630b3233b9/_.jpg"
-        },
-        {
-          title: "打折券",
-          time: "2017-05-10",
-          img:
-            "https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg"
-        }
-      ]
+      list: []
     };
+  },
+  methods: {
+    init() {
+      const url =
+        "http://103.45.102.47:8888/api/services/app/mobile/GetUsercards";
+      this.$http
+        .post(url, {
+          id: sessionStorage.getItem("openid")
+        })
+        .then(r => {
+          if (r.data && r.data.result) {
+            this.list = r.data.result;
+          }
+        });
+    }
   }
 };
 </script>

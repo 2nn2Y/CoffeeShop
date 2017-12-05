@@ -44,6 +44,21 @@ namespace YT
         PayCharge=3
     }
     /// <summary>
+    /// 支付方式
+    /// </summary>
+    public enum OrderType
+    {
+        /// <summary>
+        /// 余额支付
+        /// </summary>
+        A = 1,
+        /// <summary>
+        /// 在线支付
+        /// </summary>
+        B = 2
+    }
+    
+    /// <summary>
     /// 
     /// </summary>
     public static class AbpSessionExtensions

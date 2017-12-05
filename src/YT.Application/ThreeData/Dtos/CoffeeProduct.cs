@@ -66,17 +66,29 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string OpenId { get; set; }
         /// <summary>
+        /// 订单类型
+        /// </summary>
+        public  OrderType OrderType { get; set; }
+        /// <summary>
         /// 价格
         /// </summary>
         public int Price { get; set; }
+        /// <summary>
+        /// 是否使用优惠券
+        /// </summary>
+        public Guid? Key { get; set; }
         /// <summary>
         /// 商品id
         /// </summary>
         public int ProductId { get; set; }
         /// <summary>
-        /// 提货码
+        /// 订单号
         /// </summary>
-        public string Code { get; set; }
+        public string Order { get; set; }
+        /// <summary>
+        /// 设备编号
+        /// </summary>
+        public string Device { get; set; }
         /// <summary>
         /// 快捷码
         /// </summary>
@@ -121,5 +133,19 @@ namespace YT.ThreeData.Dtos
         /// 设备编号
         /// </summary>
         public string DeviceNum { get; set; }
+    }
+    /// <summary>
+    /// 产品和卡券dto
+    /// </summary>
+    public class ProductAndCardDto
+    {
+        /// <summary>
+        /// 产品信息
+        /// </summary>
+        public  CoffeeProduct Product { get; set; }
+        /// <summary>
+        /// 卡圈信息
+        /// </summary>
+        public List<KeyValuePair<Guid,string>> Cards { get; set; }
     }
 }
