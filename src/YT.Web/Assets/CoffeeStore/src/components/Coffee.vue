@@ -19,7 +19,6 @@ export default {
     Card
   },
   created() {
-    this.callTitle("咖啡店");
     this.init();
   },
   methods: {

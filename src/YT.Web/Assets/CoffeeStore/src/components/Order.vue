@@ -1,6 +1,6 @@
 <template>
   <div>
-    <panel :header="'我的订单'" 
+    <panel :header="'我的订单'"
     :footer="footer" :list="list" @on-click-item="detail" :type="'5'" @on-click-footer="next"></panel>
   </div>
 </template>
@@ -16,20 +16,36 @@ export default {
     Group,
     Radio
   },
-  created() {
-    this.callTitle("订单");
-  },
   methods: {
     next() {
-      this.showBox("xia", "下一页");
+      this.current++;
+      this.init();
     },
-    detail(item) {
-      this.showBox("详情", item.title);
+    init() {
+      const url = "http://103.45.102.47:8888/api/services/app/mobile/GetOrders";
+      const params = {
+        device: sessionStorage.getItem("openid"),
+        skipCount: (this.current - 1) * 10,
+        maxResultCount: 10
+      };
+      this.$http.post(url, params).then(r => {
+        if (r.data && r.data.result) {
+          r.data.result.forEach(element => {
+            this.list.push({
+              src: element.imageUrl,
+              fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
+              title: element.productName,
+              desc: element.description
+            });
+          });
+        }
+      });
     }
   },
   data() {
     return {
       type: "1",
+      current: 1,
       list: [
         {
           src: "../assets/icons/a.png",
