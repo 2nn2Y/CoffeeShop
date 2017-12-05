@@ -69,9 +69,9 @@
           m: 0,
           s: 0
         },
-        order:"",
-        type:null,
-        fastcode:"",
+        order: "",
+        type: null,
+        fastcode: "",
         selectCard: null,
         model: {},
         cards: [],
@@ -122,7 +122,5 @@
         console.log(1);
       }
     }
-
   };
-
 </script>

@@ -11,7 +11,7 @@ export default {
     } else {
       const userId = sessionStorage.getItem("openid");
       if (!userId) {
-        const url = encodeURI("http://coffee.leftins.com");
+        const url = encodeURI("http://card.youyinkeji.cn");
         // 跳转到微信授权页面
         window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
       } else {
@@ -43,14 +43,14 @@ export default {
               const beforeUrl = sessionStorage.getItem("beforeUrl");
               if (beforeUrl) {
                 window.location.href =
-                  "http://coffee.leftins.com/#" + beforeUrl;
+                  "http://card.youyinkeji.cn/#" + beforeUrl;
               } else {
-                window.location.href = "http://coffee.leftins.com/#/my";
+                window.location.href = "http://card.youyinkeji.cn/#/my";
               }
             }
           } else {
             if (sessionStorage.getItem("userId")) {
-              const ww = encodeURI("http://coffee.leftins.com");
+              const ww = encodeURI("http://card.youyinkeji.cn");
               // 跳转到微信授权页面
               window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
             }
