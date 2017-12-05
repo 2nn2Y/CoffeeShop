@@ -13,7 +13,7 @@ export default {
       if (!userId) {
         const url = encodeURI("http://card.youyinkeji.cn");
         // 跳转到微信授权页面
-        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
+        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9065b59568dcf5a8&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=666#wechat_redirect`;
       } else {
         this.$router.push({ path: "/my" });
       }
@@ -52,7 +52,7 @@ export default {
             if (sessionStorage.getItem("userId")) {
               const ww = encodeURI("http://card.youyinkeji.cn");
               // 跳转到微信授权页面
-              window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx734728844b17a945&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
+              window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9065b59568dcf5a8&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
             }
           }
         })

@@ -24,10 +24,9 @@ namespace YT.WebApi.Controllers
     public class WechatController : AbpApiController
     {
 
-        private const string AppId = "wx734728844b17a945";
-        private const string Secret = "56a6e5b18dd44b397d1c80383a39cd01";
-        private const string MchId = "1481424252";
-        private const string SaleKey = "1q2w3e4r5t6y7u8i9o0p1q2w3e4r5t6y";
+        private const string AppId = "wx9065b59568dcf5a8";
+        private const string Secret = "1601ed25787773835390a2a87dcdee9c";
+ 
         
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<StoreUser> _useRepository;

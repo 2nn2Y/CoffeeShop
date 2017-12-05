@@ -796,10 +796,10 @@ namespace YT
         * KEY：商户支付密钥，参考开户邮件设置（必须配置）
         * APPSECRET：公众帐号secert（仅JSAPI支付的时候需要配置）
         */
-        public const string Appid = "wx2428e34e0e7dc6ef";
+        public const string Appid = "wx9065b59568dcf5a8";
         public const string Mchid = "1233410002";
         public const string Key = "e10adc3849ba56abbe56e056f20f883e";
-        public const string Appsecret = "51c56b886b5be869567dd389b3e5d1d6";
+        public const string Appsecret = "1601ed25787773835390a2a87dcdee9c";
         //=======【支付结果通知url】===================================== 
         /* 支付结果通知回调url，用于商户接收支付结果
         */
