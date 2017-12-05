@@ -531,7 +531,6 @@ namespace YT
         */
         public string GetJsApiParameters()
         {
-
             WxPayData jsApiParam = new WxPayData();
             jsApiParam.SetValue("appId", UnifiedOrderResult.GetValue("appid"));
             jsApiParam.SetValue("timeStamp", WxPayApi.GenerateTimeStamp());
@@ -797,13 +796,13 @@ namespace YT
         * APPSECRET：公众帐号secert（仅JSAPI支付的时候需要配置）
         */
         public const string Appid = "wx9065b59568dcf5a8";
-        public const string Mchid = "1233410002";
-        public const string Key = "e10adc3849ba56abbe56e056f20f883e";
+        public const string Mchid = "1381266602";
+        public const string Key = "shuo1bu2shuo1bu2shuo1bu2shuo1bu2";
         public const string Appsecret = "1601ed25787773835390a2a87dcdee9c";
         //=======【支付结果通知url】===================================== 
         /* 支付结果通知回调url，用于商户接收支付结果
         */
-        public const string NotifyUrl = "http://paysdk.weixin.qq.com/example/ResultNotifyPage.aspx";
+        public const string NotifyUrl = "http://103.45.102.47:8888/api/wechat/notify";
 
         //=======【商户系统后台机器IP】===================================== 
         /* 此参数可手动配置也可在程序中自动获取

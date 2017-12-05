@@ -72,6 +72,7 @@ export default {
       },
       order: "",
       type: null,
+      device: "",
       selectCard: null,
       model: {},
       cards: [],
@@ -86,6 +87,7 @@ export default {
       this.call.m = fastcode[1];
       this.call.s = fastcode[2];
       this.order = params[3];
+      this.device = params[1];
       this.type = params[4];
       // pid-did-fastcode-order-type
       // 102-10152-222-2017120509563310152abcde-1
@@ -122,7 +124,8 @@ export default {
         order: this.order,
         fastCode: this.fastcode,
         orderType: this.type,
-        key: this.selectCard
+        key: this.selectCard,
+        device: this.device
       };
       this.$http
         .post(url, params)
@@ -137,7 +140,39 @@ export default {
         });
     },
     linepay() {
-      console.log(1);
+      const url = "http://103.45.102.47:8888/api/services/app/mobile/LinePay";
+      const params = {
+        openId: this.openId,
+        price: this.model.price,
+        productId: this.model.id,
+        order: this.order,
+        fastCode: this.fastcode,
+        orderType: this.type,
+        key: this.selectCard,
+        device: this.device
+      };
+      this.$http
+        .post(url, params)
+        .then(r => {
+          if (r.data && r.data.success) {
+            const params = JSON.parse(r.data.result);
+            this.$wechat.chooseWXPay({
+              timestamp: params.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              nonceStr: params.nonceStr, // 支付签名随机串，不长于 32 位
+              package: params.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+              signType: params.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: params.paySign, // 支付签名
+              success: function(res) {
+                console.log(res);
+                this.$router.push({ path: "/my" });
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.showBox("错误", error.error.message);
+        });
     }
   }
 };

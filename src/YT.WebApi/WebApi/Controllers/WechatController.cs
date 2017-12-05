@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Caching;
@@ -45,6 +46,27 @@ namespace YT.WebApi.Controllers
             var result = await _cacheManager.GetCache(CoffeeCacheName.WeChatToken).GetAsync(CoffeeCacheName.WeChatToken,
                 async () => await GetAccessToken());
             return result;
+        }
+        /// <summary>
+        /// 微信支付回掉
+        /// </summary>
+        /// <returns></returns>
+        public IHttpActionResult Notify()
+        {
+            // 本文顶部说的四个参数，最好进行URL解码
+            var signature = HttpUtility.UrlDecode(HttpContext.Current.Request["msg_signature"] ?? string.Empty);
+            var timestamp = HttpUtility.UrlDecode(HttpContext.Current.Request["timestamp"] ?? string.Empty);
+            var nonce = HttpUtility.UrlDecode(HttpContext.Current.Request["nonce"] ?? string.Empty);
+            var echo = HttpUtility.UrlDecode(HttpContext.Current.Request["echostr"] ?? string.Empty);
+
+            // 验证结束后的返回值，一定不要带引号！！！
+            var echoResult = string.Empty;
+
+            // 将验证后的返回值写入响应流，这样可以去掉引号！！！
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.Write(echoResult);
+            HttpContext.Current.Response.End();
+            return null;
         }
         /// <summary>
         /// 获取卡圈ticket
