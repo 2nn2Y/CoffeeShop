@@ -25,21 +25,7 @@
 </template>
 
 <script>
-import {
-  Panel,
-  Group,
-  Radio,
-  XNumber,
-  Divider,
-  Selector,
-  Cell,
-  Grid,
-  GridItem,
-  XButton,
-  Box
-} from "vux";
-export default {
-  components: {
+  import {
     Panel,
     Group,
     Radio,
@@ -51,65 +37,90 @@ export default {
     GridItem,
     XButton,
     Box
-  },
-  created() {
-    this.callTitle("咖啡店");
-    this.init();
-    this.getCard();
-  },
-  computed: {
-    fastcode() {
-      return this.call.o + "" + this.call.m + "" + this.call.s;
-    }
-  },
-  methods: {
-    init() {
-      const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/GetProduct";
-      this.$http.post(url, { id: this.$route.params.id }).then(r => {
-        if (r.data && r.data.result) {
-          const element = r.data.result;
-          this.model = element;
-          this.list.push({
-            src: element.imageUrl,
-            fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
-            title: element.productName,
-            desc: element.description,
-            url: "/detail/" + element.id
-          });
-        }
-      });
+  } from "vux";
+  export default {
+    components: {
+      Panel,
+      Group,
+      Radio,
+      XNumber,
+      Divider,
+      Selector,
+      Cell,
+      Grid,
+      GridItem,
+      XButton,
+      Box
     },
-    balancepay() {
-      console.log(1);
+    created() {
+      this.callTitle("咖啡店");
+      this.init();
+      this.getCard();
     },
-    getCard() {
-      const url =
-        "http://103.45.102.47:8888/api/Wechat/GetUserCards?openId=" +
-        sessionStorage.getItem("openid");
-      this.$http.get(url).then(r => {
-        if (r.data && r.data.has_share_card) {
-          this.cards = r.data.card_list;
-        }
-      });
+    computed: {
+      fastcode() {
+        return this.call.o + "" + this.call.m + "" + this.call.s;
+      }
     },
-    linepay() {
-      console.log(1);
-    }
-  },
-
-  data() {
-    return {
-      call: {
-        o: 0,
-        m: 0,
-        s: 0
+    data() {
+      return {
+        call: {
+          o: 0,
+          m: 0,
+          s: 0
+        },
+        selectCard: null,
+        model: {},
+        cards: [],
+        list: []
+      };
+    },
+    methods: {
+      init() {
+        debugger;
+        const params = this.$route.params.id.split("-");
+        const fastcode=params[2].split("");
+        this.call.o=fastcode[0];
+        this.call.m=fastcode[1];
+        this.call.s=fastcode[2];
+        // pid-did-fastcode-order-type
+        // 102-10152-222-2017120509563310152abcde-1
+        const url =
+          "http://103.45.102.47:8888/api/services/app/mobile/GetProduct";
+        this.$http.post(url, {
+          id: this.$route.params.id
+        }).then(r => {
+          if (r.data && r.data.result) {
+            const element = r.data.result;
+            this.model = element;
+            this.list.push({
+              src: element.imageUrl,
+              fallbackSrc: "http://placeholder.qiniudn.com/60x60/3cc51f/ffffff",
+              title: element.productName,
+              desc: element.description,
+              url: "/detail/" + element.id
+            });
+          }
+        });
       },
-      selectCard: null,
-      model: {},
-      cards: [],
-      list: []
-    };
-  }
-};
+      balancepay() {
+        console.log(1);
+      },
+      getCard() {
+        const url =
+          "http://103.45.102.47:8888/api/Wechat/GetUserCards?openId=" +
+          sessionStorage.getItem("openid");
+        this.$http.get(url).then(r => {
+          if (r.data && r.data.has_share_card) {
+            this.cards = r.data.card_list;
+          }
+        });
+      },
+      linepay() {
+        console.log(1);
+      }
+    }
+
+  };
+
 </script>
