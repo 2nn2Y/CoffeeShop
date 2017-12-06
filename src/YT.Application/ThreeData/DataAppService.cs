@@ -551,11 +551,14 @@ namespace YT.ThreeData
         {
             var query = _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type));
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
+                .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value);
 
+            var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
+                c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                     join e in await GetUserPointsFromCache() on c.DeviceNum equals e.PointId
+                     join e in users on c.DeviceNum equals e.PointId
                        into h
                        from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
@@ -574,6 +577,8 @@ namespace YT.ThreeData
                            UserName= tt!=null?tt.UserName:""
                        };
             var count = temp.Count();
+            temp = temp.WhereIf(input.Left.HasValue, c => c.SolveTime >= input.Left.Value)
+                .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value);
             var result = temp.OrderBy(c => c.State).ThenByDescending(c => c.SolveTime)
                 .ThenByDescending(c=>c.UnSolveTime).Skip(input.SkipCount)
                 .Take(input.MaxResultCount).ToList();
