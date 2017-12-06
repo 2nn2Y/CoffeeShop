@@ -5,22 +5,26 @@
         <template slot="search">
           <Form ref="params" :model="params" inline :label-width="60">
             <FormItem label="设备编号">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+              <Input v-model="params.device" style="width: 140px" placeholder="设备编号"></Input>
             </FormItem>
-              <FormItem label="故障类型">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="故障类型">
+              <Input v-model="params.type" style="width: 140px" placeholder="故障类型"></Input>
             </FormItem>
-              <FormItem label="是否解决">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="是否解决">
+              <Select v-model="params.isDeal" style="width:140px">
+                <Option value="">请选择</Option>
+                <Option value="true">是</Option>
+                <Option value="false">否</Option>
+              </Select>
             </FormItem>
-              <FormItem label="运维人员">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="运维人员">
+              <Input v-model="params.user" style="width: 140px" placeholder="运维人员"></Input>
             </FormItem>
-              <FormItem label="开始时长">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="开始时长">
+                  <InputNumber  v-model="params.left"></InputNumber>
             </FormItem>
-              <FormItem label="截至时长">
-              <Input v-model="params.product" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="截至时长">
+               <InputNumber  v-model="params.right"></InputNumber>
             </FormItem>
             <FormItem label="开始时间">
               <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
@@ -111,7 +115,11 @@ export default {
       format: this.formatter,
       params: {
         device: "",
-        product: "",
+        isDeal: "",
+        left: null,
+        right: null,
+        type: "",
+        user: "",
         start: null,
         end: null
       }
@@ -147,11 +155,12 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .ivu-table .demo-table-warn-row td {
   background-color: #ffff00;
   color: #fff;
 }
+
 .ivu-table .demo-table-error-row td {
   background-color: #dc143c;
   color: #fff;
