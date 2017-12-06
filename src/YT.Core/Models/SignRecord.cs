@@ -101,9 +101,17 @@ namespace YT.Models
         /// </summary>
         public string ProductName { get; set; }
         /// <summary>
+        /// 描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// 产品id
         /// </summary>
         public int ProductId { get; set; }
+        /// <summary>
+        ///是否卡券
+        /// </summary>
+        public bool IsCard { get; set; }
         /// <summary>
         /// 价格
         /// </summary>

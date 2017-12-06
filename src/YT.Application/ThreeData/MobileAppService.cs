@@ -26,36 +26,10 @@ namespace YT.ThreeData
 
     public class MobileAppService : ApplicationService, IMobileAppService
     {
-        private static string _defaultImage = @"http://103.45.102.47:8888\Files\Images\a.jpg";
-
         private readonly IRepository<UserCard> _cardRepository;
         /// <summary>
         /// 产品列集合
         /// </summary>
-        private static List<CoffeeProduct> List => new List<CoffeeProduct>()
-        {
-            new CoffeeProduct(102,"热卡布奇诺","",_defaultImage, 1110),
-            new CoffeeProduct(933,"冰卡布奇诺","",_defaultImage, 1110),
-            new CoffeeProduct(246,"热拿铁","",_defaultImage, 1110),
-            new CoffeeProduct(934,"冰拿铁","",_defaultImage, 1110),
-            new CoffeeProduct(103,"热意式浓缩咖啡","",_defaultImage, 1110),
-            new CoffeeProduct(930,"冰美式咖啡","",_defaultImage, 1110),
-            new CoffeeProduct(105,"热美式咖啡","",_defaultImage, 1110),
-            new CoffeeProduct(283,"热摩卡","",_defaultImage, 1110),
-            new CoffeeProduct(938,"冰日式抹茶拿铁","",_defaultImage, 1110),
-            new CoffeeProduct(245,"热日式抹茶拿铁","",_defaultImage, 1110),
-            new CoffeeProduct(701,"热港式丝袜奶茶","",_defaultImage, 1110),
-            new CoffeeProduct(802,"热可可牛奶","",_defaultImage, 1110),
-            new CoffeeProduct(240,"热玛琪雅朵","",_defaultImage, 1110),
-            new CoffeeProduct(104,"热港式鸳鸯","",_defaultImage, 1110),
-            new CoffeeProduct(810,"热香醇牛奶","",_defaultImage, 1110),
-            new CoffeeProduct(800,"热香浓巧克力","",_defaultImage, 1110),
-            new CoffeeProduct(204,"热长咖啡","",_defaultImage, 1110),
-            new CoffeeProduct(700,"热锡兰红茶","",_defaultImage, 1110),
-            new CoffeeProduct(9990,"7.88元代金券","",_defaultImage, 300),
-            new CoffeeProduct(9991,"17.88元代金券","",_defaultImage, 700),
-            new CoffeeProduct(9992,"50元代金券","",_defaultImage, 3000),
-        };
         private readonly IRepository<Warn> _warnRepository;
         private readonly IRepository<StoreUser> _userRepository;
         private readonly IRepository<SignRecord> _signRepository;
@@ -94,17 +68,19 @@ namespace YT.ThreeData
         /// 获取产品列表
         /// </summary>
         /// <returns></returns>
-        public List<CoffeeProduct> GetProducts()
+        public async Task<List<Product>> GetProducts()
         {
-            return List.Where(c => c.Id <= 8999).ToList();
+            var query = await _productRepository.GetAllListAsync(c=>!c.IsCard);
+            return query;
         }
         /// <summary>
         /// 获取卡圈列表
         /// </summary>
         /// <returns></returns>
-        public List<CoffeeProduct> GetCards()
+        public async Task<List<Product>> GetCards()
         {
-            return List.Where(c => c.Id > 8999).ToList();
+            var query = await _productRepository.GetAllListAsync(c => c.IsCard);
+            return query;
         }
         /// <summary>
         /// 获取我的列表
@@ -124,7 +100,7 @@ namespace YT.ThreeData
             var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.UserId));
             var model = new ProductAndCardDto()
             {
-                Product = List.First(c => c.Id == input.ProductId),
+                Product = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId),
             };
             if (cards.Any())
             {
@@ -193,7 +169,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<string> LinePay(InsertOrderInput input)
         {
-            var p = List.First(c => c.Id == input.ProductId);
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
             var order = await _storeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.Order));
             if (order == null)
             {
@@ -235,7 +211,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<string> CardPay(InsertOrderInput input)
         {
-            var p = List.First(c => c.Id == 9990);
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
             var order = new StoreOrder()
             {
                 OpenId = input.OpenId,
@@ -290,6 +266,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<StoreOrderDto>> GetOrders(GetOrderInput input)
         {
+            var products = await _productRepository.GetAllListAsync();
             var orders = await _storeRepository.GetAll()
                 .Where(c => c.OpenId.Equals(input.Device)
                             && c.PayState.HasValue && c.PayState.Value)
@@ -298,10 +275,10 @@ namespace YT.ThreeData
             var temp = orders.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount);
 
             var result = from c in temp
-                         join d in List on c.ProductId equals d.Id
+                         join d in products on c.ProductId equals d.Id
                          select new StoreOrderDto()
                          {
-                             Description = d.Description,
+                             Description = "",
                              FastCode = c.FastCode,
                              Id = c.Id,
                              ImageUrl = d.ImageUrl,
@@ -564,7 +541,7 @@ namespace YT.ThreeData
         /// 获取产品列表
         /// </summary>
         /// <returns></returns>
-        List<CoffeeProduct> GetProducts();
+        Task<List<Product>> GetProducts();
         /// <summary>
         /// 获取订单列表
         /// </summary>
@@ -589,11 +566,12 @@ namespace YT.ThreeData
         /// <param name="input"></param>
         /// <returns></returns>
         Task<string> LinePay(InsertOrderInput input);
+
         /// <summary>
         /// 获取卡圈列表
         /// </summary>
         /// <returns></returns>
-        List<CoffeeProduct> GetCards();
+         Task<List<Product>> GetCards();
 
         /// <summary>
         /// 获取我的列表

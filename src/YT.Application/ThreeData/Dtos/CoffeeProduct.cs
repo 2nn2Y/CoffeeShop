@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Entities;
+using YT.Models;
 
 namespace YT.ThreeData.Dtos
 {
@@ -142,7 +143,7 @@ namespace YT.ThreeData.Dtos
         /// <summary>
         /// 产品信息
         /// </summary>
-        public  CoffeeProduct Product { get; set; }
+        public  Product Product { get; set; }
         /// <summary>
         /// 卡圈信息
         /// </summary>

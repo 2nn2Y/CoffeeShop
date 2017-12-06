@@ -335,9 +335,12 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<dynamic> GetInfoByCode(string code)
         {
-            var model = await GetUserTokenFromCache(code);
-            var token = model.GetValue("access_token").ToString();
-            var openid = model.GetValue("openid").ToString();
+            var temp =
+             $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
+            var ut = await HttpHandler.GetAsync<JObject>(temp);
+            if (ut.GetValue("access_token") == null) throw new UserFriendlyException("获取用户token失败");
+            var token = ut.GetValue("access_token").ToString();
+            var openid = ut.GetValue("openid").ToString();
             string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
             var openId = result.GetValue("openid").ToString();
