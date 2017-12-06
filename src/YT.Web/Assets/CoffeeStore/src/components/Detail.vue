@@ -117,29 +117,31 @@ export default {
         });
     },
     balancepay() {
+      var _self = this;
       const url =
         "http://103.45.102.47:8888/api/services/app/mobile/BalancePay";
       const params = {
-        openId: this.openId,
-        price: this.model.price,
-        productId: this.model.id,
-        order: this.order,
-        fastCode: this.fastcode,
-        orderType: this.type,
-        key: this.selectCard,
-        device: this.device
+        openId: _self.openId,
+        price: _self.model.price,
+        productId: _self.model.id,
+        order: _self.order,
+        fastCode: _self.fastcode,
+        orderType: _self.type,
+        key: _self.selectCard,
+        device: _self.device
       };
-      this.$http
+      _self.$http
         .post(url, params)
         .then(r => {
           if (r.data && r.data.success) {
-            this.$router.push({ path: "/my" });
+            _self.showBox("支付成功", "稍后为您出货");
+            _self.$router.push({ path: "/my" });
           }
         })
         .catch(error => {
-          console.log(res);
+          console.log(error);
           // 支付失败回调函数
-          this.showBox("支付失败", "请重试");
+          _self.showBox("支付失败", error.response.data.error.message);
         });
     },
     linepay() {

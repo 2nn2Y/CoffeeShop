@@ -121,6 +121,9 @@ namespace YT.ThreeData
 
             var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
             if (p == null) throw new UserFriendlyException("该商品不存在");
+            var o = await _storeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.Order));
+            if (o != null && o.PayType != PayType.BalancePay) throw new UserFriendlyException("该订单已存在,请重新下单");
+
             var order = new StoreOrder()
             {
                 OrderNum = input.Order,
