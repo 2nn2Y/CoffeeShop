@@ -33,7 +33,7 @@ Vue.prototype.wxConfig = function (url) {
   Vue.http.post(service + "?url=" + url).then(r => {
     if (r && r.data) {
       Vue.wechat.config({
-        debug: true,
+        debug: false,
         appId: r.data.result.appId, // 必填，公众号的唯一标识   由接口返回
         timestamp: r.data.result.timestamp, // 必填，生成签名的时间戳 由接口返回
         nonceStr: r.data.result.nonceStr, // 必填，生成签名的随机串 由接口返回

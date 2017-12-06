@@ -470,7 +470,7 @@ namespace YT
     /// </summary>
     public class JsApiPay
     {
-
+     
         /// <summary>
         /// openid用于调用统一下单接口
         /// </summary>

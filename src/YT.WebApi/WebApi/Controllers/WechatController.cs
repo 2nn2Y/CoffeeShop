@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Xml;
 using System.Xml.Serialization;
 using Abp.Domain.Repositories;
+using Abp.Json;
+using Abp.Logging;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -28,6 +33,7 @@ namespace YT.WebApi.Controllers
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<StoreUser> _useRepository;
         private readonly IRepository<StoreOrder> _orderRepository;
+        
         /// <summary>
         /// ctor
         /// </summary>
@@ -52,59 +58,88 @@ namespace YT.WebApi.Controllers
             return result;
         }
         /// <summary>
-        /// 微信支付回掉
+        /// 接收从微信支付后台发送过来的数据并验证签名
+        /// </summary>
+        /// <returns>微信支付后台返回的数据</returns>
+        public WxPayData GetNotifyData(Stream stram)
+        {
+            //接收从微信后台POST过来的数据
+            System.IO.Stream s = stram;
+            int count = 0;
+            byte[] buffer = new byte[1024];
+            StringBuilder builder = new StringBuilder();
+            while ((count = s.Read(buffer, 0, 1024)) > 0)
+            {
+                builder.Append(Encoding.UTF8.GetString(buffer, 0, count));
+            }
+            s.Flush();
+            s.Close();
+            s.Dispose();
+            //转换数据格式并验证签名
+            WxPayData data = new WxPayData();
+            try
+            {
+                data.FromXml(builder.ToString());
+            }
+            catch (Exception ex)
+            {
+                //若签名错误，则立即返回结果给微信支付后台
+                WxPayData res = new WxPayData();
+                res.SetValue("return_code", "FAIL");
+                res.SetValue("return_msg", ex.Message);
+                HttpContext.Current.Response.Write(res.ToXml());
+                HttpContext.Current.Response.End();
+            }
+            return data;
+        }
+        /// <summary>
+        /// 通知
         /// </summary>
         /// <returns></returns>
         public async Task<IHttpActionResult> Notify()
         {
-            //            < xml >
-            //  < appid >< ![CDATA[wx2421b1c4370ec43b]] ></ appid >
-            //  < attach >< ![CDATA[支付测试]] ></ attach >
-            //  < bank_type >< ![CDATA[CFT]] ></ bank_type >
-            //  < fee_type >< ![CDATA[CNY]] ></ fee_type >
-            //  < is_subscribe >< ![CDATA[Y]] ></ is_subscribe >
-            //  < mch_id >< ![CDATA[10000100]] ></ mch_id >
-            //  < nonce_str >< ![CDATA[5d2b6c2a8db53831f7eda20af46e531c]] ></ nonce_str >
-            //  < openid >< ![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]] ></ openid >
-            //  < out_trade_no >< ![CDATA[1409811653]] ></ out_trade_no >
-            //  < result_code >< ![CDATA[SUCCESS]] ></ result_code >
-            //  < return_code >< ![CDATA[SUCCESS]] ></ return_code >
-            //  < sign >< ![CDATA[B552ED6B279343CB493C5DD0D78AB241]] ></ sign >
-            //  < sub_mch_id >< ![CDATA[10000100]] ></ sub_mch_id >
-            //  < time_end >< ![CDATA[20140903131540]] ></ time_end >
-            //  < total_fee > 1 </ total_fee >
-            //< coupon_fee >< ![CDATA[10]] ></ coupon_fee >
-            //< coupon_count >< ![CDATA[1]] ></ coupon_count >
-            //< coupon_type >< ![CDATA[CASH]] ></ coupon_type >
-            //< coupon_id >< ![CDATA[10000]] ></ coupon_id >
-            //< coupon_fee >< ![CDATA[100]] ></ coupon_fee >
-            //  < trade_type >< ![CDATA[JSAPI]] ></ trade_type >
-            //  < transaction_id >< ![CDATA[1004400740201409030005092168]] ></ transaction_id >
-            //</ xml >
-            var stream = HttpContext.Current.Request.InputStream;
-            var result = (WeChatXml)(new XmlSerializer(typeof(WeChatXml)).Deserialize(stream));
-            var output = string.Empty;
-            if (result.return_code.ToUpper().Equals("SUCCESS")&&result.result_code.ToUpper().Equals("SUCCESS"))
+            WxPayData notifyData = GetNotifyData(HttpContext.Current.Request.InputStream);
+
+            //检查支付结果中transaction_id是否存在
+            if (!notifyData.IsSet("transaction_id"))
             {
-                var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(result.out_trade_no));
+                //若transaction_id不存在，则立即返回结果给微信支付后台
+                WxPayData t = new WxPayData();
+                t.SetValue("return_code", "FAIL");
+                t.SetValue("return_msg", "支付结果中微信订单号不存在");
+                HttpContext.Current.Response.Write(t.ToXml());
+                HttpContext.Current.Response.End();
+            }
+            var code = notifyData.GetValue("return_code").ToString();
+            var rcode = notifyData.GetValue("result_code").ToString();
+            if (code.ToUpper().Equals("SUCCESS") && rcode.ToUpper().Equals("SUCCESS"))
+            {
+                var num= notifyData.GetValue("out_trade_no").ToString();
+                var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(num));
                 if (order != null)
                 {
-                    order.WechatOrder = result.transaction_id;
+                    order.WechatOrder = notifyData.GetValue("transaction_id").ToString();
                     order.PayState = true;
                     await _orderRepository.UpdateAsync(order);
-
-                    output = @"<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg> </xml>";
+                    WxPayData res = new WxPayData();
+                    res.SetValue("return_code", "SUCCESS");
+                    res.SetValue("return_msg", "OK");
+                    HttpContext.Current.Response.Clear();
+                    HttpContext.Current.Response.Write(res.ToXml());
+                    HttpContext.Current.Response.End();
                 }
             }
             else
             {
-                output = @"<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[订单不成功]]></return_msg> </xml>";
+                WxPayData res = new WxPayData();
+                res.SetValue("return_code", "FAIL");
+                res.SetValue("return_msg", "第三方订单不存在");
+                HttpContext.Current.Response.Clear();
+                HttpContext.Current.Response.Write(res.ToXml());
+                HttpContext.Current.Response.End();
             }
-
-            HttpContext.Current.Response.Clear();
-            HttpContext.Current.Response.Write(output);
-            HttpContext.Current.Response.End();
-            return null;
+           
+            return Ok();
         }
         /// <summary>
         /// 生成二维码

@@ -70,8 +70,8 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<List<Product>> GetProducts()
         {
-            var query = await _productRepository.GetAllListAsync(c=>!c.IsCard);
-            return query;
+            var query = (await GetProductFromCache()).Where(c=>!c.IsCard);
+            return query.ToList();
         }
         /// <summary>
         /// 获取卡圈列表
@@ -79,8 +79,8 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<List<Product>> GetCards()
         {
-            var query = await _productRepository.GetAllListAsync(c => c.IsCard);
-            return query;
+            var query = (await GetProductFromCache()).Where(c => c.IsCard);
+            return query.ToList();
         }
         /// <summary>
         /// 获取我的列表
@@ -100,7 +100,7 @@ namespace YT.ThreeData
             var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.UserId));
             var model = new ProductAndCardDto()
             {
-                Product = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId),
+                Product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId),
             };
             if (cards.Any())
             {
@@ -118,6 +118,9 @@ namespace YT.ThreeData
             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(input.OpenId));
             if (user == null) throw new UserFriendlyException("用户信息不存在");
             if (user.Balance < input.Price) throw new UserFriendlyException("用户余额不足");
+
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
+            if (p == null) throw new UserFriendlyException("该商品不存在");
             var order = new StoreOrder()
             {
                 OrderNum = input.Order,
@@ -128,8 +131,8 @@ namespace YT.ThreeData
                 PayType = PayType.BalancePay,
                 OrderType = input.OrderType,
                 PayState = null,
-                Price = input.Price,
-                ProductId = input.ProductId
+                Price = p.Price,
+                ProductId = p.ProductId
             };
             await _storeRepository.InsertAsync(order);
             //使用优惠券
@@ -169,7 +172,8 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<string> LinePay(InsertOrderInput input)
         {
-            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
+            if (p == null) throw new UserFriendlyException("该商品不存在");
             var order = await _storeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.Order));
             if (order == null)
             {
@@ -188,6 +192,10 @@ namespace YT.ThreeData
             }
             else
             {
+                if (order.PayState.HasValue && order.PayState.Value)
+                {
+                    throw new  UserFriendlyException("该订单已支付,不可重复付款");
+                }
                 order.OpenId = input.OpenId;
                 order.Price = p.Price;
                 order.FastCode = input.FastCode;
@@ -211,7 +219,8 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<string> CardPay(InsertOrderInput input)
         {
-            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
+            if (p == null) throw new UserFriendlyException("该商品不存在");
             var order = new StoreOrder()
             {
                 OpenId = input.OpenId,
