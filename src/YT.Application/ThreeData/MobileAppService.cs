@@ -12,6 +12,7 @@ using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Caching;
 using Abp.UI;
+using Newtonsoft.Json;
 using YT.Configuration;
 using YT.Models;
 using YT.ThreeData.Dtos;
@@ -109,7 +110,7 @@ namespace YT.ThreeData
         /// 获取我的列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<KeyValuePair<Guid,string>>> GetUserCards(EntityDto<string> input)
+        public async Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input)
         {
             var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id));
             return cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
@@ -171,6 +172,19 @@ namespace YT.ThreeData
                 user.Balance -= input.Price;
             }
             order.PayState = true;
+            //发货
+            if (order.OrderType == OrderType.Ice)
+            {
+                var result = await PickProductIce(order);
+            }
+            else
+            {
+                var temp = await PickProductJack(order);
+                if (temp.status == "success")
+                {
+                    order.OrderState = true;
+                }
+            }
         }
         /// <summary>
         /// 在线支付
@@ -180,28 +194,39 @@ namespace YT.ThreeData
         public async Task<string> LinePay(InsertOrderInput input)
         {
             var p = List.First(c => c.Id == input.ProductId);
-            var order = new StoreOrder()
+            var order = await _storeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.Order));
+            if (order == null)
             {
-                FastCode = input.FastCode,
-                OpenId = input.OpenId,
-                PayType = PayType.LinePay,
-                WechatOrder = Guid.NewGuid().ToString("N"),
-                OrderState = null,
-                PayState = null,
-                Price = p.Price,
-                ProductId = p.Id
-            };
-            await _storeRepository.InsertAsync(order);
+                order = new StoreOrder()
+                {
+                    FastCode = input.FastCode,
+                    OpenId = input.OpenId,
+                    PayType = PayType.LinePay,
+                    OrderType = input.OrderType,
+                    OrderState = null,
+                    PayState = null,
+                    Price = p.Price,
+                    ProductId = p.Id
+                };
+            }
+            else
+            {
+                order.OpenId = input.OpenId;
+                order.Price = p.Price;
+                order.FastCode = input.FastCode;
+                order.OrderType = input.OrderType;
+                order.PayType = PayType.LinePay;
+            }
+            await _storeRepository.InsertOrUpdateAsync(order);
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
                 TotalFee = p.Price
             };
-            jsApiPay.GetUnifiedOrderResult(order.WechatOrder, p.ProductName, p.Description);
+            jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();
             return param;
         }
-
         /// <summary>
         /// 卡券支付
         /// </summary>
@@ -214,7 +239,7 @@ namespace YT.ThreeData
             {
                 OpenId = input.OpenId,
                 PayType = PayType.LinePay,
-                WechatOrder = Guid.NewGuid().ToString("N"),
+                OrderNum = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
                 Price = p.Price,
@@ -226,7 +251,7 @@ namespace YT.ThreeData
                 Openid = input.OpenId,
                 TotalFee = p.Price
             };
-            jsApiPay.GetUnifiedOrderResult(order.WechatOrder, p.ProductName, p.Description);
+            jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();
             return param;
         }
@@ -241,7 +266,7 @@ namespace YT.ThreeData
             {
                 OpenId = input.OpenId,
                 PayType = PayType.PayCharge,
-                WechatOrder = Guid.NewGuid().ToString("N"),
+                OrderNum = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
                 Price = input.Price,
@@ -253,7 +278,7 @@ namespace YT.ThreeData
                 Openid = input.OpenId,
                 TotalFee = input.Price
             };
-            jsApiPay.GetUnifiedOrderResult(order.WechatOrder, "用户充值", "用户充值");
+            jsApiPay.GetUnifiedOrderResult(order.OrderNum, "用户充值", "用户充值");
             var param = jsApiPay.GetJsApiParameters();
             return param;
         }
@@ -284,29 +309,12 @@ namespace YT.ThreeData
                          };
             return new PagedResultDto<StoreOrderDto>(count, result.ToList());
         }
-        /// <summary>
-        /// 提货
-        /// </summary>
-        /// <returns></returns>
-        public async Task PickOrder(PickOrderInput input)
-        {
-            var order = await _storeRepository.FirstOrDefaultAsync(input.OrderId);
-            if (order == null) throw new UserFriendlyException("该订单不存在");
-            if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付或无效");
-            order.OrderNum = DateTime.Now.ToString("yyyyMMddhhmmss") + input.DeviceNum +
-                             new Random().Next(10000, 99999);
-            order.DeviceNum = input.DeviceNum;
-            var result = await PickProduct(order);
-            if (result.status == "success")
-            {
-                order.OrderState = true;
-            }
-        }
+
         /// <summary>
         /// 取货
         /// </summary>
         /// <returns></returns>
-        private async Task<dynamic> PickProduct(StoreOrder order)
+        private async Task<dynamic> PickProductJack(StoreOrder order)
         {
             var url = "http://103.231.67.143:8079/FASTCODE";
             var temp = $@"ID={order.OrderNum}&UserName={"shuoyibuer"}&Password={"coffee888"}&Vmc={
@@ -319,7 +327,21 @@ namespace YT.ThreeData
             var result = await HttpHandler.PostAsync<dynamic>(url);
             return result;
         }
+        /// <summary>
+        /// 取货
+        /// </summary>
+        /// <returns></returns>
+        private async Task<dynamic> PickProductIce(StoreOrder order)
+        {
+            var url = order.NoticeUrl;
 
+            var result = await HttpHandler.PostJson<dynamic>(url, JsonConvert.SerializeObject(new
+            {
+                payStatus = "0",
+                key = order.Key
+            }));
+            return result;
+        }
         #endregion
         #region 手机端
         /// <summary>
@@ -548,12 +570,6 @@ namespace YT.ThreeData
         /// <param name="input"></param>
         /// <returns></returns>
         Task<PagedResultDto<StoreOrderDto>> GetOrders(GetOrderInput input);
-        /// <summary>
-        /// 提货
-        /// </summary>
-        /// <returns></returns>
-        Task PickOrder(PickOrderInput input);
-
         /// <summary>
         /// 获取产品详情
         /// </summary>

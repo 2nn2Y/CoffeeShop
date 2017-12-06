@@ -44,18 +44,18 @@ namespace YT
         PayCharge=3
     }
     /// <summary>
-    /// 支付方式
+    /// 订单类型
     /// </summary>
     public enum OrderType
     {
         /// <summary>
-        /// 余额支付
+        /// 冰山
         /// </summary>
-        A = 1,
+        Ice = 1,
         /// <summary>
-        /// 在线支付
+        /// 基诺
         /// </summary>
-        B = 2
+        Jack = 2
     }
     
     /// <summary>

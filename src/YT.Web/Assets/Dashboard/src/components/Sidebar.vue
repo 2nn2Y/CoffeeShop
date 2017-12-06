@@ -10,7 +10,7 @@
         <li class="list-else" v-else >
           <a id="icona" @click.stop="extend(item)" v-if="!item.state"><Icon  style="margin-right:5px;"  type="chevron-up"></Icon>{{item.content}}</a>
           <a id="icona" @click.stop="extend(item)" v-if="item.state"><Icon  style="margin-right:5px;"  type="chevron-down"></Icon>{{item.content}}</a>
-          
+
           <ul v-if="item.state">
             <li :key="b.url" v-for="(b,i) in item.children" class="list-item">
               <router-link @click.stop :to="b.url">{{b.content}}</router-link>
@@ -23,9 +23,12 @@
 </template>
 
 <script>
+import { userMenus } from "api/menu";
 export default {
   data() {
     return {
+      temp: [],
+      list: [],
       Sidebar: [
         { content: "用户管理", url: "/users", icon: "person" },
         { content: "角色管理", url: "/roles", icon: "person-stalker" },
@@ -50,12 +53,41 @@ export default {
       ]
     };
   },
-
-  created() {},
-
+  created() {
+    this.init();
+  },
   methods: {
     extend(item) {
       item.state = !item.state;
+    },
+    init() {
+      userMenus().then(r => {
+        if (r.success) {
+          this.temp = r.result;
+          this.genderMenus();
+        }
+      });
+    },
+    genderMenus() {
+      this.temp.forEach(element => {
+        if (!element.parentId) {
+          const model = {
+            content: element.displayName,
+            url: element.url,
+            icon: element.icon
+          };
+          this.temp.forEach(c => {
+            if (c.parentId == element.id) {
+              model.children.push({
+                content: c.displayName,
+                url: c.url,
+                icon: c.icon
+              });
+            }
+          });
+          this.list.push(model);
+        }
+      });
     }
   }
 };

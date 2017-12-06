@@ -217,6 +217,10 @@ namespace YT.Models
         /// </summary>
         public string WechatOrder { get; set; }
         /// <summary>
+        /// 订单结果描述
+        /// </summary>
+        public string Reson { get; set; }
+        /// <summary>
         /// 支付方式
         /// </summary>
         public PayType PayType { get; set; }
@@ -234,6 +238,14 @@ namespace YT.Models
         /// </summary>
 
         public string DeviceNum { get; set; }
+        /// <summary>
+        /// 回掉地址
+        /// </summary>
+        public string NoticeUrl { get; set; }
+        /// <summary>
+        /// 通信密钥
+        /// </summary>
+        public string Key { get; set; }
         /// <summary>
         /// 价格
         /// </summary>

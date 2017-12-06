@@ -23,8 +23,7 @@ namespace YT.Authorizations.PermissionDefault
                 {
                     Childs = new List<PermissionDefinition>()
                     {
-                        new PermissionDefinition(StaticPermissionsName.Page_Dashboard, "控制台", "整体概述",
-                            PermissionType.Control),
+
 
                         new PermissionDefinition(StaticPermissionsName.Page_System, "权限管理", "权限管理",
                             PermissionType.Control)
@@ -58,7 +57,28 @@ namespace YT.Authorizations.PermissionDefault
                                     }
                                 }
                             }
-                        }
+                        },
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_Sign, "签到统计", "签到统计",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_SignDetail, "签到明细", "签到明细",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_WarnDevice, "故障统计-设备", "故障统计-设备",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_Warn, "报警信息", "报警信息",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_Order, "成交订单", "成交订单",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_Productsale, "产品销量", "产品销量",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_DeviceSale, "设备销量", "设备销量",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_AreaSale, "区域销量", "区域销量",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_PayType, "支付渠道", "支付渠道",
+                            PermissionType.Control),
+                        new PermissionDefinition(StaticPermissionsName.Page_Staticical_TimeArea, "时段销量", "时段销量",
+                            PermissionType.Control),
+
                     }
                 }
             };
@@ -89,6 +109,19 @@ namespace YT.Authorizations.PermissionDefault
         public const string Page_System_User_Create = "page.system.user.create";
         public const string Page_System_User_Edit = "page.system.user.edit";
         public const string Page_System_User_Delete = "page.system.user.delete";
+
+
+        public const string Page_Staticical_Sign = "page.staticical.sign";
+        public const string Page_Staticical_SignDetail = "page.staticical.signdetail";
+        public const string Page_Staticical_WarnDevice = "page.staticical.warndevice";
+        public const string Page_Staticical_Warn = "page.staticical.warn";
+        public const string Page_Staticical_Order= "page.staticical.order";
+        public const string Page_Staticical_Productsale = "page.staticical.productsale";
+        public const string Page_Staticical_DeviceSale = "page.staticical.devicesale";
+        public const string Page_Staticical_AreaSale = "page.staticical.areasale";
+        public const string Page_Staticical_PayType = "page.staticical.paytype";
+        public const string Page_Staticical_TimeArea = "page.staticical.timearea";
+
 
     }
 }

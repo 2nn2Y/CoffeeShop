@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Xml.Serialization;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Caching;
 using Abp.UI;
@@ -26,15 +27,18 @@ namespace YT.WebApi.Controllers
     {
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<StoreUser> _useRepository;
+        private readonly IRepository<StoreOrder> _orderRepository;
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="cacheManager"></param>
         /// <param name="useRepository"></param>
-        public WechatController(ICacheManager cacheManager, IRepository<StoreUser> useRepository)
+        /// <param name="orderRepository"></param>
+        public WechatController(ICacheManager cacheManager, IRepository<StoreUser> useRepository, IRepository<StoreOrder> orderRepository)
         {
             _cacheManager = cacheManager;
             _useRepository = useRepository;
+            _orderRepository = orderRepository;
         }
 
         /// <summary>
@@ -51,22 +55,84 @@ namespace YT.WebApi.Controllers
         /// 微信支付回掉
         /// </summary>
         /// <returns></returns>
-        public IHttpActionResult Notify()
+        public async Task<IHttpActionResult> Notify()
         {
-            // 本文顶部说的四个参数，最好进行URL解码
-            var signature = HttpUtility.UrlDecode(HttpContext.Current.Request["msg_signature"] ?? string.Empty);
-            var timestamp = HttpUtility.UrlDecode(HttpContext.Current.Request["timestamp"] ?? string.Empty);
-            var nonce = HttpUtility.UrlDecode(HttpContext.Current.Request["nonce"] ?? string.Empty);
-            var echo = HttpUtility.UrlDecode(HttpContext.Current.Request["echostr"] ?? string.Empty);
+            //            < xml >
+            //  < appid >< ![CDATA[wx2421b1c4370ec43b]] ></ appid >
+            //  < attach >< ![CDATA[支付测试]] ></ attach >
+            //  < bank_type >< ![CDATA[CFT]] ></ bank_type >
+            //  < fee_type >< ![CDATA[CNY]] ></ fee_type >
+            //  < is_subscribe >< ![CDATA[Y]] ></ is_subscribe >
+            //  < mch_id >< ![CDATA[10000100]] ></ mch_id >
+            //  < nonce_str >< ![CDATA[5d2b6c2a8db53831f7eda20af46e531c]] ></ nonce_str >
+            //  < openid >< ![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]] ></ openid >
+            //  < out_trade_no >< ![CDATA[1409811653]] ></ out_trade_no >
+            //  < result_code >< ![CDATA[SUCCESS]] ></ result_code >
+            //  < return_code >< ![CDATA[SUCCESS]] ></ return_code >
+            //  < sign >< ![CDATA[B552ED6B279343CB493C5DD0D78AB241]] ></ sign >
+            //  < sub_mch_id >< ![CDATA[10000100]] ></ sub_mch_id >
+            //  < time_end >< ![CDATA[20140903131540]] ></ time_end >
+            //  < total_fee > 1 </ total_fee >
+            //< coupon_fee >< ![CDATA[10]] ></ coupon_fee >
+            //< coupon_count >< ![CDATA[1]] ></ coupon_count >
+            //< coupon_type >< ![CDATA[CASH]] ></ coupon_type >
+            //< coupon_id >< ![CDATA[10000]] ></ coupon_id >
+            //< coupon_fee >< ![CDATA[100]] ></ coupon_fee >
+            //  < trade_type >< ![CDATA[JSAPI]] ></ trade_type >
+            //  < transaction_id >< ![CDATA[1004400740201409030005092168]] ></ transaction_id >
+            //</ xml >
+            var stream = HttpContext.Current.Request.InputStream;
+            var result = (WeChatXml)(new XmlSerializer(typeof(WeChatXml)).Deserialize(stream));
+            var output = string.Empty;
+            if (result.return_code.ToUpper().Equals("SUCCESS")&&result.result_code.ToUpper().Equals("SUCCESS"))
+            {
+                var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(result.out_trade_no));
+                if (order != null)
+                {
+                    order.WechatOrder = result.transaction_id;
+                    order.PayState = true;
+                    await _orderRepository.UpdateAsync(order);
 
-            // 验证结束后的返回值，一定不要带引号！！！
-            var echoResult = string.Empty;
+                    output = @"<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg> </xml>";
+                }
+            }
+            else
+            {
+                output = @"<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[订单不成功]]></return_msg> </xml>";
+            }
 
-            // 将验证后的返回值写入响应流，这样可以去掉引号！！！
             HttpContext.Current.Response.Clear();
-            HttpContext.Current.Response.Write(echoResult);
+            HttpContext.Current.Response.Write(output);
             HttpContext.Current.Response.End();
             return null;
+        }
+        /// <summary>
+        /// 生成二维码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> QrCode(QrcodeInput input)
+        {
+            var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNo));
+            var fast = order == null ? "000" : order.FastCode;
+            if (order == null)
+            {
+                order = new StoreOrder()
+                {
+                    DeviceNum = input.AssetId,
+                    OrderNum = input.OrderNo,
+                    OrderState = null,
+                    PayState = null,
+                    OrderType = OrderType.Ice,
+                    ProductId = input.ProductNum,
+                    NoticeUrl = input.Notify_Url,
+                    Key = input.Key
+                };
+                order = await _orderRepository.InsertAsync(order);
+            }
+            var codeUrl =
+                $"http://card.youyinkeji.cn/#/detail/{order.ProductId}-{order.DeviceNum}-{fast}-{order.OrderNum}-{1}";
+            return Json(codeUrl);
         }
         /// <summary>
         /// 获取卡圈ticket
@@ -77,7 +143,7 @@ namespace YT.WebApi.Controllers
             var result = await _cacheManager.GetCache(CoffeeCacheName.CardToken).GetAsync(CoffeeCacheName.CardToken,
                async () => await GetCardToken());
             return result;
-         
+
         }
 
         private async Task<string> GetCardToken()
@@ -108,30 +174,59 @@ namespace YT.WebApi.Controllers
         [HttpGet]
         public async Task<dynamic> GetUserBalance(string openId)
         {
-            var user =await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
-            if(user==null)throw new  UserFriendlyException("用户信息不存在");
+            var user = await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            if (user == null) throw new UserFriendlyException("用户信息不存在");
             return user;
         }
-
-
+        /// <summary>
+        /// ice制作成功回掉
+        /// </summary>
+        /// <returns></returns>
+        public async Task IceProduct(IceCallInput input)
+        {
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(input.OrderNo) && c.DeviceNum.Equals(input.AssetId));
+            if (order==null) throw new UserFriendlyException("该订单不存在");
+            if (!order.PayState.HasValue||!order.PayState.Value) throw new UserFriendlyException("该订单未支付");
+            if (input.DeliverStatus.Equals("0"))
+            {
+                order.OrderState = true;
+            }
+            else
+            {
+                order.OrderState = false;
+                order.Reson = input.DeliverStatus;
+            }
+        }
+        /// <summary>
+        /// ice制作成功回掉
+        /// </summary>
+        /// <returns></returns>
+        public async Task JackProduct(JackCallInput input)
+        {
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(input.Id) && c.DeviceNum.Equals(input.Vmc));
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+            if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
+                order.OrderState = true;
+        }
         /// <summary>
         /// 获取用户卡圈列表
         /// </summary>
         /// <param name="openId"></param>
         /// <returns></returns>
         [HttpGet]
-
         public async Task<dynamic> GetUserCards(string openId)
         {
             var token = await GetTokenFromCache();
             var url = $"https://api.weixin.qq.com/card/user/getcardlist?access_token={token}";
-            var result =  HttpHandler.PostJson<JObject>(url, JsonConvert.SerializeObject(new
+            var result = HttpHandler.PostJson<JObject>(url, JsonConvert.SerializeObject(new
             {
-                openid=openId
+                openid = openId
             }));
             return result;
         }
-     
+
         ///  <summary>
         ///  签名算法
         ///  </summary>
@@ -222,7 +317,7 @@ namespace YT.WebApi.Controllers
             throw new UserFriendlyException("票据不存在");
         }
 
-      
+
         /// <summary>
         /// 获取 accesstoken
         /// </summary>
@@ -246,19 +341,20 @@ namespace YT.WebApi.Controllers
             string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
             var openId = result.GetValue("openid").ToString();
-            var user =await _useRepository.FirstOrDefaultAsync(c=>c.OpenId.Equals(openId));
+            var user = await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null)
             {
-                var t=new StoreUser()
+                var t = new StoreUser()
                 {
-                    Balance=0,OpenId=openId
+                    Balance = 0,
+                    OpenId = openId
                 };
                 await _useRepository.InsertAsync(t);
                 result.Add("balance", 0);
             }
             else
             {
-                result.Add("balance",user.Balance);
+                result.Add("balance", user.Balance);
             }
             return result;
         }
