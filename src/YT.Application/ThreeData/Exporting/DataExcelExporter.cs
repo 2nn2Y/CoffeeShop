@@ -532,6 +532,7 @@ namespace YT.ThreeData.Exporting
                       "报警类型",
                       "报警时间",
                       "运维人员",
+                      "处理时间",
                       "解决时间",
                       "解决时长"
                        );
@@ -544,6 +545,7 @@ namespace YT.ThreeData.Exporting
                        _ => _.WarnDate,
                        _ => _.UserName,
                        _ => _.SolveDate,
+                       _ => _.SetTime,
                        _ => _.SolveTime
                        );
                    for (var i = 1; i <= 10; i++)

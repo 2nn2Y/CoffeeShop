@@ -564,6 +564,7 @@ namespace YT.ThreeData
                            DeviceNum = c.DeviceNum,
                            IsSolve = c.State,
                            PointName = d.PointName,
+                           SetTime = c.SetTime,
                            SolveDate = c.DealTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
                            UnSolveTime = !c.State?(DateTime.Now-c.WarnTime).TotalHours:0,
@@ -573,7 +574,8 @@ namespace YT.ThreeData
                            UserName= tt!=null?tt.UserName:""
                        };
             var count = temp.Count();
-            var result = temp.OrderBy(c => c.State).ThenByDescending(c => c.SolveTime).Skip(input.SkipCount)
+            var result = temp.OrderBy(c => c.State).ThenByDescending(c => c.SolveTime)
+                .ThenByDescending(c=>c.UnSolveTime).Skip(input.SkipCount)
                 .Take(input.MaxResultCount).ToList();
             return new PagedResultDto<WarnDetailDto>(count, result);
         }
@@ -1111,6 +1113,7 @@ namespace YT.ThreeData
                            IsSolve = c.State,
                            PointName = d.PointName,
                            SolveDate = c.DealTime,
+                           SetTime = c.SetTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
                            UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalHours : 0,
                            State = c.WarnNum,

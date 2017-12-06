@@ -61,7 +61,7 @@ export default {
           title: "故障发生时间",
           key: "warnDate",
           render: (h, params) => {
-            return params.row.solveDate
+            return params.row.warnDate
               ? this.$fmtTime(params.row.warnDate)
               : "";
           }
@@ -74,7 +74,7 @@ export default {
           }
         },
         {
-          title: "解决时间",
+          title: "处理完成时间",
           key: "solveDate",
           render: (h, params) => {
             return params.row.solveDate
@@ -83,10 +83,21 @@ export default {
           }
         },
         {
-          title: "未解决时长",
-          key: "unSolveTime"
+          title: "故障解决时间",
+          key: "solveDate",
+          render: (h, params) => {
+            return params.row.setDate ? this.$fmtTime(params.row.setDate) : "";
+          }
         },
-
+        {
+          title: "未解决时长",
+          key: "unSolveTime",
+          render: (h, params) => {
+            return params.row.unSolveTime > 0
+              ? params.row.unSolveTime.toFixed(2)
+              : 0;
+          }
+        },
         {
           title: "解决时长",
           key: "solveTime"

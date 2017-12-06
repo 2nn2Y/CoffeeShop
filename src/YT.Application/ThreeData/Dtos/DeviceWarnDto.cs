@@ -84,6 +84,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public DateTime? SolveDate { get; set; }
         /// <summary>
+        /// 回复时间
+        /// </summary>
+        public DateTime? SetTime { get; set; }
+        /// <summary>
         /// 解决时长
         /// </summary>
         public int SolveTime { get; set; }
