@@ -131,7 +131,7 @@ namespace YT.WebApi.Controllers
                 order = await _orderRepository.InsertAsync(order);
             }
             var codeUrl =
-                $"http://card.youyinkeji.cn/#/detail/{order.ProductId}-{order.DeviceNum}-{fast}-{order.OrderNum}-{1}";
+                $"http://card.youyinkeji.cn/?#/detail/{order.ProductId}-{order.DeviceNum}-{fast}-{order.OrderNum}-{1}";
             return Json(codeUrl);
         }
         /// <summary>

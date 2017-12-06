@@ -53,6 +53,7 @@ export default {
     Box
   },
   created() {
+    this.wxConfig(window.location.href);
     this.init();
   },
   computed: {
@@ -163,15 +164,20 @@ export default {
               signType: params.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
               paySign: params.paySign, // 支付签名
               success: function(res) {
-                console.log(res);
-                this.$router.push({ path: "/my" });
+                alert(JSON.stringify(res));
+                // this.$router.push({ path: "/my" });
+              },
+              fail: function(res) {
+                // 支付失败回调函数
+                alert("pay fail");
+                alert(JSON.stringify(res));
               }
             });
           }
         })
         .catch(error => {
           console.log(error);
-          this.showBox("错误", error.error.message);
+          this.showBox("错误", JSON.stringify(error));
         });
     }
   }

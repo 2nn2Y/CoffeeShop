@@ -204,6 +204,7 @@ namespace YT.ThreeData
                     PayType = PayType.LinePay,
                     OrderType = input.OrderType,
                     OrderState = null,
+                    OrderNum = input.Order,
                     PayState = null,
                     Price = p.Price,
                     ProductId = p.Id
