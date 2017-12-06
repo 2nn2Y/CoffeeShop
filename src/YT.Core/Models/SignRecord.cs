@@ -104,6 +104,14 @@ namespace YT.Models
         /// 产品id
         /// </summary>
         public int ProductId { get; set; }
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string ImageUrl { get; set; }
     }
     /// <summary>
     /// 点位信息

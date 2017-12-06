@@ -53,6 +53,7 @@ export default {
     Box
   },
   created() {
+    alert("你的openId" + sessionStorage.getItem("openid"));
     this.wxConfig(window.location.href);
     this.init();
   },
