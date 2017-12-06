@@ -25,8 +25,8 @@ export default new Router({
     path: '/home',
     component: Home,
     children: [
-      { path: '/users', component: resolve => require(['views/user'], resolve) },
-      { path: '/roles', component: resolve => require(['views/role'], resolve) },
+      { path: '/users', component: resolve => require(['views/manager/Account'], resolve) },
+      { path: '/roles', component: resolve => require(['views/manager/Role'], resolve) },
       { path: '/order', component: resolve => require(['views/order'], resolve) },
       { path: '/productsale', component: resolve => require(['views/productsale'], resolve) },
       { path: '/devicesale', component: resolve => require(['views/devicesale'], resolve) },

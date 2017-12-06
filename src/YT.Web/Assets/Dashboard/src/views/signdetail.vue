@@ -4,8 +4,14 @@
       <milk-table ref="list" :layout="[20,2,2]" :columns="cols" :search-api="searchApi" :params="params">
         <template slot="search">
           <Form ref="params" :model="params" inline :label-width="60">
-            <FormItem label="产品名">
-              <Input v-model="params.device" style="width: 140px" placeholder="请输入商品名"></Input>
+            <FormItem label="设备编号">
+              <Input v-model="params.device" style="width: 140px" placeholder="设备编号"></Input>
+            </FormItem>
+             <FormItem label="运维人员">
+              <Input v-model="params.userName" style="width: 140px" placeholder="运维人员"></Input>
+            </FormItem>
+             <FormItem label="人员编号">
+              <Input v-model="params.userNum" style="width: 140px" placeholder="人员编号"></Input>
             </FormItem>
             </FormItem>
             <FormItem label="开始时间">
@@ -21,7 +27,7 @@
         </template>
       </milk-table>
     </Row>
-    <Modal v-model="modal.map" title="地图展示" @on-ok="ok" @on-cancel="cancel">
+    <Modal v-model="modal.map" :width="900" title="地图展示" @on-ok="ok" @on-cancel="cancel">
       <baidu-map :center="{lng: 116.404, lat: 39.915}" :zoom="zoom" class="bm-view">
         <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
@@ -46,11 +52,16 @@ export default {
           key: "userId"
         },
         {
+          title: "设备编号",
+          key: "deviceNum"
+        },
+
+        {
           title: "运维人员",
           key: "userName"
         },
         {
-          title: "签到地",
+          title: "点位名称",
           key: "signLocation"
         },
         {
@@ -129,6 +140,8 @@ export default {
       searchApi: getSignStaticial,
       params: {
         device: "",
+        userName: "",
+        userNum: "",
         start: null,
         end: null
       },
@@ -184,6 +197,6 @@ export default {
 <style scoped>
 .bm-view {
   width: 100%;
-  height: 300px;
+  height: 400px;
 }
 </style>

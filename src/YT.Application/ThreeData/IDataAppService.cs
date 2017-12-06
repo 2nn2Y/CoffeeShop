@@ -42,7 +42,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<PagedResultDto<ProductSaleDto>> GetAreaProductsSale(GetOrderInput input);
+        Task<PagedResultDto<ProductSaleDto>> GetAreaProductsSale(GetSaleInput input);
 
         /// <summary>
         /// 获取支付渠道销售
@@ -56,7 +56,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<PagedResultDto<WarnDetailDto>> GetWarns(GetOrderInput input);
+        Task<PagedResultDto<WarnDetailDto>> GetWarns(GetWarnInfoInput input);
         /// <summary>
         /// 获取时间区域统计
         /// </summary>
@@ -69,7 +69,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<PagedResultDto<DeviceWarnDto>> GetWarnByDevice(GetOrderInput input);
+          Task<PagedResultDto<DeviceWarnDto>> GetWarnByDevice(GetWarnInput input);
         /// <summary>
         /// 根据设备统计警告信息
         /// </summary>
@@ -81,14 +81,14 @@ namespace YT.ThreeData
         /// 获取人员签到统计
         /// </summary>
         /// <returns></returns>
-         PagedResultDto<SignStaticialDto> GetSignsByUser(GetOrderInput input);
+         Task<PagedResultDto<SignStaticialDto>> GetSignsByUser(GetOrderInput input);
 
 
         /// <summary>
         /// 获取统计明细
         /// </summary>
         /// <returns></returns>
-        PagedResultDto<SignDetailDto> GetSignsDetail(GetOrderInput input);
+        Task<PagedResultDto<SignDetailDto>> GetSignsDetail(GetSignInput input);
         #region 导出
         /// <summary>
         /// 获取成交订单
@@ -116,7 +116,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="orders"></param>
         /// <returns></returns>
-        Task<FileDto> ExportAreaProductsSale(GetOrderInput orders);
+        Task<FileDto> ExportAreaProductsSale(GetSaleInput orders);
 
 
         /// <summary>
@@ -139,31 +139,32 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<FileDto> ExportWarnByDevice(GetOrderInput input);
+          Task<FileDto> ExportWarnByDevice(GetWarnInput input);
+
         /// <summary>
         /// 根据设备统计警告信息
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          FileDto ExportWarnByUser(GetOrderInput input);
+        Task<FileDto> ExportWarnByUser(GetOrderInput input);
 
         /// <summary>
         /// 获取人员签到统计
         /// </summary>
         /// <returns></returns>
-         FileDto ExportSignsByUser(GetOrderInput input);
+         Task<FileDto> ExportSignsByUser(GetOrderInput input);
 
         /// <summary>
         /// 获取统计明细
         /// </summary>
         /// <returns></returns>
-         FileDto ExportSignsDetail(GetOrderInput input);
+         Task<FileDto> ExportSignsDetail(GetSignInput input);
         /// <summary>
         /// 获取报警信息报表
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<FileDto> ExportWarns(GetOrderInput input);
+          Task<FileDto> ExportWarns(GetWarnInfoInput input);
 
         #endregion
     }

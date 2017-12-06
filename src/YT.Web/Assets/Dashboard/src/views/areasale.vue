@@ -4,6 +4,17 @@
       <milk-table ref="list" :layout="[20,2,2]" :columns="cols" :search-api="searchApi" :params="params">
         <template slot="search">
           <Form ref="params" :model="params" inline :label-width="60">
+             <FormItem label="地区">
+              <Input v-model="params.area" style="width: 140px" placeholder="地区"></Input>
+            </FormItem>
+             <FormItem label="区域">
+              <Input v-model="params.city" style="width: 140px" placeholder="区域"></Input>
+            </FormItem>
+             <FormItem label="设备">
+              <Input v-model="params.device" style="width: 140px" placeholder="设备"></Input>
+            </FormItem>
+             <FormItem label="产品名称">
+              <Input v-model="params.productName" style="width: 140px" placeholder="产品名称"></Input>
             </FormItem>
             <FormItem label="开始时间">
               <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
@@ -29,6 +40,10 @@ export default {
     return {
       cols: [
         {
+          title: "地区",
+          key: "area"
+        },
+        {
           title: "区域",
           key: "city"
         },
@@ -47,12 +62,13 @@ export default {
             return params.row.price / 100;
           }
         }
-       
       ],
       searchApi: getAreaProductsSale,
       params: {
         device: "",
-        product: "",
+        area: "",
+        city: "",
+        productName: "",
         start: null,
         end: null
       }

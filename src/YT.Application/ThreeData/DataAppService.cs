@@ -13,7 +13,7 @@ using YT.Dto;
 using YT.Models;
 using YT.ThreeData.Dtos;
 using YT.ThreeData.Exporting;
-
+using Abp.Linq.Extensions;
 namespace YT.ThreeData
 {
     /// <summary>
@@ -65,11 +65,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<OrderDetail>> GetOrderDetails(GetOrderInput input)
         {
-            var query =
+            var query =await 
                 _orderRepository.GetAll()
                     .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                     .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var orders = from c in query
                          join d in (await GetProductFromCache())
                          .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product)) on c.ProductNum equals d.ProductId
@@ -134,11 +134,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<ProductSaleDto>> GetDeviceProductsSale(GetOrderInput input)
         {
-            var query =
+            var query =await 
                _orderRepository.GetAll()
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var temp = from c in query
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        join e in await GetProductFromCache() on c.ProductNum equals e.ProductId
@@ -184,16 +184,21 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<PagedResultDto<ProductSaleDto>> GetAreaProductsSale(GetOrderInput input)
+        public async Task<PagedResultDto<ProductSaleDto>> GetAreaProductsSale(GetSaleInput input)
         {
-            var query =
+            var query =await   
                _orderRepository.GetAll()
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
+            var points = (await GetPointsFromCache())
+                .WhereIf(!input.Area.IsNullOrWhiteSpace(), c => c.City.Contains(input.Area))
+                .WhereIf(!input.City.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.City));
+            var products = (await GetProductFromCache()).WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                c => c.ProductName.Contains(input.ProductName));
             var temp = from c in query
-                       join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                       join e in await GetProductFromCache() on c.ProductNum equals e.ProductId
+                       join d in points on c.DeviceNum equals d.DeviceNum
+                       join e in products on c.ProductNum equals e.ProductId
                        select
                        new
                        {
@@ -210,13 +215,14 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.SchoolName, c.ProductName }
+                         group c by new { c.SchoolName, c.PointName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
                              Count = h.Count(),
                              Price = h.Sum(c => c.Price),
-                             City = h.Key.SchoolName,
+                             City = h.Key.PointName,
+                             Area = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
                              End = input.End
@@ -237,11 +243,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<ProductSaleDto>> GetPayTypeSale(GetOrderInput input)
         {
-            var query =
+            var query =await 
                _orderRepository.GetAll()
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var temp = from c in query
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        select
@@ -297,11 +303,11 @@ namespace YT.ThreeData
                new TimeAreaDto("19~22","19,20,21,22"),
                new TimeAreaDto("23~24","23,24"),
             };
-            var query =
+            var query =await 
                _orderRepository.GetAll()
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var temp = from c in query
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        select
@@ -365,11 +371,13 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<PagedResultDto<DeviceWarnDto>> GetWarnByDevice(GetOrderInput input)
+        public async Task<PagedResultDto<DeviceWarnDto>> GetWarnByDevice(GetWarnInput input)
         {
-            var warns = _warnRepository.GetAll().WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
-
+            var warns =await _warnRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(),c=>c.DeviceNum.Equals(input.Device))
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(),c=>c.WarnNum.Equals(input.Type))
+                .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value).ToListAsync();
             var temp = from c in warns
                        group c by new { c.DeviceNum, c.WarnNum }
                 into h
@@ -382,8 +390,11 @@ namespace YT.ThreeData
                            time = h.Where(c => c.DealTime.HasValue).Sum(c => (c.DealTime.Value - c.WarnTime).Minutes)
                        };
 
-            var users = await _userPointRepository.GetAllListAsync();
-            var result = from c in await _pointRepository.GetAllListAsync()
+            var users = await _userPointRepository.GetAll()
+                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Equals(input.User)).ToListAsync();
+            var points = await _pointRepository.GetAll()
+                .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
+            var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
                          join e in users on c.DeviceNum equals e.PointId into b
                          from bb in b.DefaultIfEmpty()
@@ -415,8 +426,8 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<DeviceWarnDto>> GetWarnByUser(GetOrderInput input)
         {
-            var warns = _warnRepository.GetAll().WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
+            var warns =await _warnRepository.GetAll().WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value).ToListAsync();
 
             var temp = from c in warns
                        group c by new { c.DeviceNum, c.WarnNum }
@@ -455,7 +466,7 @@ namespace YT.ThreeData
         /// 获取人员签到统计
         /// </summary>
         /// <returns></returns>
-        public PagedResultDto<SignStaticialDto> GetSignsByUser(GetOrderInput input)
+        public async Task<PagedResultDto<SignStaticialDto>> GetSignsByUser(GetOrderInput input)
         {
             var users = from c in
                 _userPointRepository.GetAll().WhereIf(!input.Device.IsNullOrWhiteSpace()
@@ -467,7 +478,7 @@ namespace YT.ThreeData
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
 
-            var temp = from c in users 
+            var temp = from c in await users.ToListAsync()
                        join d in signs on c.UserId equals d.UserId
                        select new { c, d };
             var result = from t in temp
@@ -494,34 +505,37 @@ namespace YT.ThreeData
         /// 获取统计明细
         /// </summary>
         /// <returns></returns>
-        public PagedResultDto<SignDetailDto> GetSignsDetail(GetOrderInput input)
+        public async Task<PagedResultDto<SignDetailDto>> GetSignsDetail(GetSignInput input)
         {
             var users = from c in
-              _userPointRepository.GetAll().WhereIf(!input.Device.IsNullOrWhiteSpace()
-                  , c => c.UserName.Contains(input.Device))
+              _userPointRepository.GetAll().WhereIf(!input.UserName.IsNullOrWhiteSpace()
+                  , c => c.UserName.Contains(input.UserName))
+                  .WhereIf(!input.UserNum.IsNullOrWhiteSpace()
+                  , c => c.UserId.Contains(input.UserNum))
                         group c by new { c.UserId, c.UserName } into h
                         select new { h.Key.UserId, h.Key.UserName };
             var counts = users.Count();
-            var signs = _recordRepository.GetAll()
+            var signs =await _recordRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(),c=>c.Point.DeviceNum.Contains(input.Device))
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value).ToListAsync();
 
-            var temp = from c in users
-                       join d in signs on c.UserId equals d.UserId into t
-                       from r in t.DefaultIfEmpty()
+            var temp = from c in await users.ToListAsync()
+                       join d in signs on c.UserId equals d.UserId 
                        select new SignDetailDto()
                        {
+                           DeviceNum = d.Point.DeviceNum,
                            UserId = c.UserId,
                            UserName = c.UserName,
-                           IsSign = r != null,
+                           IsSign = true,
                            Start = input.Start,
                            End = input.End,
-                           CreationTime =r?.CreationTime,
-                           Dimension = r != null ? r.Dimension : 0,
-                           Longitude = r != null ? r.Longitude : 0,
-                           SignLocation = r != null ? r.Point.PointName : "",
-                           Profiles = r != null ? r.SignProfiles != null && r.SignProfiles.Any() ?
-                           r.SignProfiles.Select(w => Host + w.Profile.Url).ToList() : null : null
+                           CreationTime =d.CreationTime,
+                           Dimension =d.Dimension,
+                           Longitude = d.Longitude,
+                           SignLocation =d.Point.PointName,
+                           Profiles =d.SignProfiles.Any()?
+                           d.SignProfiles.Select(w => Host + w.Profile.Url).ToList() : null
                        };
             var final =
                temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
@@ -533,16 +547,14 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetOrderInput input)
+        public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetWarnInfoInput input)
         {
-            var query = _warnRepository.GetAll();
-            var count = await query.CountAsync();
-            var warns = await query.OrderByDescending(c => c.WarnTime).Skip(input.SkipCount).Take(input.MaxResultCount)
-                .ToListAsync();
+            var query = _warnRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type));
 
-            var temp = from c in warns
-                     join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                     into ff from fff in ff.DefaultIfEmpty()
+            var temp = from c in await query.ToListAsync()
+                       join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                      join e in await GetUserPointsFromCache() on c.DeviceNum equals e.PointId
                        into h
                        from tt in h.DefaultIfEmpty()
@@ -551,15 +563,19 @@ namespace YT.ThreeData
                            Id = c.Id,
                            DeviceNum = c.DeviceNum,
                            IsSolve = c.State,
-                           PointName = fff!=null?fff.PointName:"",
+                           PointName = d.PointName,
                            SolveDate = c.DealTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
+                           UnSolveTime = !c.State?(DateTime.Now-c.WarnTime).TotalHours:0,
                            State = c.WarnNum,
                            WarnDate = c.WarnTime,
                            WarnType = c.WarnNum,
-                           UserName=tt!=null?tt.UserName:""
+                           UserName= tt!=null?tt.UserName:""
                        };
-            return new PagedResultDto<WarnDetailDto>(count, temp.ToList());
+            var count = temp.Count();
+            var result = temp.OrderBy(c => c.State).ThenByDescending(c => c.SolveTime).Skip(input.SkipCount)
+                .Take(input.MaxResultCount).ToList();
+            return new PagedResultDto<WarnDetailDto>(count, result);
         }
         #endregion
 
@@ -620,11 +636,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportOrderDetails(GetOrderInput input)
         {
-            var query =
+            var query =await 
                 _orderRepository.GetAll()
                     .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                     .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var orders = from c in query
                          join d in (await GetProductFromCache())
                          .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product)) on c.ProductNum equals d.ProductId
@@ -655,7 +671,7 @@ namespace YT.ThreeData
                 _orderRepository.GetAll()
                     .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
                     .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
-            var temp = from c in query
+            var temp = from c in await query.ToListAsync()
                        group c by c.ProductNum
                 into h
                        select new { h.Key, count = h.Count(), total = h.Sum(c => c.Price) };
@@ -685,11 +701,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportDeviceProductsSale(GetOrderInput input)
         {
-            var query =
+            var query =await 
                 _orderRepository.GetAll()
                     .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                     .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var temp = from c in query
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        join e in await GetProductFromCache() on c.ProductNum equals e.ProductId
@@ -733,16 +749,21 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<FileDto> ExportAreaProductsSale(GetOrderInput input)
+        public async Task<FileDto> ExportAreaProductsSale(GetSaleInput input)
         {
-            var query =
-              _orderRepository.GetAll()
-                  .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                  .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                  .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
+            var query =await 
+                 _orderRepository.GetAll()
+                     .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                     .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
+                     .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
+            var points = (await GetPointsFromCache())
+                .WhereIf(!input.Area.IsNullOrWhiteSpace(), c => c.City.Contains(input.Area))
+                .WhereIf(!input.City.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.City));
+            var products = (await GetProductFromCache()).WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                c => c.ProductName.Contains(input.ProductName));
             var temp = from c in query
-                       join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
-                       join e in await GetProductFromCache() on c.ProductNum equals e.ProductId
+                       join d in points on c.DeviceNum equals d.DeviceNum
+                       join e in products on c.ProductNum equals e.ProductId
                        select
                        new
                        {
@@ -759,13 +780,14 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.SchoolName, c.ProductName }
+                         group c by new { c.City, c.SchoolName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
                              Count = h.Count(),
                              Price = h.Sum(c => c.Price),
                              City = h.Key.SchoolName,
+                             Area = h.Key.City,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
                              End = input.End
@@ -789,7 +811,7 @@ namespace YT.ThreeData
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
-            var temp = from c in query
+            var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        select
                        new
@@ -847,7 +869,7 @@ namespace YT.ThreeData
                    .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value);
-            var temp = from c in query
+            var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        select
                        new
@@ -908,11 +930,13 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<FileDto> ExportWarnByDevice(GetOrderInput input)
+        public async Task<FileDto> ExportWarnByDevice(GetWarnInput input)
         {
-            var warns = _warnRepository.GetAll().WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
-
+            var warns =await _warnRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Equals(input.Device))
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Equals(input.Type))
+                .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value).ToListAsync();
             var temp = from c in warns
                        group c by new { c.DeviceNum, c.WarnNum }
                 into h
@@ -924,8 +948,12 @@ namespace YT.ThreeData
                            deal = h.Count(c => c.State),
                            time = h.Where(c => c.DealTime.HasValue).Sum(c => (c.DealTime.Value - c.WarnTime).Minutes)
                        };
-            var users = await _userPointRepository.GetAllListAsync();
-            var result = from c in await _pointRepository.GetAllListAsync()
+
+            var users = await _userPointRepository.GetAll()
+                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Equals(input.User)).ToListAsync();
+            var points = await _pointRepository.GetAll()
+                .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
+            var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
                          join e in users on c.DeviceNum equals e.PointId into b
                          from bb in b.DefaultIfEmpty()
@@ -951,7 +979,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public FileDto ExportWarnByUser(GetOrderInput input)
+        public async Task<FileDto> ExportWarnByUser(GetOrderInput input)
         {
             var warns = _warnRepository.GetAll().WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
@@ -969,7 +997,7 @@ namespace YT.ThreeData
             var users = _userPointRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.UserName.Contains(input.Device)).ToList();
             var result = from c in users
-                         join d in temp on c.PointId equals d.DeviceNum into t
+                         join d in await temp.ToListAsync() on c.PointId equals d.DeviceNum into t
                          from tt in t.DefaultIfEmpty()
                          select new DeviceWarnDto()
                          {
@@ -990,7 +1018,7 @@ namespace YT.ThreeData
         /// 获取人员签到统计
         /// </summary>
         /// <returns></returns>
-        public FileDto ExportSignsByUser(GetOrderInput input)
+        public async Task<FileDto> ExportSignsByUser(GetOrderInput input)
         {
             var users = from c in
                 _userPointRepository.GetAll().WhereIf(!input.Device.IsNullOrWhiteSpace()
@@ -1001,8 +1029,8 @@ namespace YT.ThreeData
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
 
-            var temp = from c in users
-                       join d in signs on c.UserId equals d.UserId
+            var temp = from c in await users.ToListAsync()
+                       join d in await signs.ToListAsync() on c.UserId equals d.UserId
                        select new { c, d };
             var result = from t in temp
                          group t by new { t.c.UserId, t.c.UserName }
@@ -1027,33 +1055,35 @@ namespace YT.ThreeData
         /// 获取统计明细
         /// </summary>
         /// <returns></returns>
-        public FileDto ExportSignsDetail(GetOrderInput input)
+        public async Task<FileDto> ExportSignsDetail(GetSignInput input)
         {
             var users = from c in
-              _userPointRepository.GetAll().WhereIf(!input.Device.IsNullOrWhiteSpace()
-                  , c => c.UserName.Contains(input.Device))
+              _userPointRepository.GetAll().WhereIf(!input.UserName.IsNullOrWhiteSpace()
+                  , c => c.UserName.Contains(input.UserName))
+                  .WhereIf(!input.UserNum.IsNullOrWhiteSpace()
+                  , c => c.UserId.Contains(input.UserNum))
                         group c by new { c.UserId, c.UserName } into h
                         select new { h.Key.UserId, h.Key.UserName };
             var signs = _recordRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.Point.DeviceNum.Contains(input.Device))
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
-
-            var temp = from c in users
-                       join d in signs on c.UserId equals d.UserId into t
-                       from r in t.DefaultIfEmpty()
+            var temp = from c in await users.ToListAsync()
+                       join d in await signs.ToListAsync() on c.UserId equals d.UserId
                        select new SignDetailDto()
                        {
+                           DeviceNum = d.Point.DeviceNum,
                            UserId = c.UserId,
                            UserName = c.UserName,
-                           IsSign = r != null,
+                           IsSign = true,
                            Start = input.Start,
                            End = input.End,
-                           CreationTime = r != null ? r.CreationTime : DateTime.Now,
-                           Dimension = r != null ? r.Dimension : 0,
-                           Longitude = r != null ? r.Longitude : 0,
-                           SignLocation = r != null ? r.Point.PointName : "",
-                           Profiles = r != null ? r.SignProfiles != null && r.SignProfiles.Any() ?
-                           r.SignProfiles.Select(w => Host + w.Profile.Url).ToList() : null : null
+                           CreationTime = d.CreationTime,
+                           Dimension = d.Dimension,
+                           Longitude = d.Longitude,
+                           SignLocation = d.Point.PointName,
+                           Profiles = d.SignProfiles.Any() ?
+                           d.SignProfiles.Select(w => Host + w.Profile.Url).ToList() : null
                        };
             return _dataExcelExporter.ExportSignsDetail(temp.ToList());
         }
@@ -1063,16 +1093,16 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<FileDto> ExportWarns(GetOrderInput input)
+        public async Task<FileDto> ExportWarns(GetWarnInfoInput input)
         {
-            var query = _warnRepository.GetAll();
-            var warns = await query.OrderByDescending(c => c.WarnTime).Skip(input.SkipCount).Take(input.MaxResultCount)
-                .ToListAsync();
+            var query = _warnRepository.GetAll()
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type));
 
-            var temp = from c in warns
+            var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        join e in await GetUserPointsFromCache() on c.DeviceNum equals e.PointId
-                       into h
+                         into h
                        from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
                        {
@@ -1082,10 +1112,11 @@ namespace YT.ThreeData
                            PointName = d.PointName,
                            SolveDate = c.DealTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
+                           UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalHours : 0,
                            State = c.WarnNum,
-                           UserName = tt?.UserName,
                            WarnDate = c.WarnTime,
                            WarnType = c.WarnNum,
+                           UserName = tt != null ? tt.UserName : ""
                        };
             return _dataExcelExporter.ExportWarns(temp.ToList());
         }

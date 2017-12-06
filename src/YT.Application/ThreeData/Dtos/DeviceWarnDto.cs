@@ -88,6 +88,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public int SolveTime { get; set; }
         /// <summary>
+        /// 未解决时间
+        /// </summary>
+        public double UnSolveTime { get; set; }
+        /// <summary>
         /// 是否解决
         /// </summary>
         public bool IsSolve { get; set; }

@@ -46,9 +46,13 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string PayType { get; set; }
         /// <summary>
-        /// chengshi
+        /// 区域
         /// </summary>
         public string City { get; set; }
+        /// <summary>
+        /// 地区
+        /// </summary>
+        public string Area { get; set; }
         /// <summary>
         /// 点位id
         /// </summary>

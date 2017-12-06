@@ -101,6 +101,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public bool IsSign { get; set; }
         /// <summary>
+        /// 设备编号
+        /// </summary>
+        public string DeviceNum { get; set; }
+        /// <summary>
         /// 经度
         /// </summary>
         public double? Longitude { get; set; }

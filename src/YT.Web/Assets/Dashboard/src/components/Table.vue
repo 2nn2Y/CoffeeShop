@@ -13,9 +13,9 @@
             <slot name="actions"></slot>
             </Col>
         </Row>
-        <Table   highlight-row ref="list" :stripe="stripe" :show-header="showHeader"
+        <Table :row-class-name="formatterRow"  highlight-row ref="list" :stripe="stripe" :show-header="showHeader"
 				 :columns="columns"
-				  :data="items" 
+				  :data="items"
 					:no-data-text="emptyContent" @on-select="selectOne" @on-select-cancel="cancelSelect" @on-current-change="changeCurrent" @on-select-all="selectAll">
         </Table>
         <Page :total="total" :current="pageModel.current"
@@ -25,7 +25,7 @@
           :page-size="8"
           :page-size-opts="[8,20,30,50]"
            @on-change="pageChange"
-            @on-page-size-change="pageSizeChange" 
+            @on-page-size-change="pageSizeChange"
             style="text-align:right;margin-top:50px">
         </Page>
     </div>
@@ -68,6 +68,10 @@ export default {
     searchApi: {
       type: Function,
       required: true
+    },
+    formatterRow: {
+      type: Function,
+      required: false
     },
     //参数
     params: {
