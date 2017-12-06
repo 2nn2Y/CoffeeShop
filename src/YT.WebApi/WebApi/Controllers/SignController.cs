@@ -215,9 +215,10 @@ namespace YT.WebApi.Controllers
 
                 foreach (var warn in warns)
                 {
+                    if(warn.SetTime.HasValue)continue;
                     if (!temp.Any(c => c[0].ToString() == warn.DeviceNum && c[2].ToString() == warn.WarnContent))
                     {
-                        warn.DealTime = DateTime.Now;
+                        warn.SetTime = DateTime.Now;
                         warn.State = true;
                         await _warnRepository.UpdateAsync(warn);
                     }
@@ -227,13 +228,14 @@ namespace YT.WebApi.Controllers
                 {
                     if (item[0] == null || item[1] == null || item[2] == null || item[3] == null) continue;
                     if (warns.Any(c => c.DeviceNum.Equals(item[0].ToString()) && c.WarnContent.Equals(item[2].ToString()))) continue;
+                    DateTime t = DateTime.Parse(item[3].ToString());
                     var war = new Warn()
                     {
                         DeviceNum = item[0].ToString(),
                         State = false,
                         WarnContent = item[2].ToString(),
                         WarnNum = item[1].ToString(),
-                        WarnTime = DateTime.Parse(item[3].ToString())
+                        WarnTime = t.AddHours(-8)
                     };
                     await _warnRepository.InsertAsync(war);
                 }

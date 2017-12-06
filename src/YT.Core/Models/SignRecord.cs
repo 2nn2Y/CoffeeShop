@@ -182,7 +182,7 @@ namespace YT.Models
         /// </summary>
         public string WarnContent { get; set; }
         /// <summary>
-        /// 报警事件
+        /// 报警时间
         /// </summary>
         public DateTime WarnTime { get; set; }
         /// <summary>
@@ -193,6 +193,10 @@ namespace YT.Models
         /// 故障解决时间
         /// </summary>
         public DateTime? DealTime { get; set; }
+        /// <summary>
+        /// 设置时间
+        /// </summary>
+        public DateTime? SetTime { get; set; }
     }
     /// <summary>
     /// 商城订单

@@ -61,7 +61,9 @@ export default {
           title: "故障发生时间",
           key: "warnDate",
           render: (h, params) => {
-            return this.$fmtTime(params.row.start);
+            return params.row.solveDate
+              ? this.$fmtTime(params.row.warnDate)
+              : "";
           }
         },
         {
