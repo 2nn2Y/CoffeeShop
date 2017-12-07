@@ -9,7 +9,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "iview": "^2.6.0",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
     "promise-polyfill": "^6.0.2",
     "time-formater": "^1.0.1",
     "vue": "^2.2.2",

@@ -10,7 +10,7 @@
              <FormItem label="运维人员">
               <Input v-model="params.userName" style="width: 140px" placeholder="运维人员"></Input>
             </FormItem>
-             <FormItem label="人员编号">
+             <FormItem label="人工编号">
               <Input v-model="params.userNum" style="width: 140px" placeholder="人员编号"></Input>
             </FormItem>
             </FormItem>

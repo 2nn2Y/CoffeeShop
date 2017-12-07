@@ -79,10 +79,10 @@ export default {
         },
         {
           title: "处理完成时间",
-          key: "solveDate",
+          key: "setTime",
           render: (h, params) => {
-            return params.row.solveDate
-              ? this.$fmtTime(params.row.solveDate)
+            return params.row.setTime
+              ? this.$fmtTime(params.row.setTime)
               : "";
           }
         },

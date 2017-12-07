@@ -418,7 +418,10 @@ namespace YT.ThreeData
             var count = result.Count();
             var ttt =
                 result.OrderByDescending(c => c.WarnCount).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-
+            foreach (var item in ttt)
+            {
+                item.WarnType = YtConsts.Types.FirstOrDefault(c => c.Type.Equals(item.WarnType))?.Chinese;
+            }
             return new PagedResultDto<DeviceWarnDto>(count, ttt);
         }
 
@@ -476,7 +479,6 @@ namespace YT.ThreeData
                     , c => c.UserName.Contains(input.Device))
                         group c by new { c.UserId, c.UserName } into h
                         select new { h.Key.UserId, h.Key.UserName };
-            var counts = users.Count();
             var signs = _recordRepository.GetAll()
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
@@ -498,6 +500,7 @@ namespace YT.ThreeData
                              End = input.End,
                              DaySign = r.Count()
                          };
+            var counts = result.Count();
             var final =
                 result.OrderByDescending(c => c.TimeSign).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             return new PagedResultDto<SignStaticialDto>(counts, final);
@@ -555,15 +558,14 @@ namespace YT.ThreeData
             var query = _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                 .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
-                .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value);
-
+                .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
+              .WhereIf(input.Start.HasValue, c => c.WarnTime>=input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.WarnTime<input.End.Value);
             var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
                 c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        join e in users on c.DeviceNum equals e.PointId
-                         into h
-                       from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
                        {
                            Id = c.Id,
@@ -573,15 +575,16 @@ namespace YT.ThreeData
                            SetTime = c.SetTime,
                            SolveDate = c.DealTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
-                           UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalHours : 0,
+                           UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalMinutes : 0,
                            State = c.WarnNum,
                            WarnDate = c.WarnTime,
                            WarnType = c.WarnNum,
-                           UserName = tt != null ? tt.UserName : ""
+                           UserName =e.UserName
                        };
-            var count = temp.Count();
+          
             temp = temp.WhereIf(input.Left.HasValue, c => c.SolveTime >= input.Left.Value)
                 .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value);
+            var count = temp.Count();
             var result = temp.OrderBy(c => c.IsSolve)
                 .ThenByDescending(c => c.UnSolveTime).Skip(input.SkipCount)
                 .Take(input.MaxResultCount).ToList();
@@ -985,7 +988,10 @@ namespace YT.ThreeData
                              WarnCount = d?.total ?? 0,
                              WarnType = d?.WarnNum
                          };
-
+            foreach (var item in result)
+            {
+                item.WarnType = YtConsts.Types.FirstOrDefault(c => c.Type.Equals(item.WarnType))?.Chinese;
+            }
             return _dataExcelExporter.ExportWarnByDevice(result.ToList());
         }
 
@@ -1111,17 +1117,17 @@ namespace YT.ThreeData
         public async Task<FileDto> ExportWarns(GetWarnInfoInput input)
         {
             var query = _warnRepository.GetAll()
-                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
-                .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value);
+                  .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                  .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
+                  .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
+                .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
+                  .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
 
             var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
                 c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()
                        join d in await GetPointsFromCache() on c.DeviceNum equals d.DeviceNum
                        join e in users on c.DeviceNum equals e.PointId
-                         into h
-                       from tt in h.DefaultIfEmpty()
                        select new WarnDetailDto()
                        {
                            Id = c.Id,
@@ -1131,12 +1137,13 @@ namespace YT.ThreeData
                            SetTime = c.SetTime,
                            SolveDate = c.DealTime,
                            SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
-                           UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalHours : 0,
+                           UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalMinutes : 0,
                            State = c.WarnNum,
                            WarnDate = c.WarnTime,
                            WarnType = c.WarnNum,
-                           UserName = tt != null ? tt.UserName : ""
+                           UserName = e.UserName
                        };
+
             var result = temp.ToList();
             foreach (var warnDetailDto in result)
             {

@@ -4,7 +4,7 @@
       <milk-table ref="list" :layout="[20,2,2]" :columns="cols" :search-api="searchApi" :params="params">
         <template slot="search">
           <Form ref="params" :model="params" inline :label-width="60">
-            <FormItem label="设备编号">
+            <FormItem label="机器编号">
               <Input v-model="params.device" style="width: 140px" placeholder="请输入设备编号"></Input>
             </FormItem>
             <FormItem label="产品名">
