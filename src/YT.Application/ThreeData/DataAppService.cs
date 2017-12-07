@@ -394,13 +394,12 @@ namespace YT.ThreeData
                        };
 
             var users = await _userPointRepository.GetAll()
-                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Equals(input.User)).ToListAsync();
+                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Contains(input.User)).ToListAsync();
             var points = await _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
             var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
-                         join e in users on c.DeviceNum equals e.PointId into b
-                         from bb in b.DefaultIfEmpty()
+                         join e in users on c.DeviceNum equals e.PointId 
                          select new DeviceWarnDto()
                          {
                              DeviceName = c.PointName,
@@ -410,7 +409,7 @@ namespace YT.ThreeData
                              Id = c.Id,
                              PerTime = d?.time ?? 0,
                              Start = input.Start,
-                             UserName = bb?.UserName,
+                             UserName = e.UserName,
                              WarnCount = d?.total ?? 0,
                              WarnType = d?.WarnNum
                          };
@@ -968,13 +967,12 @@ namespace YT.ThreeData
                        };
 
             var users = await _userPointRepository.GetAll()
-                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Equals(input.User)).ToListAsync();
+                .WhereIf(!input.User.IsNullOrWhiteSpace(), c => c.UserName.Contains(input.User)).ToListAsync();
             var points = await _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
             var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
-                         join e in users on c.DeviceNum equals e.PointId into b
-                         from bb in b.DefaultIfEmpty()
+                         join e in users on c.DeviceNum equals e.PointId 
                          select new DeviceWarnDto()
                          {
                              DeviceName = c.PointName,
@@ -984,7 +982,7 @@ namespace YT.ThreeData
                              Id = c.Id,
                              PerTime = d?.time ?? 0,
                              Start = input.Start,
-                             UserName = bb?.UserName,
+                             UserName = e.UserName,
                              WarnCount = d?.total ?? 0,
                              WarnType = d?.WarnNum
                          };
