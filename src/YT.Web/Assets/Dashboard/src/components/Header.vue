@@ -1,10 +1,10 @@
 <template>
   <div id="header">
     <div class="logo">
-      XXX管理平台
+      咖啡机后台
     </div>
     <div class="user" >
-      <img class="avatar" src="../assets/images/avatar.jpg" alt=""> 
+      <img class="avatar" src="../assets/images/avatar.jpg" alt="">
        <Dropdown @on-click="action">
         <a href="javascript:void(0)">
             {{account.name}}
