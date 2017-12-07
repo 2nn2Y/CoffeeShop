@@ -291,7 +291,9 @@ namespace YT.ThreeData
             var orders = await _storeRepository.GetAll()
                 .Where(c => c.OpenId.Equals(input.Device)
                             && c.PayState.HasValue && c.PayState.Value)
-                .Where(c => c.PayType == PayType.BalancePay || c.PayType == PayType.LinePay).ToListAsync();
+                .Where(c => c.PayType == PayType.BalancePay || c.PayType == PayType.LinePay)
+                .Where(c => c.OrderState.HasValue&&c.OrderState.Value)
+                .ToListAsync();
             var count = orders.Count;
             var temp = orders.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount);
 
