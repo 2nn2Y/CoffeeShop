@@ -169,7 +169,7 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.PayCharge)
                         {
                             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(order.OpenId));
-                            user.Balance += order.Price;
+                            user.Balance += ChangeMoney(order.Price);
                         }
                         WxPayData res = new WxPayData();
                         res.SetValue("return_code", "SUCCESS");
@@ -189,8 +189,17 @@ namespace YT.WebApi.Controllers
                 HttpContext.Current.Response.Write(res.ToXml());
                 HttpContext.Current.Response.End();
             }
-
             return Ok();
+        }
+
+        private int ChangeMoney(int money)
+        {
+            if (money == 5000) return 5000;
+            if (money == 10000) return 11000;
+            if (money == 15000) return 16500;
+            if (money == 20000) return 23000;
+            if (money == 30000) return 34000;
+            return 0;
         }
         /// <summary>
         /// 生成二维码

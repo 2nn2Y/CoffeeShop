@@ -80,7 +80,7 @@ export default {
               fail: function(res) {
                 console.log(res);
                 // 支付失败回调函数
-                _self.showBox("支付失败", "请重试");
+                _self.showBox("支付失败", JSON.stringify(res));
               }
             });
           }

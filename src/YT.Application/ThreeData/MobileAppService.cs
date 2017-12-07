@@ -563,6 +563,13 @@ namespace YT.ThreeData
         /// </summary>
         /// <returns></returns>
         Task<List<Product>> GetProducts();
+
+        /// <summary>
+        /// 充值
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<string> ChargePay(InsertOrderInput input);
         /// <summary>
         /// 获取订单列表
         /// </summary>
