@@ -48,6 +48,11 @@ export default {
           key: "city"
         },
         {
+          title: "设备名称",
+          key: "deviceName"
+        },
+
+        {
           title: "产品名称",
           key: "productName"
         },
