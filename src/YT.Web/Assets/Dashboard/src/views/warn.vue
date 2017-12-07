@@ -148,6 +148,8 @@ export default {
         return "demo-table-error-row";
       } else if (row.unSolveTime > 1) {
         return "demo-table-warn-row";
+      } else if (row.unSolveTime < 1 && row.unSolveTime > 0) {
+        return "demo-table-info-row";
       }
       return "";
     }
@@ -156,8 +158,12 @@ export default {
 </script>
 
 <style>
+.ivu-table .demo-table-info-row td {
+  background-color: #dfec6f;
+  color: #fff;
+}
 .ivu-table .demo-table-warn-row td {
-  background-color: #ffff00;
+  background-color: #c16521;
   color: #fff;
 }
 

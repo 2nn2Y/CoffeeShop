@@ -55,11 +55,11 @@ namespace YT
         /// <summary>
         /// 冰山
         /// </summary>
-        Ice = 1,
+        Ice =2,
         /// <summary>
         /// 基诺
         /// </summary>
-        Jack = 2
+        Jack = 1
     }
     
     /// <summary>

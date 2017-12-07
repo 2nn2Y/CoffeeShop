@@ -63,7 +63,7 @@ export default {
     init() {
       userMenus().then(r => {
         if (r.success) {
-          this.temp = r.result;
+          this.temp = r.result.items;
           this.genderMenus();
         }
       });
@@ -74,10 +74,12 @@ export default {
           const model = {
             content: element.displayName,
             url: element.url,
-            icon: element.icon
+            icon: element.icon,
+            children: null
           };
           this.temp.forEach(c => {
             if (c.parentId == element.id) {
+              model.children = [];
               model.children.push({
                 content: c.displayName,
                 url: c.url,
