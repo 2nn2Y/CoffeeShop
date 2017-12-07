@@ -579,7 +579,7 @@ namespace YT.ThreeData
             var count = temp.Count();
             temp = temp.WhereIf(input.Left.HasValue, c => c.SolveTime >= input.Left.Value)
                 .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value);
-            var result = temp.OrderBy(c => c.State).ThenByDescending(c => c.SolveTime)
+            var result = temp.OrderBy(c => c.State)
                 .ThenByDescending(c=>c.UnSolveTime).Skip(input.SkipCount)
                 .Take(input.MaxResultCount).ToList();
             return new PagedResultDto<WarnDetailDto>(count, result);
