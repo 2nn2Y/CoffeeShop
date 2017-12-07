@@ -164,12 +164,14 @@ namespace YT.WebApi.Controllers
                                 ProductName = p.ProductName,
                                 Cost = p.Cost ?? 0
                             });
+                            order.OrderState = true;
                         }
                         //充值
                         else if (order.PayType == PayType.PayCharge)
                         {
                             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(order.OpenId));
                             user.Balance += ChangeMoney(order.Price);
+                            order.OrderState = true;
                         }
                         WxPayData res = new WxPayData();
                         res.SetValue("return_code", "SUCCESS");

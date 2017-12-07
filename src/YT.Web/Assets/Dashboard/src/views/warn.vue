@@ -144,11 +144,11 @@ export default {
         });
     },
     formatter(row, index) {
-      if (row.unSolveTime > 2) {
+      if (row.unSolveTime > 120) {
         return "demo-table-error-row";
-      } else if (row.unSolveTime > 1) {
+      } else if (row.unSolveTime > 60) {
         return "demo-table-warn-row";
-      } else if (row.unSolveTime < 1 && row.unSolveTime > 0) {
+      } else if (row.unSolveTime <= 60 && row.unSolveTime > 0) {
         return "demo-table-info-row";
       }
       return "";
