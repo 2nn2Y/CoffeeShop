@@ -41,7 +41,11 @@ namespace YT
         /// <summary>
         /// 充值
         /// </summary>
-        PayCharge=3
+        PayCharge=3,
+        /// <summary>
+        /// 活动支付
+        /// </summary>
+        ActivityPay=4
     }
     /// <summary>
     /// 订单类型

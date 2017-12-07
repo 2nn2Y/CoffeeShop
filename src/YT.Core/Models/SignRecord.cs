@@ -113,6 +113,10 @@ namespace YT.Models
         /// </summary>
         public bool IsCard { get; set; }
         /// <summary>
+        /// 抵扣金额
+        /// </summary>
+        public int? Cost { get; set; }
+        /// <summary>
         /// 价格
         /// </summary>
         public int Price { get; set; }
@@ -245,6 +249,10 @@ namespace YT.Models
         /// 支付状态
         /// </summary>
         public bool? PayState { get; set; }
+        /// <summary>
+        /// 使用代金券
+        /// </summary>
+        public Guid? UseCard { get; set; }
         /// <summary>
         /// 订单状态
         /// </summary>

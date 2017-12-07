@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -8,11 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Xml;
-using System.Xml.Serialization;
 using Abp.Domain.Repositories;
-using Abp.Json;
-using Abp.Logging;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -21,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YT.Configuration;
 using YT.Models;
+using YT.ThreeData;
 using YT.WebApi.Models;
 
 namespace YT.WebApi.Controllers
@@ -31,20 +26,31 @@ namespace YT.WebApi.Controllers
     public class WechatController : AbpApiController
     {
         private readonly ICacheManager _cacheManager;
-        private readonly IRepository<StoreUser> _useRepository;
         private readonly IRepository<StoreOrder> _orderRepository;
-        
+        private readonly IMobileAppService _mobileAppService;
+        private readonly IRepository<StoreUser> _userRepository;
+        private readonly IRepository<UserCard> _cardRepository;
+        private readonly IRepository<Product> _productRepository;
+
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="cacheManager"></param>
-        /// <param name="useRepository"></param>
         /// <param name="orderRepository"></param>
-        public WechatController(ICacheManager cacheManager, IRepository<StoreUser> useRepository, IRepository<StoreOrder> orderRepository)
+        /// <param name="mobileAppService"></param>
+        /// <param name="userRepository"></param>
+        /// <param name="cardRepository"></param>
+        /// <param name="productRepository"></param>
+        public WechatController(ICacheManager cacheManager,
+            IRepository<StoreOrder> orderRepository,
+            IMobileAppService mobileAppService, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository, IRepository<Product> productRepository)
         {
             _cacheManager = cacheManager;
-            _useRepository = useRepository;
             _orderRepository = orderRepository;
+            _mobileAppService = mobileAppService;
+            _userRepository = userRepository;
+            _cardRepository = cardRepository;
+            _productRepository = productRepository;
         }
 
         /// <summary>
@@ -61,7 +67,7 @@ namespace YT.WebApi.Controllers
         /// 接收从微信支付后台发送过来的数据并验证签名
         /// </summary>
         /// <returns>微信支付后台返回的数据</returns>
-        public WxPayData GetNotifyData(Stream stram)
+        private WxPayData GetNotifyData(Stream stram)
         {
             //接收从微信后台POST过来的数据
             System.IO.Stream s = stram;
@@ -114,19 +120,64 @@ namespace YT.WebApi.Controllers
             var rcode = notifyData.GetValue("result_code").ToString();
             if (code.ToUpper().Equals("SUCCESS") && rcode.ToUpper().Equals("SUCCESS"))
             {
-                var num= notifyData.GetValue("out_trade_no").ToString();
+                var num = notifyData.GetValue("out_trade_no").ToString();
                 var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(num));
                 if (order != null)
                 {
-                    order.WechatOrder = notifyData.GetValue("transaction_id").ToString();
-                    order.PayState = true;
-                    await _orderRepository.UpdateAsync(order);
-                    WxPayData res = new WxPayData();
-                    res.SetValue("return_code", "SUCCESS");
-                    res.SetValue("return_msg", "OK");
-                    HttpContext.Current.Response.Clear();
-                    HttpContext.Current.Response.Write(res.ToXml());
-                    HttpContext.Current.Response.End();
+                    if (!order.OrderState.HasValue)
+                    {
+                        order.WechatOrder = notifyData.GetValue("transaction_id").ToString();
+                        order.PayState = true;
+                        await _orderRepository.UpdateAsync(order);
+                        //在线支付发货 
+                        if (order.PayType == PayType.LinePay)
+                        {
+                            if (order.UseCard.HasValue)
+                            {
+                                var card = await _cardRepository.FirstOrDefaultAsync(c => c.Key == order.UseCard.Value);
+                                card.State = true;
+                            }
+                            //发货
+                            if (order.OrderType == OrderType.Ice)
+                            {
+                                var result = await _mobileAppService.PickProductIce(order);
+                                order.OrderState = true;
+                            }
+                            else
+                            {
+                                var temp = await _mobileAppService.PickProductJack(order);
+                                if (temp.status == "success")
+                                {
+                                    order.OrderState = true;
+                                }
+                            }
+                        }
+                        //活动支付  添加 卡券
+                        else if (order.PayType == PayType.ActivityPay)
+                        {
+                            var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
+                            await _cardRepository.InsertAsync(new UserCard()
+                            {
+                                Key = Guid.NewGuid(),
+                                OpenId = order.OpenId,
+                                State = false,
+                                ProductName = p.ProductName,
+                                Cost = p.Cost ?? 0
+                            });
+                        }
+                        //充值
+                        else if (order.PayType == PayType.PayCharge)
+                        {
+                            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(order.OpenId));
+                            user.Balance += order.Price;
+                        }
+                        WxPayData res = new WxPayData();
+                        res.SetValue("return_code", "SUCCESS");
+                        res.SetValue("return_msg", "OK");
+                        HttpContext.Current.Response.Clear();
+                        HttpContext.Current.Response.Write(res.ToXml());
+                        HttpContext.Current.Response.End();
+                    }
                 }
             }
             else
@@ -138,7 +189,7 @@ namespace YT.WebApi.Controllers
                 HttpContext.Current.Response.Write(res.ToXml());
                 HttpContext.Current.Response.End();
             }
-           
+
             return Ok();
         }
         /// <summary>
@@ -209,7 +260,7 @@ namespace YT.WebApi.Controllers
         [HttpGet]
         public async Task<dynamic> GetUserBalance(string openId)
         {
-            var user = await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null) throw new UserFriendlyException("用户信息不存在");
             return user;
         }
@@ -221,8 +272,8 @@ namespace YT.WebApi.Controllers
         {
             var order = await _orderRepository.FirstOrDefaultAsync(c =>
                     c.OrderNum.Equals(input.OrderNo) && c.DeviceNum.Equals(input.AssetId));
-            if (order==null) throw new UserFriendlyException("该订单不存在");
-            if (!order.PayState.HasValue||!order.PayState.Value) throw new UserFriendlyException("该订单未支付");
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+            if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             if (input.DeliverStatus.Equals("0"))
             {
                 order.OrderState = true;
@@ -243,7 +294,7 @@ namespace YT.WebApi.Controllers
                     c.OrderNum.Equals(input.Id) && c.DeviceNum.Equals(input.Vmc));
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
-                order.OrderState = true;
+            order.OrderState = true;
         }
         /// <summary>
         /// 获取用户卡圈列表
@@ -379,7 +430,7 @@ namespace YT.WebApi.Controllers
             string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
             var openId = result.GetValue("openid").ToString();
-            var user = await _useRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null)
             {
                 var t = new StoreUser()
@@ -387,7 +438,7 @@ namespace YT.WebApi.Controllers
                     Balance = 0,
                     OpenId = openId
                 };
-                await _useRepository.InsertAsync(t);
+                await _userRepository.InsertAsync(t);
                 result.Add("balance", 0);
             }
             else

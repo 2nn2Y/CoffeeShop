@@ -70,7 +70,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<List<Product>> GetProducts()
         {
-            var query = (await GetProductFromCache()).Where(c=>!c.IsCard);
+            var query = (await GetProductFromCache()).Where(c => !c.IsCard);
             return query.ToList();
         }
         /// <summary>
@@ -88,7 +88,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input)
         {
-            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id));
+            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id)&&!c.State);
             return cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
         }
         /// <summary>
@@ -197,7 +197,7 @@ namespace YT.ThreeData
             {
                 if (order.PayState.HasValue && order.PayState.Value)
                 {
-                    throw new  UserFriendlyException("该订单已支付,不可重复付款");
+                    throw new UserFriendlyException("该订单已支付,不可重复付款");
                 }
                 order.OpenId = input.OpenId;
                 order.Price = p.Price;
@@ -205,12 +205,21 @@ namespace YT.ThreeData
                 order.OrderType = input.OrderType;
                 order.PayType = PayType.LinePay;
             }
-            await _storeRepository.InsertOrUpdateAsync(order);
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
                 TotalFee = p.Price
             };
+            var card = await _cardRepository.FirstOrDefaultAsync(c => c.Key == input.Key.Value);
+            //使用优惠券
+            if (card != null)
+            {
+                order.UseCard = input.Key;
+                var t = p.Price - card.Cost;
+                jsApiPay.TotalFee = t <= 0?0:t;
+                
+            }
+            await _storeRepository.InsertOrUpdateAsync(order);
             jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();
             return param;
@@ -227,7 +236,7 @@ namespace YT.ThreeData
             var order = new StoreOrder()
             {
                 OpenId = input.OpenId,
-                PayType = PayType.LinePay,
+                PayType = PayType.ActivityPay,
                 OrderNum = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
@@ -304,7 +313,7 @@ namespace YT.ThreeData
         /// 取货
         /// </summary>
         /// <returns></returns>
-        private async Task<dynamic> PickProductJack(StoreOrder order)
+        public async Task<dynamic> PickProductJack(StoreOrder order)
         {
             var url = "http://103.231.67.143:8079/FASTCODE";
             var temp = $@"ID={order.OrderNum}&UserName={"shuoyibuer"}&Password={"coffee888"}&Vmc={
@@ -321,7 +330,7 @@ namespace YT.ThreeData
         /// 取货
         /// </summary>
         /// <returns></returns>
-        private async Task<dynamic> PickProductIce(StoreOrder order)
+        public async Task<dynamic> PickProductIce(StoreOrder order)
         {
             var url = order.NoticeUrl;
 
@@ -583,7 +592,7 @@ namespace YT.ThreeData
         /// 获取卡圈列表
         /// </summary>
         /// <returns></returns>
-         Task<List<Product>> GetCards();
+        Task<List<Product>> GetCards();
 
         /// <summary>
         /// 获取我的列表
@@ -597,5 +606,17 @@ namespace YT.ThreeData
         /// <param name="input"></param>
         /// <returns></returns>
         Task<string> CardPay(InsertOrderInput input);
+
+        /// <summary>
+        /// 取货
+        /// </summary>
+        /// <returns></returns>
+        Task<dynamic> PickProductJack(StoreOrder order);
+
+        /// <summary>
+        /// 取货
+        /// </summary>
+        /// <returns></returns>
+        Task<dynamic> PickProductIce(StoreOrder order);
     }
 }
