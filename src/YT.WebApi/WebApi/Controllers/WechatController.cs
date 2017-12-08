@@ -432,30 +432,46 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<dynamic> GetInfoByCode(string code)
         {
+            var tt = await GetTokenFromCache();
             var temp =
              $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
             var ut = await HttpHandler.GetAsync<JObject>(temp);
             if (ut.GetValue("access_token") == null) throw new UserFriendlyException("获取用户token失败");
-            var token = ut.GetValue("access_token").ToString();
+            // var token = ut.GetValue("access_token").ToString();
             var openid = ut.GetValue("openid").ToString();
-            string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
-            var result = await HttpHandler.GetAsync<JObject>(url);
-            var openId = result.GetValue("openid").ToString();
-            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            //  string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
+            string purl = $"https://api.weixin.qq.com/cgi-bin/user/info?access_token={tt}&openid={openid}";
+            var result = await HttpHandler.GetAsync<JObject>(purl);
+            //  var openId = result.GetValue("openid").ToString();
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openid));
             if (user == null)
             {
-                var t = new StoreUser()
+                user = new StoreUser()
                 {
                     Balance = 0,
-                    OpenId = openId
+                    OpenId = openid
                 };
-                await _userRepository.InsertAsync(t);
+                await _userRepository.InsertAsync(user);
                 result.Add("balance", 0);
             }
             else
             {
                 result.Add("balance", user.Balance);
             }
+            var fcard = await _cardRepository.FirstOrDefaultAsync(c => !c.IsBuy);
+            if (fcard == null && result.GetValue("subscribe").ToString().Equals("1"))
+            {
+                await _cardRepository.InsertAsync(new UserCard()
+                {
+                    Cost = 788,
+                    IsBuy = false,
+                    Key = Guid.NewGuid(),
+                    OpenId = openid,
+                    State = false,
+                    ProductName = "7.88元代金券"
+                });
+            }
+
             return result;
         }
         /// <summary>

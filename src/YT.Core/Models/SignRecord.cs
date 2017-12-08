@@ -314,6 +314,10 @@ namespace YT.Models
         /// </summary>
         public  int Cost { get; set; }
         /// <summary>
+        /// 是否购买的
+        /// </summary>
+        public bool IsBuy { get; set; }
+        /// <summary>
         /// 唯一編號
         /// </summary>
         public  Guid Key { get; set; }
