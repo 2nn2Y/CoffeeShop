@@ -217,7 +217,7 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName }
+                         group c by new { c.City,c.DeviceNum, c.PointName, c.SchoolName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
@@ -227,6 +227,7 @@ namespace YT.ThreeData
                              Area = h.Key.City,
                              DeviceName = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
+                             DeviceNum = h.Key.DeviceNum,
                              Start = input.Start,
                              End = input.End
                          };
@@ -376,9 +377,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<DeviceWarnDto>> GetWarnByDevice(GetWarnInput input)
         {
+            var arr = YtConsts.Types.WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.Chinese.Contains(input.Type))
+               .Select(c => c.Type).ToList();
             var warns = await _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Equals(input.Device))
-                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Equals(input.Type))
+                .Where(c=> arr.Contains(c.WarnNum))
                 .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value).ToListAsync();
             var temp = from c in warns
@@ -554,9 +557,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetWarnInfoInput input)
         {
+            var arr = YtConsts.Types.WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.Chinese.Contains(input.Type))
+                .Select(c => c.Type).ToList();
             var query = _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
+                  .Where( c => arr.Contains(c.WarnNum))
                 .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
               .WhereIf(input.Start.HasValue, c => c.WarnTime>=input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.WarnTime<input.End.Value);
@@ -768,10 +773,10 @@ namespace YT.ThreeData
         public async Task<FileDto> ExportAreaProductsSale(GetSaleInput input)
         {
             var query = await
-              _orderRepository.GetAll()
-                  .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                  .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                  .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
+               _orderRepository.GetAll()
+                   .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                   .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var points = (await GetPointsFromCache())
                 .WhereIf(!input.Area.IsNullOrWhiteSpace(), c => c.City.Contains(input.Area))
                 .WhereIf(!input.City.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.City));
@@ -796,7 +801,7 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName }
+                         group c by new { c.City, c.DeviceNum, c.PointName, c.SchoolName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
@@ -806,13 +811,13 @@ namespace YT.ThreeData
                              Area = h.Key.City,
                              DeviceName = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
+                             DeviceNum = h.Key.DeviceNum,
                              Start = input.Start,
                              End = input.End
                          };
             var result =
                 orders.OrderByDescending(c => c.Count)
-                   .ToList();
-
+                  .ToList();
             return _dataExcelExporter.ExportAreaProductsSale(result);
         }
 
@@ -949,9 +954,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportWarnByDevice(GetWarnInput input)
         {
+            var arr = YtConsts.Types.WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.Chinese.Contains(input.Type))
+                 .Select(c => c.Type).ToList();
             var warns = await _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Equals(input.Device))
-                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Equals(input.Type))
+                .Where(c => arr.Contains(c.WarnNum))
                 .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
                 .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value).ToListAsync();
             var temp = from c in warns
@@ -1114,9 +1121,11 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportWarns(GetWarnInfoInput input)
         {
+            var arr = YtConsts.Types.WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.Chinese.Contains(input.Type))
+               .Select(c => c.Type).ToList();
             var query = _warnRepository.GetAll()
                   .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                  .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
+                  .Where( c => arr.Contains(c.WarnNum))
                   .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
                 .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
                   .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
