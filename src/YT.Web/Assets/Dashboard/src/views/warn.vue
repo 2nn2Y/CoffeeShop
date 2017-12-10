@@ -163,7 +163,7 @@ export default {
   color: #fff;
 }
 .ivu-table .demo-table-warn-row td {
-  background-color: yellow;
+  background-color: #7f3203;
   color: #fff;
 }
 
