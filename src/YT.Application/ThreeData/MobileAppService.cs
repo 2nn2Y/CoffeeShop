@@ -240,7 +240,6 @@ namespace YT.ThreeData
                 OrderNum = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
-                Count = input.Count,
                 Price = p.Price,
                 ProductId = p.Id
             };
@@ -248,7 +247,7 @@ namespace YT.ThreeData
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
-                TotalFee = p.Price*input.Count
+                TotalFee = p.Price
             };
             jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();

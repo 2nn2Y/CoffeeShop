@@ -274,10 +274,7 @@ namespace YT.Models
         /// 价格
         /// </summary>
         public int Price { get; set; }
-        /// <summary>
-        /// 数量
-        /// </summary>
-        public int Count { get; set; }
+    
         /// <summary>
         /// 商品id
         /// </summary>

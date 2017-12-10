@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -156,7 +157,8 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.ActivityPay)
                         {
                             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
-                            var count = order.Count;
+                            var count =int.Parse(ConfigurationManager.AppSettings.Get("CardCount")) ;
+                            
                             for (int i = 0; i < count; i++)
                             {
                                 await _cardRepository.InsertAsync(new UserCard()
