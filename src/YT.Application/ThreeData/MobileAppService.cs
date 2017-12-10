@@ -388,6 +388,11 @@ namespace YT.ThreeData
                              State = warn.State,
                              DeviceName = e.PointName
                          };
+            foreach (var mobileWarnDto in result)
+            {
+                mobileWarnDto.Description =
+                    YtConsts.Types.FirstOrDefault(c => c.Type.Equals(mobileWarnDto.Content))?.Chinese;
+            }
             return new WarnDto()
             {
                 Anomaly = result.Where(c => !c.State).ToList(),

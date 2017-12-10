@@ -1,26 +1,10 @@
 <template>
   <div >
-    <img src="../assets/timg.jpg" :style="{width:width,height:height }">
+    <img src="../assets/timg.jpg" style="width:375px;height:620px;">
   </div>
 </template>
 <script >
 export default {
-  activated() {
-    const userId = sessionStorage.getItem("userId");
-    if (userId) {
-      this.$router.push({ path: "/sign" });
-    } else {
-      if (window.location.href.indexOf("code") >= 0) {
-        this.login();
-      } else {
-        const url = encodeURI("http://wx.youyinkeji.cn/#/author");
-        // const test = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?appid=ww480b7545345a38f7&agentid=1000002&redirect_uri=${url}&state=web_login@gyoss9`;
-        // window.location.href = test;
-        // 跳转到微信授权页面
-        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww480b7545345a38f7&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&agentid=1000002&state=STATE#wechat_redirect`;
-      }
-    }
-  },
   created() {
     if (window.location.href.indexOf("code") >= 0) {
       this.login();
@@ -39,8 +23,6 @@ export default {
   },
   data() {
     return {
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
       code: window.location.href.split("=")[1]
     };
   },
