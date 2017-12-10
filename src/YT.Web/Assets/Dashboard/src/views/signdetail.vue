@@ -28,7 +28,7 @@
       </milk-table>
     </Row>
     <Modal v-model="modal.map" :width="900" title="地图展示" @on-ok="ok" @on-cancel="cancel">
-      <baidu-map :center="{lng: 116.404, lat: 39.915}" :zoom="zoom" class="bm-view">
+      <baidu-map :center="position" :zoom="zoom" class="bm-view">
         <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
         <bm-marker :position="position" :dragging="false" animation="BMAP_ANIMATION_BOUNCE">

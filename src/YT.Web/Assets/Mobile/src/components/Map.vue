@@ -3,7 +3,7 @@
     <view-box ref="viewBox">
     <baidu-map :center="map.center" :zoom="map.zoom" class="bm-view">
       <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-      <bm-marker :position="location" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
+      <bm-marker @dragend="dragend" :position="location" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
       </bm-marker>
       <bm-geolocation @locationSuccess="loadpoint" anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
     </baidu-map>
@@ -102,9 +102,15 @@ export default {
     ViewBox
   },
   methods: {
+    dragend(point) {
+      console.log(point);
+      this.location.lng = point.point.lng;
+      this.location.lat = point.point.lat;
+    },
     loadpoint(point) {
-      alert(JSON.stringify(point));
-      this.location = point;
+      console.log(point);
+      this.location.lng = point.point.lng;
+      this.location.lat = point.point.lat;
     },
     show(index) {
       this.$refs.previewer.show(index);
