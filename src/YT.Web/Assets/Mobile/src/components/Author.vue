@@ -1,7 +1,7 @@
 <template>
   <div >
-    <img src="../assets/timg.jpg" style="width:375px;height:620px;">
-    <!-- 请求结果{{response}} -->
+    <!-- <img src="../assets/timg.jpg" style="width:375px;height:620px;"> -->
+    请求结果{{response}}
   </div>
 </template>
 <script >
@@ -39,8 +39,11 @@ export default {
         .then(response => {
           this.response = JSON.stringify(response);
           if (response && response.data) {
-            sessionStorage.setItem("userId", response.data.userid);
-            this.$router.push({ path: "/sign" });
+            if (response.data.userid) {
+              sessionStorage.setItem("userId", response.data.userid);
+              this.$router.push({ path: "/sign" });
+            }
+
             //  window.location.href = "http://wx.youyinkeji.cn/#/sign";
           } else {
             if (sessionStorage.getItem("userId")) {
