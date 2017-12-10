@@ -5,6 +5,7 @@
       <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
       <bm-marker :position="location" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
       </bm-marker>
+      <bm-geolocation @locationSuccess="loadpoint" anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
     </baidu-map>
 {{request}}
 <br/>
@@ -84,13 +85,13 @@ export default {
     const url = document.location.href; // 当前url
     _self.wxConfig(url);
     _self.$wechat.ready(() => {
-      _self.$wechat.getLocation({
-        type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-        success: function(res) {
-          _self.location.lat = res.latitude;
-          _self.location.lng = res.longitude;
-        }
-      });
+      // _self.$wechat.getLocation({
+      //   type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+      //   success: function(res) {
+      //     _self.location.lat = res.latitude;
+      //     _self.location.lng = res.longitude;
+      //   }
+      // });
     });
   },
   components: {
@@ -101,6 +102,10 @@ export default {
     ViewBox
   },
   methods: {
+    loadpoint(point) {
+      alert(JSON.stringify(point));
+      this.location = point;
+    },
     show(index) {
       this.$refs.previewer.show(index);
     },

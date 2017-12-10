@@ -410,6 +410,7 @@ namespace YT.ThreeData
             if (warn == null) throw new UserFriendlyException("该报警信息不存在");
             if (warn.State) throw new UserFriendlyException("该报警信息已解决");
             warn.State = true;
+            warn.DealTime=DateTime.Now;
         }
 
         /// <summary>

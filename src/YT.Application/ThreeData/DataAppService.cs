@@ -544,7 +544,7 @@ namespace YT.ThreeData
                            Longitude = d.Longitude,
                            SignLocation = d.Point.PointName,
                            Profiles = d.SignProfiles.Any() ?
-                           d.SignProfiles.Select(w => Host + w.Profile.Url).ToList() : null
+                           d.SignProfiles.Where(w=>w.ProfileId.HasValue).Select(w => Host + w.Profile.Url).ToList() : null
                        };
             var final =
                temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();

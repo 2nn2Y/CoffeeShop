@@ -1,6 +1,7 @@
 <template>
   <div >
     <img src="../assets/timg.jpg" style="width:375px;height:620px;">
+    <!-- 请求结果{{response}} -->
   </div>
 </template>
 <script >
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      response: null,
       code: window.location.href.split("=")[1]
     };
   },
@@ -35,11 +37,11 @@ export default {
       this.$http
         .get(url)
         .then(response => {
+          this.response = JSON.stringify(response);
           if (response && response.data) {
-            if (response.data.userid) {
-              sessionStorage.setItem("userId", response.data.userid);
-              window.location.href = "http://wx.youyinkeji.cn/#/sign";
-            }
+            sessionStorage.setItem("userId", response.data.userid);
+            this.$router.push({ path: "/sign" });
+            //  window.location.href = "http://wx.youyinkeji.cn/#/sign";
           } else {
             if (sessionStorage.getItem("userId")) {
               const ww = encodeURI("http://wx.youyinkeji.cn/#/author");
