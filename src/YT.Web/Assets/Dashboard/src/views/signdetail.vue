@@ -36,7 +36,7 @@
       </baidu-map>
     </Modal>
     <Modal v-model="modal.image" title="图片展示" @on-ok="ok" @on-cancel="cancel">
-      <img v-for="(item,index) in images" :key="index" :src="item">
+      <img style="width:500px;height:500px;" v-for="(item,index) in images" :key="index" :src="item">
     </Modal>
   </section>
 </template>
