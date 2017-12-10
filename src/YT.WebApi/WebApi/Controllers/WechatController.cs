@@ -208,7 +208,7 @@ namespace YT.WebApi.Controllers
             if (money == 15000) return 16500;
             if (money == 20000) return 23000;
             if (money == 30000) return 34000;
-            return money;
+            return 30000;
         }
         /// <summary>
         /// 生成二维码
