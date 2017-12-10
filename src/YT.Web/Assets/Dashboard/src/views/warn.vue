@@ -81,16 +81,16 @@ export default {
           title: "处理完成时间",
           key: "setTime",
           render: (h, params) => {
-            return params.row.setTime
-              ? this.$fmtTime(params.row.setTime)
-              : "";
+            return params.row.setTime ? this.$fmtTime(params.row.setTime) : "";
           }
         },
         {
           title: "故障解决时间",
           key: "solveDate",
           render: (h, params) => {
-            return params.row.setDate ? this.$fmtTime(params.row.setDate) : "";
+            return params.row.solveDate
+              ? this.$fmtTime(params.row.solveDate)
+              : "";
           }
         },
         {
@@ -159,7 +159,7 @@ export default {
 
 <style>
 .ivu-table .demo-table-info-row td {
-  background-color:green;
+  background-color: green;
   color: #fff;
 }
 .ivu-table .demo-table-warn-row td {
