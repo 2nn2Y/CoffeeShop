@@ -523,7 +523,6 @@ namespace YT.ThreeData
                   , c => c.UserId.Contains(input.UserNum))
                         group c by new { c.UserId, c.UserName } into h
                         select new { h.Key.UserId, h.Key.UserName };
-            var counts = users.Count();
             var signs = await _recordRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.Point.DeviceNum.Contains(input.Device))
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
@@ -546,6 +545,7 @@ namespace YT.ThreeData
                            Profiles = d.SignProfiles.Any() ?
                            d.SignProfiles.Where(w=>w.ProfileId.HasValue).Select(w => Host + w.Profile.Url).ToList() : null
                        };
+            var counts = users.Count();
             var final =
                temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             return new PagedResultDto<SignDetailDto>(counts, final);
