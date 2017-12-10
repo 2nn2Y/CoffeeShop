@@ -21,10 +21,10 @@
               <Input v-model="params.user" style="width: 140px" placeholder="运维人员"></Input>
             </FormItem>
             <FormItem label="开始时长">
-                  <Input v-model="params.left" :number="true" placeholder="开始时长" style="width: 140px"></Input>
+                  <InputNumber  v-model="params.left"></InputNumber>
             </FormItem>
             <FormItem label="截至时长">
-                <Input v-model="params.right" :number="true" placeholder="截至时长" style="width: 140px"></Input>
+               <InputNumber  v-model="params.right"></InputNumber>
             </FormItem>
             <FormItem label="开始时间">
               <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
@@ -81,7 +81,9 @@ export default {
           title: "处理完成时间",
           key: "setTime",
           render: (h, params) => {
-            return params.row.setTime ? this.$fmtTime(params.row.setTime) : "";
+            return params.row.setTime
+              ? this.$fmtTime(params.row.setTime)
+              : "";
           }
         },
         {
@@ -157,16 +159,16 @@ export default {
 
 <style>
 .ivu-table .demo-table-info-row td {
-  background-color: #dfec6f;
+  background-color:green;
   color: #fff;
 }
 .ivu-table .demo-table-warn-row td {
-  background-color: #c16521;
+  background-color: yellow;
   color: #fff;
 }
 
 .ivu-table .demo-table-error-row td {
-  background-color: #dc143c;
+  background-color: red;
   color: #fff;
 }
 </style>

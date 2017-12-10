@@ -51,7 +51,7 @@ export default {
           title: "设备名称",
           key: "deviceName"
         },
-        {
+  {
           title: "设备编号",
           key: "deviceNum"
         },

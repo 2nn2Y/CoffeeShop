@@ -222,10 +222,7 @@ namespace YT.ThreeData.Exporting
                         sheet.OutLineApplyStyle = true;
                         AddHeader(
                             sheet,
-                            "地区",
                            "区域",
-                           "设备名称",
-                           "设备编号",
                            "产品名称",
                            "销量",
                            "总价",
@@ -234,10 +231,7 @@ namespace YT.ThreeData.Exporting
                             );
                         AddObjects(
                             sheet, 2, orders,
-                            _ => _.Area,
                             _ => _.City,
-                            _ => _.DeviceName,
-                            _ => _.DeviceNum,
                             _ => _.ProductName,
                             _ => _.Count,
                             _ => _.Price,
