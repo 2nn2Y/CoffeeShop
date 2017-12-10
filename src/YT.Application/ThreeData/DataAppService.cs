@@ -545,7 +545,7 @@ namespace YT.ThreeData
                            Profiles = d.SignProfiles.Any() ?
                            d.SignProfiles.Where(w=>w.ProfileId.HasValue).Select(w => Host + w.Profile.Url).ToList() : null
                        };
-            var counts = users.Count();
+            var counts = temp.Count();
             var final =
                temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             return new PagedResultDto<SignDetailDto>(counts, final);

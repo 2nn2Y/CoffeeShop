@@ -259,8 +259,10 @@ namespace YT.WebApi.Controllers
                 {
                     var info = YtConsts.Types.FirstOrDefault(c => c.Type.Equals(warn.WarnNum));
                     var time = (DateTime.Now - warn.WarnTime).TotalHours;
-                    temp += $@"设备:{warn.DeviceNum}在{warn.WarnTime}时间出现{info?.Chinese}类型的问题<br/>
-                详细信息:{warn.WarnContent},报警时间:{warn.WarnTime}. 已持续{time}小时,请尽快处理";
+                    time = Math.Round(time, 2);
+                    temp += $@"设备:{warn.DeviceNum}在{warn.WarnTime}时间出现{info?.Chinese}类型的问题已持续{time}小时,请尽快处理<br/>
+                                  http://wx.youyinkeji.cn/  ";
+                 
                 });
                 if (!temp.IsNullOrWhiteSpace())
                 {
