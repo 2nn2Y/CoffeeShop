@@ -3,7 +3,7 @@
     <view-box ref="viewBox">
     <baidu-map :center="map.center" :zoom="map.zoom" class="bm-view">
       <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-      <bm-marker @dragend="dragend" :position="location" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
+      <bm-marker @dragend="dragend" :position="location" :dragging="false" animation="BMAP_ANIMATION_BOUNCE">
       </bm-marker>
       <bm-geolocation @locationSuccess="loadpoint" anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
     </baidu-map>
