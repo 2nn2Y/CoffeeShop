@@ -586,7 +586,7 @@ namespace YT.ThreeData
                            PointName = d.PointName,
                            SetTime = c.SetTime,
                            SolveDate = c.DealTime,
-                           SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).Minutes : 0,
+                           SolveTime = c.DealTime.HasValue ? (c.DealTime.Value - c.WarnTime).TotalMinutes : 0,
                            UnSolveTime = !c.State ? (DateTime.Now - c.WarnTime).TotalMinutes : 0,
                            State = c.WarnNum,
                            WarnDate = c.WarnTime,

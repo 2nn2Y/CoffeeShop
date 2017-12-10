@@ -90,7 +90,7 @@ namespace YT.ThreeData.Dtos
         /// <summary>
         /// 解决时长
         /// </summary>
-        public int SolveTime { get; set; }
+        public double SolveTime { get; set; }
         /// <summary>
         /// 未解决时间
         /// </summary>
