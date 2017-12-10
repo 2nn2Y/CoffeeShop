@@ -14,6 +14,8 @@ using YT.Models;
 using YT.ThreeData.Dtos;
 using YT.ThreeData.Exporting;
 using Abp.Linq.Extensions;
+using Abp.Timing.Timezone;
+
 namespace YT.ThreeData
 {
     /// <summary>
@@ -29,7 +31,7 @@ namespace YT.ThreeData
         private readonly IRepository<UserPoint> _userPointRepository;
         private readonly IRepository<SignRecord> _recordRepository;
         private readonly IDataExcelExporter _dataExcelExporter;
-
+        private readonly ITimeZoneConverter _timeZoneConverter;
 
         /// <summary>
         /// ctor
@@ -42,13 +44,14 @@ namespace YT.ThreeData
         /// <param name="warnRepository"></param>
         /// <param name="userPointRepository"></param>
         /// <param name="recordRepository"></param>
+        /// <param name="timeZoneConverter"></param>
         public DataAppService(ICacheManager cacheManager,
             IRepository<Order> orderRepository,
             IRepository<Point> pointRepository,
             IRepository<Product> productRepository,
             IDataExcelExporter dataExcelExporter,
             IRepository<Warn> warnRepository,
-            IRepository<UserPoint> userPointRepository, IRepository<SignRecord> recordRepository)
+            IRepository<UserPoint> userPointRepository, IRepository<SignRecord> recordRepository, ITimeZoneConverter timeZoneConverter)
         {
             _cacheManager = cacheManager;
             _orderRepository = orderRepository;
@@ -58,6 +61,7 @@ namespace YT.ThreeData
             _warnRepository = warnRepository;
             _userPointRepository = userPointRepository;
             _recordRepository = recordRepository;
+            _timeZoneConverter = timeZoneConverter;
         }
         #region 统计报表
         /// <summary>
@@ -554,12 +558,21 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<WarnDetailDto>> GetWarns(GetWarnInfoInput input)
         {
+            DateTime? left = null, right = null;
+            if (input.Start.HasValue)
+            {
+                left = new DateTime(input.Start.Value.Year,input.Start.Value.Month,input.Start.Value.Day,0,0,0);
+            }
+            if (input.End.HasValue)
+            {
+                right = new DateTime(input.End.Value.Year, input.End.Value.Month, input.End.Value.Day+1, 0, 0, 0);
+            }
             var query = _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                 .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
                 .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
-              .WhereIf(input.Start.HasValue, c => c.WarnTime>=input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.WarnTime<input.End.Value);
+              .WhereIf(left.HasValue, c => c.WarnTime>= left.Value)
+                .WhereIf(right.HasValue, c => c.WarnTime<right.Value);
             var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
                 c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()
@@ -1114,13 +1127,21 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportWarns(GetWarnInfoInput input)
         {
+            DateTime? left = null, right = null;
+            if (input.Start.HasValue)
+            {
+                left = new DateTime(input.Start.Value.Year, input.Start.Value.Month, input.Start.Value.Day, 0, 0, 0);
+            }
+            if (input.End.HasValue)
+            {
+                right = new DateTime(input.End.Value.Year, input.End.Value.Month, input.End.Value.Day + 1, 0, 0, 0);
+            }
             var query = _warnRepository.GetAll()
-                  .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                  .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
-                  .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
-                .WhereIf(input.Start.HasValue, c => c.WarnTime >= input.Start.Value)
-                  .WhereIf(input.End.HasValue, c => c.WarnTime < input.End.Value);
-
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
+                .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
+              .WhereIf(left.HasValue, c => c.WarnTime >= left.Value)
+                .WhereIf(right.HasValue, c => c.WarnTime < right.Value);
             var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
                 c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()

@@ -21,10 +21,10 @@
               <Input v-model="params.user" style="width: 140px" placeholder="运维人员"></Input>
             </FormItem>
             <FormItem label="开始时长">
-                  <InputNumber  v-model="params.left"></InputNumber>
+                <Input v-model="params.left" placeholder="开始时长" style="width: 140px"></Input>
             </FormItem>
             <FormItem label="截至时长">
-               <InputNumber  v-model="params.right"></InputNumber>
+                 <Input v-model="params.right" placeholder="截至时长" style="width: 140px"></Input>
             </FormItem>
             <FormItem label="开始时间">
               <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
