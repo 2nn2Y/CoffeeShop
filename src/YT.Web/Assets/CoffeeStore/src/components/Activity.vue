@@ -13,12 +13,16 @@
         </div>
       </masker>
     </div>
+      <group>
+    <x-number title="购买数量" :min="1"  v-model="count"></x-number>
      <x-button type="primary" @click.native="buyCard">购买</x-button>
+    
+  </group>
   </div>
 </template>
 
 <script>
-import { Panel, Group, Radio, Card, XButton, Masker } from "vux";
+import { Panel, Group, Radio, Card, XButton, Masker, XNumber } from "vux";
 export default {
   components: {
     Panel,
@@ -26,7 +30,8 @@ export default {
     Radio,
     Card,
     XButton,
-    Masker
+    Masker,
+    XNumber
   },
   computed: {
     openId() {
@@ -36,6 +41,7 @@ export default {
   data() {
     return {
       list: [],
+      count: 1,
       current: null,
       selected: null
     };
@@ -57,6 +63,7 @@ export default {
         price: _self.current.price,
         productId: _self.current.id,
         order: "",
+        count: this.count,
         fastCode: "",
         orderType: 4,
         device: ""

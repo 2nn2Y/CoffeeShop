@@ -74,6 +74,11 @@ namespace YT.ThreeData.Dtos
         /// 价格
         /// </summary>
         public int Price { get; set; }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Count { get; set; } = 1;
         /// <summary>
         /// 是否使用优惠券
         /// </summary>

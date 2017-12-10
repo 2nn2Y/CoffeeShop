@@ -2,11 +2,11 @@
   <div>
     <divider>充值金额</divider>
     <box gap="10px 10px">
-      <x-button @click.native="charge(5000)" :gradients="['#1D62F0', '#19D5FD']">充50得50</x-button>
-      <x-button @click.native="charge(10000)" :gradients="['#A644FF', '#FC5BC4']">充100得110</x-button>
-      <x-button @click.native="charge(15000)" :gradients="['#FF2719', '#FF61AD']">充150得165</x-button>
-      <x-button @click.native="charge(20000)" :gradients="['#6F1BFE', '#9479DF']">充200得230</x-button>
-      <x-button @click.native="charge(30000)" :gradients="['#FF5E3A', '#FF9500']">充300得340</x-button>
+      <x-button @click.native="charge(1)" :gradients="['#1D62F0', '#19D5FD']">充50得50</x-button>
+      <x-button @click.native="charge(1)" :gradients="['#A644FF', '#FC5BC4']">充100得110</x-button>
+      <x-button @click.native="charge(1)" :gradients="['#FF2719', '#FF61AD']">充150得165</x-button>
+      <x-button @click.native="charge(1)" :gradients="['#6F1BFE', '#9479DF']">充200得230</x-button>
+      <x-button @click.native="charge(1)" :gradients="['#FF5E3A', '#FF9500']">充300得340</x-button>
     </box>
   </div>
 </template>

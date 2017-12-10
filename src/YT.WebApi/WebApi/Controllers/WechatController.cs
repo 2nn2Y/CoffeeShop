@@ -156,14 +156,19 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.ActivityPay)
                         {
                             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
-                            await _cardRepository.InsertAsync(new UserCard()
+                            var count = order.Count;
+                            for (int i = 0; i < count; i++)
                             {
-                                Key = Guid.NewGuid(),
-                                OpenId = order.OpenId,
-                                State = false,
-                                ProductName = p.ProductName,
-                                Cost = p.Cost ?? 0
-                            });
+                                await _cardRepository.InsertAsync(new UserCard()
+                                {
+                                    Key = Guid.NewGuid(),
+                                    OpenId = order.OpenId,
+                                    State = false,
+                                    ProductName = p.ProductName,
+                                    Cost = p.Cost ?? 0
+                                });
+                            }
+                         
                             order.OrderState = true;
                         }
                         //充值
@@ -273,7 +278,8 @@ namespace YT.WebApi.Controllers
         {
             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null) throw new UserFriendlyException("用户信息不存在");
-            return user;
+            var cards = await _cardRepository.CountAsync(c => c.OpenId.Equals(openId) && !c.State);
+            return new {balance=user.Balance, cards };
         }
         /// <summary>
         /// ice制作成功回掉

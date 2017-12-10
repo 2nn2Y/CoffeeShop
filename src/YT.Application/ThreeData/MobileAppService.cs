@@ -240,6 +240,7 @@ namespace YT.ThreeData
                 OrderNum = Guid.NewGuid().ToString("N"),
                 OrderState = null,
                 PayState = null,
+                Count = input.Count,
                 Price = p.Price,
                 ProductId = p.Id
             };

@@ -7,8 +7,8 @@
       <p class="center">{{nickname}}</p>
     </blur>
     <group>
-      <cell :title="title" link="/balance" value="充值" is-link></cell>
-      <cell title="我的卡券" link="/mycard" value="" is-link></cell>
+      <cell :title="money" link="/balance" value="充值" is-link></cell>
+      <cell :title="card" link="/mycard" value="" is-link></cell>
       <cell title="我的订单" link="/order" value="" is-link></cell>
     </group>
   </div>
@@ -27,19 +27,22 @@ export default {
     Cell
   },
   created() {
-    this.callTitle("我的");
     this.init();
   },
   data() {
     return {
       url: sessionStorage.getItem("headimgurl"),
       nickname: sessionStorage.getItem("nickname"),
-      balance: 0
+      balance: 0,
+      cards: 0
     };
   },
   computed: {
-    title() {
+    money() {
       return `咖啡券(${this.balance})`;
+    },
+    card() {
+      return `我的卡券(${this.cards})`;
     }
   },
   methods: {
@@ -50,6 +53,7 @@ export default {
       this.$http.get(url).then(r => {
         if (r.data) {
           this.balance = r.data.balance;
+          this.cards = r.data.cards;
         }
       });
     }
