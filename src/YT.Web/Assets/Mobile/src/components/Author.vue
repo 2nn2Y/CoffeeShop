@@ -1,7 +1,9 @@
 <template>
   <div >
     <!-- <img src="../assets/timg.jpg" style="width:375px;height:620px;"> -->
+    url:{{url}}
     请求结果{{response}}
+    错误:{{err}}
   </div>
 </template>
 <script >
@@ -25,6 +27,8 @@ export default {
   data() {
     return {
       response: null,
+      url: null,
+      err: null,
       code: window.location.href.split("=")[1]
     };
   },
@@ -33,6 +37,7 @@ export default {
       const url =
         "http://103.45.102.47:8888/api/Sign/GetInfoByCode?code=" +
         window.location.href.split("=")[1];
+      this.url = window.location.href;
       // 通过cookie中保存的token 获取用户信息
       this.$http
         .get(url)
@@ -43,7 +48,6 @@ export default {
               sessionStorage.setItem("userId", response.data.userid);
               this.$router.push({ path: "/sign" });
             }
-
             //  window.location.href = "http://wx.youyinkeji.cn/#/sign";
           } else {
             if (sessionStorage.getItem("userId")) {
@@ -56,6 +60,7 @@ export default {
           }
         })
         .catch(e => {
+          this.err = JSON.stringify(e);
           this.showBox("错误", e.response.data.error);
         });
     }
