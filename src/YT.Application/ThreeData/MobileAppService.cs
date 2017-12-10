@@ -248,7 +248,7 @@ namespace YT.ThreeData
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
-                TotalFee = p.Price
+                TotalFee = p.Price*input.Count
             };
             jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
             var param = jsApiPay.GetJsApiParameters();
