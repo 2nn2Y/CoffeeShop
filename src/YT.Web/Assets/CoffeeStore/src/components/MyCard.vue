@@ -31,7 +31,7 @@ export default {
   methods: {
     init() {
       const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/GetUsercards";
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetUsercards";
       this.$http
         .post(url, {
           id: sessionStorage.getItem("openid")

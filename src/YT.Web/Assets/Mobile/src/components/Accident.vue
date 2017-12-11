@@ -4,14 +4,14 @@
      <card :header="{title: '未处理'}">
       <div slot="content" >
       <x-button @click.native="detail(a)"
-       v-for="(a,i) in undeal" 
+       v-for="(a,i) in undeal"
        :key="i" :gradients="['#FF2719', '#FF61AD']" type="warn">{{a.deviceName}}--{{a.content}}</x-button>
       </div>
     </card>
       <card :header="{title: '已处理'}">
       <div slot="content" >
       <x-button  @click.native="detail(b)"
-       v-for="(b,i) in deal" 
+       v-for="(b,i) in deal"
        :key="i" type="info" :gradients="['#1D62F0', '#19D5FD']" >{{b.deviceName}}--{{b.content}}</x-button>
       </div>
     </card>
@@ -44,7 +44,7 @@ export default {
     },
     init() {
       const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/GetWarnsByUser";
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetWarnsByUser";
       const params = {
         userId: sessionStorage.getItem("userId")
       };

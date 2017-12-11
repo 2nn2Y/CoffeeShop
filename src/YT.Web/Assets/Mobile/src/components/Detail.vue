@@ -48,7 +48,8 @@ export default {
   },
   methods: {
     reslove() {
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/DealWarn";
+      const url =
+        "http://services.youyinkeji.cn/api/services/app/mobile/DealWarn";
       const params = {
         id: this.warn.id
       };
@@ -63,7 +64,7 @@ export default {
     },
     init() {
       const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/GetWarnByUser";
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetWarnByUser";
       const params = {
         id: this.$route.query.id
       };

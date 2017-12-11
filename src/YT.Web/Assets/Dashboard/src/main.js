@@ -58,7 +58,7 @@ const converToTreedata = (data, parentId, pidField, grants) => {
 Vue.prototype.$converToTreedata = converToTreedata;
 Vue.prototype.$down = (type, token, name) => {
   let url =
-    "http://103.45.102.47:8888/api/File/Download?fileType=" +
+    "http://services.youyinkeji.cn/api/File/Download?fileType=" +
     type +
     "&fileToken=" +
     token +

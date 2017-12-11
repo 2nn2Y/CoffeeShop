@@ -95,7 +95,7 @@ export default {
       // pid-did-fastcode-order-type
       // 102-10152-222-2017120509563310152abcde-1
       const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/GetProduct";
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetProduct";
       this.$http
         .post(url, {
           userId: this.openId,
@@ -119,7 +119,7 @@ export default {
     balancepay() {
       var _self = this;
       const url =
-        "http://103.45.102.47:8888/api/services/app/mobile/BalancePay";
+        "http://services.youyinkeji.cn/api/services/app/mobile/BalancePay";
       const params = {
         openId: _self.openId,
         price: _self.model.price,
@@ -146,7 +146,8 @@ export default {
     },
     linepay() {
       var _self = this;
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/LinePay";
+      const url =
+        "http://services.youyinkeji.cn/api/services/app/mobile/LinePay";
       const params = {
         openId: _self.openId,
         price: _self.model.price,

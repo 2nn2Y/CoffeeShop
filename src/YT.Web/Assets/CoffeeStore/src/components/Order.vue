@@ -25,7 +25,8 @@ export default {
       this.init();
     },
     init() {
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/GetOrders";
+      const url =
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetOrders";
       const params = {
         device: sessionStorage.getItem("openid"),
         skipCount: (this.current - 1) * 10,

@@ -48,7 +48,7 @@ export default {
   methods: {
     init() {
       const url =
-        "http://103.45.102.47:8888/api/Wechat/GetUserBalance?openId=" +
+        "http://services.youyinkeji.cn/api/Wechat/GetUserBalance?openId=" +
         sessionStorage.getItem("openid");
       this.$http.get(url).then(r => {
         if (r.data) {

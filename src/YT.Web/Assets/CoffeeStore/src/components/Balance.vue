@@ -36,7 +36,7 @@ export default {
     charge(money) {
       var _self = this;
       const service =
-        "http://103.45.102.47:8888/api/services/app/mobile/ChargePay";
+        "http://services.youyinkeji.cn/api/services/app/mobile/ChargePay";
       const params = {
         openId: _self.openId,
         price: money

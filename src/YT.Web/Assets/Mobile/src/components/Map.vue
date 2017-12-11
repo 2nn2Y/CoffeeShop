@@ -138,7 +138,7 @@ export default {
         this.showBox("未完成", "请先拍摄照片");
         return;
       }
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/Sign";
+      const url = "http://services.youyinkeji.cn/api/services/app/mobile/Sign";
       const params = {
         userId: sessionStorage.getItem("userId"),
         pointId: this.$route.params.point,

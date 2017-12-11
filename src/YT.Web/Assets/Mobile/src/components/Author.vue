@@ -35,7 +35,7 @@ export default {
   methods: {
     login() {
       const url =
-        "http://103.45.102.47:8888/api/Sign/GetInfoByCode?code=" +
+        "http://services.youyinkeji.cn/api/Sign/GetInfoByCode?code=" +
         window.location.href.split("=")[1];
       this.url = window.location.href;
       // 通过cookie中保存的token 获取用户信息

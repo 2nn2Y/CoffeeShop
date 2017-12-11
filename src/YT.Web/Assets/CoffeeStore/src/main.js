@@ -29,7 +29,7 @@ Vue.prototype.showBox = function (title, content) {
   })
 }
 Vue.prototype.wxConfig = function (url) {
-  const service = "http://103.45.102.47:8888/api/wechat/config";
+  const service = "http://services.youyinkeji.cn/api/wechat/config";
   Vue.http.post(service + "?url=" + url).then(r => {
     if (r && r.data) {
       Vue.wechat.config({

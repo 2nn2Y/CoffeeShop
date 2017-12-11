@@ -52,7 +52,8 @@ export default {
         _self.showBox("请选择", "请先选择卡券购买");
         return;
       }
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/CardPay";
+      const url =
+        "http://services.youyinkeji.cn/api/services/app/mobile/CardPay";
       const params = {
         openId: _self.openId,
         price: _self.current.price,
@@ -95,7 +96,8 @@ export default {
       this.current = item;
     },
     init() {
-      const url = "http://103.45.102.47:8888/api/services/app/mobile/GetCards";
+      const url =
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetCards";
       this.$http.post(url, {}).then(r => {
         if (r.data && r.data.result) {
           this.list = r.data.result;
