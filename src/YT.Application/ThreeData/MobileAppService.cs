@@ -188,6 +188,7 @@ namespace YT.ThreeData
                     OrderType = input.OrderType,
                     OrderState = null,
                     OrderNum = input.Order,
+                    DeviceNum = input.Device,
                     PayState = null,
                     Price = p.Price,
                     ProductId = p.Id

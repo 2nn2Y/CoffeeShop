@@ -88,14 +88,14 @@ export default {
       this.call.o = fastcode[0];
       this.call.m = fastcode[1];
       this.call.s = fastcode[2];
-      this.order = params[3];
+      this.order = params[4];
       this.device = params[1];
-      this.type = params[4];
+      this.type = params[5];
+      // 102-10152-222-990-2017120509563310152abcde-1
       // pid-did-fastcode-order-type
       // 102-10152-222-2017120509563310152abcde-1
       const url =
         "http://103.45.102.47:8888/api/services/app/mobile/GetProduct";
-
       this.$http
         .post(url, {
           userId: this.openId,
