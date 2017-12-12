@@ -3,11 +3,14 @@
     <panel :header="'商品详情'" :list="list" :type="'5'"></panel>
     <divider>咖啡配置</divider>
     <group>
-      <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
+      <cell title="浓度" :value="call.o"></cell>
+      <cell title="奶度" :value="call.m"></cell>
+      <cell title="糖度" :value="call.s"></cell>
+      <!-- <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
       <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
-      <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number>
-      <selector title="选择代金券" :options="cards" v-model="selectCard"></selector>
-      <cell title="总金额" v-model="model.price"></cell>
+      <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
+      <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard"></selector>
+      <cell title="总金额" v-model="totalprice"></cell>
     </group>
     <grid>
       <grid-item>
@@ -53,7 +56,6 @@ export default {
     Box
   },
   created() {
-    this.showBox("openId", sessionStorage.getItem("openid"));
     this.wxConfig(window.location.href);
     this.init();
   },
@@ -63,6 +65,14 @@ export default {
     },
     openId() {
       return sessionStorage.getItem("openid");
+    },
+    totalprice() {
+      // if (this.selectCard) {
+      //   var temp = this.model.price - this.selectCard.cost;
+      //   return temp * 1.0 / 100;
+      // } else {
+      return this.model.price * 1.0 / 100;
+      //}
     }
   },
   data() {
@@ -82,6 +92,11 @@ export default {
     };
   },
   methods: {
+    change(v) {
+      var m = this.$refs.card.getFullValue();
+      console.log(m);
+      console.log(v);
+    },
     init() {
       const params = this.$route.params.id.split("-");
       const fastcode = params[2].split("");
@@ -122,7 +137,7 @@ export default {
         "http://services.youyinkeji.cn/api/services/app/mobile/BalancePay";
       const params = {
         openId: _self.openId,
-        price: _self.model.price,
+        price: _self.totalprice,
         productId: _self.model.id,
         order: _self.order,
         fastCode: _self.fastcode,
@@ -150,7 +165,7 @@ export default {
         "http://services.youyinkeji.cn/api/services/app/mobile/LinePay";
       const params = {
         openId: _self.openId,
-        price: _self.model.price,
+        price: _self.totalprice,
         productId: _self.model.id,
         order: _self.order,
         fastCode: _self.fastcode,

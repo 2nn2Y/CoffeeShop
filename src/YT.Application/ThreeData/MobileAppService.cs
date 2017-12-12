@@ -88,7 +88,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input)
         {
-            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id)&&!c.State);
+            var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id) && !c.State);
             return cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
         }
         /// <summary>
@@ -104,7 +104,12 @@ namespace YT.ThreeData
             };
             if (cards.Any())
             {
-                model.Cards = cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
+                model.Cards = cards.Select(c => new CardInfo()
+                {
+                    Id = c.Key,
+                    Cost = c.Cost,
+                    Value = c.ProductName
+                }).ToList();
             }
             return model;
         }
@@ -217,8 +222,8 @@ namespace YT.ThreeData
             {
                 order.UseCard = input.Key;
                 var t = p.Price - card.Cost;
-                jsApiPay.TotalFee = t <= 0?0:t;
-                
+                jsApiPay.TotalFee = t <= 0 ? 0 : t;
+
             }
             await _storeRepository.InsertOrUpdateAsync(order);
             jsApiPay.GetUnifiedOrderResult(order.OrderNum, p.ProductName, p.Description);
@@ -293,7 +298,7 @@ namespace YT.ThreeData
                 .Where(c => c.OpenId.Equals(input.Device)
                             && c.PayState.HasValue && c.PayState.Value)
                 .Where(c => c.PayType == PayType.BalancePay || c.PayType == PayType.LinePay)
-                .Where(c => c.OrderState.HasValue&&c.OrderState.Value)
+                .Where(c => c.OrderState.HasValue && c.OrderState.Value)
                 .ToListAsync();
             var count = orders.Count;
             var temp = orders.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount);
@@ -411,7 +416,7 @@ namespace YT.ThreeData
             if (warn == null) throw new UserFriendlyException("该报警信息不存在");
             if (warn.State) throw new UserFriendlyException("该报警信息已解决");
             warn.State = true;
-            warn.DealTime=DateTime.Now;
+            warn.DealTime = DateTime.Now;
         }
 
         /// <summary>

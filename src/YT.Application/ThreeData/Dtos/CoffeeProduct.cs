@@ -149,6 +149,24 @@ namespace YT.ThreeData.Dtos
         /// <summary>
         /// 卡圈信息
         /// </summary>
-        public List<KeyValuePair<Guid,string>> Cards { get; set; }
+        public List<CardInfo> Cards { get; set; }
+    }
+    /// <summary>
+    /// 卡券信息dto
+    /// </summary>
+    public class CardInfo
+    {
+        /// <summary>
+        /// key
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
+        /// xianshi
+        /// </summary>
+        public string Value { get; set; }
+        /// <summary>
+        /// 金额
+        /// </summary>
+        public int Cost { get; set; }
     }
 }
