@@ -48,7 +48,7 @@ namespace YT.Web
             //   Configuration.Navigation.Providers.Add<MpaNavigationProvider>();//MPA!
 
             //  Configuration.Modules.AbpWebCommon().MultiTenancy.DomainFormat = WebUrlService.WebSiteRootAddress;
-
+            
             //Uncomment these lines to use HangFire as background job manager.
             Configuration.BackgroundJobs.UseHangfire(
                 configuration =>
@@ -96,11 +96,13 @@ namespace YT.Web
 
             var background = IocManager.Resolve<BackgroundManager>();
             var controller = IocManager.Resolve<SignController>();
-            //每天定时同步数据
+            //同步订单  每12分钟一次
             RecurringJob.AddOrUpdate(() => background.GenderOrder(), "0/12 * * * *");
-          //  RecurringJob.AddOrUpdate(() => background.GenderWarning(), "0/15 * * * *");
+          //  同步报警信息  15分钟一次
             RecurringJob.AddOrUpdate(() => controller.GenderWarning(), "0/15 * * * *");
+            //同步微信图片 1小时一次
             RecurringJob.AddOrUpdate(()=>controller.GenderImage(), "0/59 * * * *");
+            //发送报警信息 每天一次
             RecurringJob.AddOrUpdate(()=>controller.ForWarn(), "0 0/23 * * *");
         }
     }
