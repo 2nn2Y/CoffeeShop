@@ -72,7 +72,7 @@ export default {
       //   return temp * 1.0 / 100;
       // } else {
       return this.model.price * 1.0 / 100;
-      //}
+      // }
     }
   },
   data() {
