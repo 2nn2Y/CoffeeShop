@@ -102,8 +102,8 @@ namespace YT.Web
             RecurringJob.AddOrUpdate(() => controller.GenderWarning(), "0/15 * * * *");
             //同步微信图片 1小时一次
             RecurringJob.AddOrUpdate(()=>controller.GenderImage(), "0/59 * * * *");
-            //发送报警信息 每天一次
-            RecurringJob.AddOrUpdate(()=>controller.ForWarn(), "0 0/23 * * *");
+            //发送报警信息 15分钟一次
+            RecurringJob.AddOrUpdate(()=>controller.ForWarn(), "0/15 * * * *");
         }
     }
 }
