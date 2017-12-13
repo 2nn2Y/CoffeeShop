@@ -106,7 +106,7 @@ export default {
       this.selectCard = value;
     },
     init() {
-      const params = this.$route.params.id.split("-");
+      const params = this.$route.params.id.split("^");
       const fastcode = params[2].split("");
       this.call.o = fastcode[0];
       this.call.m = fastcode[1];
