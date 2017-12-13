@@ -156,7 +156,7 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.ActivityPay)
                         {
                             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
-                            var count =int.Parse(ConfigurationManager.AppSettings.Get("CardCount")) ;
+                            var count = order.Price/7.8;
                             
                             for (int i = 0; i < count; i++)
                             {
