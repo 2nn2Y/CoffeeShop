@@ -69,7 +69,7 @@ export default {
     totalprice() {
       if (this.card) {
         var temp = this.model.price - this.card[0].cost;
-        return temp * 1.0 / 100;
+        return temp < 0 ? 0 : temp * 1.0 / 100;
       } else {
         return this.model.price * 1.0 / 100;
       }

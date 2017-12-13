@@ -138,11 +138,10 @@ namespace YT.WebApi.Controllers
                                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.Key == order.UseCard.Value);
                                 card.State = true;
                             }
-                            //发货
+                            //支付成功通知
                             if (order.OrderType == OrderType.Ice)
                             {
-                                var result = await _mobileAppService.PickProductIce(order);
-                                order.OrderState = true;
+                               await _mobileAppService.PickProductIce(order);
                             }
                             else
                             {

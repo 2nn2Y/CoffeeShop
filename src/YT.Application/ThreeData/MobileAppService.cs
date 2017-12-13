@@ -151,8 +151,9 @@ namespace YT.ThreeData
                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.Key == input.Key.Value);
                 if (card != null)
                 {
-                    user.Balance -= input.Price;
-                    user.Balance += card.Cost;
+                    var price = p.Price - card.Cost;
+                    price= price < 0 ? 0 : price;
+                    user.Balance -= price;
                     card.State = true;
                 }
             }
