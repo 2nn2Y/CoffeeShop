@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     money() {
-      return `咖啡券(${this.balance})`;
+      return `咖啡券(${this.balance * 1.0 / 100})`;
     },
     card() {
       return `我的卡券(${this.cards})`;
