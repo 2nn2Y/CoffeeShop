@@ -219,7 +219,7 @@ namespace YT.WebApi.Controllers
         public async Task<IHttpActionResult> QrCode(string AssetId,int ProductNum,string Notify_Url,string OrderNo,string Key)
         {
            
-        var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo));
+        var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo)&&!c.PayState.HasValue);
             var product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == ProductNum);
             if (product == null) return Json(new { result = "FAIL" });
             var fast = order == null ? "000" : order.FastCode;
