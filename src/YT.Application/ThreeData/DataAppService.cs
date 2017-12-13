@@ -550,7 +550,6 @@ namespace YT.ThreeData
                temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             return new PagedResultDto<SignDetailDto>(counts, final);
         }
-
         /// <summary>
         /// 获取报警信息报表
         /// </summary>
