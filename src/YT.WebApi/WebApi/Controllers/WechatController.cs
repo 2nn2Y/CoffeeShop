@@ -222,7 +222,7 @@ namespace YT.WebApi.Controllers
         var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo)&&!c.PayState.HasValue);
             var product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == ProductNum);
             if (product == null) return Json(new { result = "FAIL" });
-            var fast = order == null ? "000" : order.FastCode;
+            var fast = order?.FastCode  ?? "000" ;
             if (order == null)
             {
                 order = new StoreOrder()

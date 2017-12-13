@@ -10,6 +10,7 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Extensions;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Newtonsoft.Json;
@@ -143,6 +144,7 @@ namespace YT.ThreeData
                 ProductId = p.ProductId
             };
             await _storeRepository.InsertAsync(order);
+            await CurrentUnitOfWork.SaveChangesAsync();
             //使用优惠券
             if (input.Key.HasValue)
             {
@@ -341,7 +343,7 @@ namespace YT.ThreeData
         public async Task<dynamic> PickProductIce(StoreOrder order)
         {
             var url = order.NoticeUrl;
-
+            if (url.IsNullOrWhiteSpace() || order.Key.IsNullOrWhiteSpace()) return null;
             var result = await HttpHandler.PostJson<dynamic>(url, JsonConvert.SerializeObject(new
             {
                 payStatus = "0",

@@ -3,9 +3,9 @@
     <panel :header="'商品详情'" :list="list" :type="'5'"></panel>
     <divider>咖啡配置</divider>
     <group>
-      <cell title="浓度" :value="call.o"></cell>
-      <cell title="奶度" :value="call.m"></cell>
-      <cell title="糖度" :value="call.s"></cell>
+      <cell v-if="type==1" title="浓度" :value="call.o"></cell>
+      <cell v-if="type==1" title="奶度" :value="call.m"></cell>
+      <cell v-if="type==1" title="糖度" :value="call.s"></cell>
       <!-- <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
       <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
       <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
@@ -175,9 +175,13 @@ export default {
       var _self = this;
       const url =
         "http://services.youyinkeji.cn/api/services/app/mobile/LinePay";
+      var price =
+        _self.card != null
+          ? _self.model.price - _self.card[0].cost
+          : _self.model.price;
       const params = {
         openId: _self.openId,
-        price: _self.totalprice,
+        price: price,
         productId: _self.model.id,
         order: _self.order,
         fastCode: _self.fastcode,
