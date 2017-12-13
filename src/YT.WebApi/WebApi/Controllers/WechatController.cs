@@ -448,7 +448,7 @@ namespace YT.WebApi.Controllers
             var temp =
              $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
             var ut = await HttpHandler.GetAsync<JObject>(temp);
-            if (ut.GetValue("access_token") == null) throw new UserFriendlyException("获取用户token失败");
+            if (ut.GetValue("access_token") == null) throw new UserFriendlyException(JsonConvert.SerializeObject(ut));
             var token = ut.GetValue("access_token").ToString();
             var openid = ut.GetValue("openid").ToString();
             string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
