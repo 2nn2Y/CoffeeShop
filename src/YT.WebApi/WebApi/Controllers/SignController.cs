@@ -252,7 +252,7 @@ namespace YT.WebApi.Controllers
             var t = await GetOrgUserFromCache();
             foreach (var ou in t)
             {
-                var user = users.Where(w => w.UserId == ou).Select(c => c.PointId).ToList();
+                var user = users.Where(w => w.UserId.ToLower() == ou.ToLower()).Select(c => c.PointId).ToList();
                 var forwarn = warns.Where(c => user.Contains(c.DeviceNum));
                 var temp = "";
                 forwarn.ForEach(warn =>

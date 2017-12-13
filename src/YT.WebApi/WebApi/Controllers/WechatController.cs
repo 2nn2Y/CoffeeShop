@@ -213,36 +213,35 @@ namespace YT.WebApi.Controllers
         /// <summary>
         /// 生成二维码
         /// </summary>
-        /// <param name="assetId"></param>
-        /// <param name="productNum"></param>
-        /// <param name="notifyUrl"></param>
-        /// <param name="orderNo"></param>
-        /// <param name="key"></param>
+      
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> QrCode(string assetId,int productNum,string notifyUrl,string orderNo,string key)
+        public async Task<IHttpActionResult> QrCode(string AssetId,int ProductNum,string Notify_Url,string OrderNo,string Key)
         {
            
-        var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(orderNo));
+        var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo));
+            var product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == ProductNum);
+            if (product == null) return Json(new { result = "FAIL" });
             var fast = order == null ? "000" : order.FastCode;
             if (order == null)
             {
                 order = new StoreOrder()
                 {
-                    DeviceNum = assetId,
-                    OrderNum = orderNo,
+                    DeviceNum = AssetId,
+                    OrderNum = OrderNo,
                     OrderState = null,
                     PayState = null,
                     OrderType = OrderType.Ice,
-                    ProductId = productNum,
-                    NoticeUrl = notifyUrl,
-                    Key = key
+                    ProductId = ProductNum,
+                    NoticeUrl = Notify_Url,
+                    Key = Key
                 };
                 order = await _orderRepository.InsertAsync(order);
             }
+          //  102 - 10152 - 222 - 990 - 2017120509563310152abcde - 1
             var codeUrl =
-                $"http://card.youyinkeji.cn/?#/detail/{order.ProductId}-{order.DeviceNum}-{fast}-{order.OrderNum}-{1}";
-            return Json(codeUrl);
+                $"http://card.youyinkeji.cn/?#/detail/{order.ProductId}-{order.DeviceNum}-{fast}-{product.Price}-{order.OrderNum}-{2}";
+            return Json(new {result="SUCCESS",qr_code=codeUrl  });
         }
         /// <summary>
         /// 获取卡圈ticket
@@ -292,42 +291,32 @@ namespace YT.WebApi.Controllers
         /// <summary>
         /// ice制作成功回掉
         /// </summary>
-        /// <param name="assetId"></param>
-        /// <param name="orderNo"></param>
-        /// <param name="deliverStatus"></param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task IceProduct(string assetId,string orderNo,string deliverStatus)
+        public async Task IceProduct(IceCallInput input)
         {
-       
-        var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(orderNo) && c.DeviceNum.Equals(assetId));
+
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(input.OrderNo) && c.DeviceNum.Equals(input.AssetId));
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
-            if (deliverStatus.Equals("0"))
+            if (input.DeliverStatus.Equals("0"))
             {
                 order.OrderState = true;
             }
             else
             {
                 order.OrderState = false;
-                order.Reson = deliverStatus;
+                order.Reson = input.DeliverStatus;
             }
         }
-       /// <summary>
-       /// jack产品回掉
-       /// </summary>
-       /// <param name="id"></param>
-       /// <param name="vmc"></param>
-       /// <param name="pid"></param>
-       /// <param name="mac"></param>
-       /// <returns></returns>
-        [HttpGet]
-        public async Task JackProduct(string id,string vmc,string pid,string mac)
+        /// <summary>
+        /// jack制作成功回掉
+        /// </summary>
+        /// <returns></returns>
+        public async Task JackProduct(JackCallInput input)
         {
-          
-        var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(id) && c.DeviceNum.Equals(vmc));
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(input.Id) && c.DeviceNum.Equals(input.Vmc));
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             order.OrderState = true;
