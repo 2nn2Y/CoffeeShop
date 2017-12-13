@@ -124,7 +124,7 @@ namespace YT.ThreeData
             if (user == null) throw new UserFriendlyException("用户信息不存在");
             if (user.Balance < input.Price) throw new UserFriendlyException("用户余额不足");
 
-            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == input.ProductId);
+            var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
             if (p == null) throw new UserFriendlyException("该商品不存在");
             var o = await _storeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.Order));
             if (o != null && o.PayType != PayType.BalancePay) throw new UserFriendlyException("该订单已存在,请重新下单");

@@ -67,12 +67,12 @@ export default {
       return sessionStorage.getItem("openid");
     },
     totalprice() {
-      // if (this.selectCard) {
-      //   var temp = this.model.price - this.selectCard.cost;
-      //   return temp * 1.0 / 100;
-      // } else {
-      return this.model.price * 1.0 / 100;
-      // }
+      if (this.card) {
+        var temp = this.model.price - this.card[0].cost;
+        return temp * 1.0 / 100;
+      } else {
+        return this.model.price * 1.0 / 100;
+      }
     }
   },
   data() {
@@ -86,16 +86,24 @@ export default {
       type: null,
       device: "",
       selectCard: null,
+      card: null,
       model: {},
       cards: [],
       list: []
     };
   },
   methods: {
-    change(v) {
-      var m = this.$refs.card.getFullValue();
-      console.log(m);
-      console.log(v);
+    change(value) {
+      var _self = this,
+        t;
+      clearTimeout(t);
+      var set = function() {
+        var m = _self.$refs.card.getFullValue();
+        console.log(m);
+        _self.card = m;
+      };
+      t = setTimeout(set, 1000);
+      this.selectCard = value;
     },
     init() {
       const params = this.$route.params.id.split("-");
@@ -133,11 +141,15 @@ export default {
     },
     balancepay() {
       var _self = this;
+      var price =
+        _self.card != null
+          ? _self.model.price - _self.card[0].cost
+          : _self.model.price;
       const url =
         "http://services.youyinkeji.cn/api/services/app/mobile/BalancePay";
       const params = {
         openId: _self.openId,
-        price: _self.totalprice,
+        price: price,
         productId: _self.model.id,
         order: _self.order,
         fastCode: _self.fastcode,
