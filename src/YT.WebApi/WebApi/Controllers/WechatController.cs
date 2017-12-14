@@ -313,9 +313,9 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<IHttpActionResult> IceProduct(string assetId, string orderNo, string deliverStatus)
         {
-      
-        var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(orderNo) && c.DeviceNum.Equals(assetId)&&!c.OrderState.HasValue);
+
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                        c.OrderNum.Equals(orderNo) && c.DeviceNum.Equals(assetId) && !c.OrderState.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             if (deliverStatus.Equals("0"))
@@ -327,7 +327,7 @@ namespace YT.WebApi.Controllers
                 order.OrderState = false;
                 order.Reson = deliverStatus;
             }
-            return Json(new {result = "SUCCESS"});
+            return Json(new { result = "SUCCESS" });
         }
         /// <summary>
         /// jack制作成功回掉
@@ -335,9 +335,9 @@ namespace YT.WebApi.Controllers
         /// <returns></returns>
         public async Task<IHttpActionResult> JackProduct(string id, string vmc, string pid, string mac)
         {
-           
-        var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(id) && c.DeviceNum.Equals(vmc) && !c.OrderState.HasValue);
+
+            var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                        c.OrderNum.Equals(id) && c.DeviceNum.Equals(vmc) && !c.OrderState.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             order.OrderState = true;
