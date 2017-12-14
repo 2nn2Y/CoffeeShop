@@ -244,7 +244,7 @@ export default {
     text-align: center;
     color: #000;
     border-bottom: 1px solid #ddd;
-    padding: 5px 0;
+    padding-bottom: 9px;
     background:#fff;
     margin-top: 10px
   }
