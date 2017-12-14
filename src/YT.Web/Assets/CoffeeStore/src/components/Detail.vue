@@ -15,12 +15,12 @@
     <grid>
       <grid-item>
         <box gap="10px 10px">
-          <x-button type="primary" @click.native="balancepay">余额支付</x-button>
+          <x-button plain type="primary"  @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
         </box>
       </grid-item>
       <grid-item>
         <box gap="10px 10px">
-          <x-button type="primary" @click.native="linepay">在线支付</x-button>
+           <x-button plain type="primary"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
         </box>
       </grid-item>
     </grid>
@@ -220,3 +220,26 @@ export default {
   }
 };
 </script>
+<style lang="less" scoped>
+.custom-primary-blue {
+  border-radius: 120px !important;
+  // border-color: #CE3C39!important;
+  color: #ffffff !important;
+  background-color: #007eff;
+  &:active {
+    border-color: rgba(206, 60, 57, 0.6) !important;
+    color: rgba(206, 60, 57, 0.6) !important;
+    background-color: transparent;
+  }
+}
+.custom-primary-green {
+  border-radius: 120px !important;
+  color: #ffffff !important;
+  background-color: #21c321;
+  &:active {
+    border-color: rgba(206, 60, 57, 0.6) !important;
+    color: rgba(206, 60, 57, 0.6) !important;
+    background-color: transparent;
+  }
+}
+</style>
