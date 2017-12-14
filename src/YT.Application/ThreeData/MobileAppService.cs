@@ -341,7 +341,7 @@ namespace YT.ThreeData
             if (url.IsNullOrWhiteSpace() || order.Key.IsNullOrWhiteSpace())
                 throw new UserFriendlyException("该订单无效,没有回调地址");
 
-            var result = await HttpHandler.PostJson2<dynamic>(url, JsonConvert.SerializeObject(new
+            var result =  HttpHandler.PostMoths(url, JsonConvert.SerializeObject(new
             {
                 payStatus = "0",
                 key = order.Key

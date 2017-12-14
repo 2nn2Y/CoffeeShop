@@ -141,7 +141,29 @@ namespace YT.Configuration
             sRead.Close();
             return JsonConvert.DeserializeObject<T>(postContent);
         }
-
+        public static string PostMoths(string url, string param)
+        {
+            string strUrl = url;
+            var request = (HttpWebRequest)WebRequest.Create(strUrl);
+            request.Method = "POST";
+            request.ContentType = "application/json;charset=UTF-8";
+            string paraUrlCoded = param;
+            var payload = Encoding.UTF8.GetBytes(paraUrlCoded);
+            request.ContentLength = payload.Length;
+            Stream writer = request.GetRequestStream();
+            writer.Write(payload, 0, payload.Length);
+            writer.Close();
+            var response = (HttpWebResponse)request.GetResponse();
+            var s = response.GetResponseStream();
+            string strDate = "";
+            string strValue = "";
+            StreamReader reader = new StreamReader(s, Encoding.UTF8);
+            while ((strDate = reader.ReadLine()) != null)
+            {
+                strValue += strDate + "\r\n";
+            }
+            return strValue;
+        }
 
         /// <summary>
         /// 异步Post请求，
