@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -142,7 +143,7 @@ namespace YT.WebApi.Controllers
                             //支付成功通知
                             if (order.OrderType == OrderType.Ice)
                             {
-                               await _mobileAppService.PickProductIce(order);
+                                await _mobileAppService.PickProductIce(order);
                             }
                             else
                             {
@@ -157,8 +158,16 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.ActivityPay)
                         {
                             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
-                            var count = order.Price/7.8;
-                            count = ChangeCard(int.Parse(count.ToString(CultureInfo.InvariantCulture)));
+                            var count = 0;
+                            if (order.Price == 1)
+                            {
+                                count = 11;
+                            }
+                            else
+                            {
+                                count = order.Price / 780;
+                            }
+                            count = ChangeCard(count);
                             for (int i = 0; i < count; i++)
                             {
                                 await _cardRepository.InsertAsync(new UserCard()
@@ -166,11 +175,11 @@ namespace YT.WebApi.Controllers
                                     Key = Guid.NewGuid(),
                                     OpenId = order.OpenId,
                                     State = false,
-                                    ProductName = p.ProductName,
+                                    ProductName = p.ProductName.Split('*').First(),
                                     Cost = p.Cost ?? 0
                                 });
                             }
-                         
+
                             order.OrderState = true;
                         }
                         //充值
@@ -220,16 +229,16 @@ namespace YT.WebApi.Controllers
         /// <summary>
         /// 生成二维码
         /// </summary>
-      
+
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> QrCode(string AssetId,int ProductNum,string Notify_Url,string OrderNo,string Key)
+        public async Task<IHttpActionResult> QrCode(string AssetId, int ProductNum, string Notify_Url, string OrderNo, string Key)
         {
-           
-        var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo)&&!c.PayState.HasValue);
+
+            var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo) && !c.PayState.HasValue);
             var product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == ProductNum);
             if (product == null) return Json(new { result = "FAIL" });
-            var fast = order?.FastCode  ?? "000" ;
+            var fast = order?.FastCode ?? "000";
             if (order == null)
             {
                 order = new StoreOrder()
@@ -245,10 +254,10 @@ namespace YT.WebApi.Controllers
                 };
                 order = await _orderRepository.InsertAsync(order);
             }
-          //  102 - 10152 - 222 - 990 - 2017120509563310152abcde - 1
+            //  102 - 10152 - 222 - 990 - 2017120509563310152abcde - 1
             var codeUrl =
                 $"http://card.youyinkeji.cn/?#/detail/{order.ProductId}^{order.DeviceNum}^{fast}^{product.Price}^{order.OrderNum}^{2}";
-            return Json(new {result="SUCCESS",qr_code=codeUrl  });
+            return Json(new { result = "SUCCESS", qr_code = codeUrl });
         }
         /// <summary>
         /// 获取卡圈ticket
@@ -293,7 +302,7 @@ namespace YT.WebApi.Controllers
             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null) throw new UserFriendlyException("用户信息不存在");
             var cards = await _cardRepository.CountAsync(c => c.OpenId.Equals(openId) && !c.State);
-            return new {balance=user.Balance, cards };
+            return new { balance = user.Balance, cards };
         }
         /// <summary>
         /// ice制作成功回掉
@@ -459,22 +468,47 @@ namespace YT.WebApi.Controllers
             if (ut.GetValue("access_token") == null) throw new UserFriendlyException(JsonConvert.SerializeObject(ut));
             var token = ut.GetValue("access_token").ToString();
             var openid = ut.GetValue("openid").ToString();
-            string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
+            var fulltoken = await GetTokenFromCache();
+            //   string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
+            string url = $" https://api.weixin.qq.com/cgi-bin/user/info?access_token={fulltoken}&openid={openid}&lang=zh_CN";
+
             var result = await HttpHandler.GetAsync<JObject>(url);
-            var openId = result.GetValue("openid").ToString();
-            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            //   var openId = result.GetValue("openid").ToString();
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openid));
+            //      subscribe: 1
+            //subscribe_time:  1512439891
             if (user == null)
             {
                 var t = new StoreUser()
                 {
                     Balance = 0,
-                    OpenId = openId
+                    OpenId = openid
                 };
                 await _userRepository.InsertAsync(t);
+                await _cardRepository.InsertAsync(new UserCard()
+                {
+                    Cost = 280,
+                    Key = Guid.NewGuid(),
+                    OpenId = openid,
+                    ProductName = "2.8元代金券(赠送)",
+                    State = false
+                });
                 result.Add("balance", 0);
             }
             else
             {
+                var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openid && c.Cost == 280);
+                if (card == null)
+                {
+                    await _cardRepository.InsertAsync(new UserCard()
+                    {
+                        Cost = 280,
+                        Key = Guid.NewGuid(),
+                        OpenId = openid,
+                        ProductName = "2.8元代金券(赠送)",
+                        State = false
+                    });
+                }
                 result.Add("balance", user.Balance);
             }
             return result;
