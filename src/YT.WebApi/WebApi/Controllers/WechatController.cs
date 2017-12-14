@@ -307,32 +307,36 @@ namespace YT.WebApi.Controllers
         /// <summary>
         /// ice制作成功回掉
         /// </summary>
+        /// <param name="assetId"></param>
+        /// <param name="orderNo"></param>
+        /// <param name="deliverStatus"></param>
         /// <returns></returns>
-        public async Task IceProduct(IceCallInput input)
+        public async Task IceProduct(string assetId, string orderNo, string deliverStatus)
         {
-
-            var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(input.OrderNo) && c.DeviceNum.Equals(input.AssetId));
+      
+        var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(orderNo) && c.DeviceNum.Equals(assetId)&&!c.OrderState.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
-            if (input.DeliverStatus.Equals("0"))
+            if (deliverStatus.Equals("0"))
             {
                 order.OrderState = true;
             }
             else
             {
                 order.OrderState = false;
-                order.Reson = input.DeliverStatus;
+                order.Reson = deliverStatus;
             }
         }
         /// <summary>
         /// jack制作成功回掉
         /// </summary>
         /// <returns></returns>
-        public async Task JackProduct(JackCallInput input)
+        public async Task JackProduct(string id, string vmc, string pid, string mac)
         {
-            var order = await _orderRepository.FirstOrDefaultAsync(c =>
-                    c.OrderNum.Equals(input.Id) && c.DeviceNum.Equals(input.Vmc));
+           
+        var order = await _orderRepository.FirstOrDefaultAsync(c =>
+                    c.OrderNum.Equals(id) && c.DeviceNum.Equals(vmc) && !c.OrderState.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             order.OrderState = true;
