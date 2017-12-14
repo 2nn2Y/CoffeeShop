@@ -61,7 +61,7 @@ export default {
           key: "userName"
         },
         {
-          title: "点位名称",
+          title: "点位详情",
           key: "signLocation"
         },
         {

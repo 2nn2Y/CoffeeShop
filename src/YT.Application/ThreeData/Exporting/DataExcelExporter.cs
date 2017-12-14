@@ -109,7 +109,7 @@ namespace YT.ThreeData.Exporting
                           _ => _.DeviceNum,
                           _ => _.OrderNum,
                           _ => _.ProductName,
-                          _ => _.Price,
+                          _ => _.Price*1.0/100,
                           _ => ChangeType(_.PayType),
                           _ => _timeZoneConverter.Convert(_.Date, _abpSession.TenantId, _abpSession.GetUserId())
                           );
@@ -148,7 +148,7 @@ namespace YT.ThreeData.Exporting
                            sheet, 2, orders,
                            _ => _.ProductName,
                            _ => _.Count,
-                           _ => _.Price,
+                           _ => _.Price * 1.0 / 100,
                            _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),
                            _ => _timeZoneConverter.Convert(_.End, _abpSession.TenantId, _abpSession.GetUserId())
                            );
@@ -192,7 +192,7 @@ namespace YT.ThreeData.Exporting
                             _ => _.DeviceName,
                             _ => _.ProductName,
                             _ => _.Count,
-                            _ => _.Price,
+                            _ => _.Price * 1.0 / 100,
                             _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),
                             _ => _timeZoneConverter.Convert(_.End, _abpSession.TenantId, _abpSession.GetUserId())
                             );
@@ -234,7 +234,7 @@ namespace YT.ThreeData.Exporting
                             _ => _.City,
                             _ => _.ProductName,
                             _ => _.Count,
-                            _ => _.Price,
+                            _ => _.Price * 1.0 / 100,
                             _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),
                             _ => _timeZoneConverter.Convert(_.End, _abpSession.TenantId, _abpSession.GetUserId())
                             );
@@ -276,7 +276,7 @@ namespace YT.ThreeData.Exporting
                            _ => ChangeType(_.PayType),
                            _ => _.City,
                            _ => _.Count,
-                           _ => _.Price,
+                           _ => _.Price * 1.0 / 100,
                            _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),
                            _ => _timeZoneConverter.Convert(_.End, _abpSession.TenantId, _abpSession.GetUserId())
                            );
@@ -318,7 +318,7 @@ namespace YT.ThreeData.Exporting
                           _ => _.Area,
                           _ => _.SchoolName,
                           _ => _.Count,
-                          _ => _.Price,
+                          _ => _.Price * 1.0 / 100,
                           _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),
                           _ => _timeZoneConverter.Convert(_.End, _abpSession.TenantId, _abpSession.GetUserId())
                           );
