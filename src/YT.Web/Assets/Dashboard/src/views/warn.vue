@@ -54,7 +54,7 @@ export default {
           key: "deviceNum"
         },
         {
-          title: "点位名称",
+          title: "点位详情",
           key: "pointName"
         },
         {

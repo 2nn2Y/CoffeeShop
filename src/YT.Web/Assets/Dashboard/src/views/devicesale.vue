@@ -40,7 +40,7 @@ export default {
           key: "deviceNum"
         },
         {
-          title: "设备点位",
+          title: "点位详情",
           key: "deviceName"
         },
         {
