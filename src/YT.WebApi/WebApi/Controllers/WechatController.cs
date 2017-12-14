@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -157,7 +158,7 @@ namespace YT.WebApi.Controllers
                         {
                             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
                             var count = order.Price/7.8;
-                            
+                            count = ChangeCard(int.Parse(count.ToString(CultureInfo.InvariantCulture)));
                             for (int i = 0; i < count; i++)
                             {
                                 await _cardRepository.InsertAsync(new UserCard()
@@ -199,14 +200,21 @@ namespace YT.WebApi.Controllers
             }
             return Ok();
         }
-
+        private int ChangeCard(int count)
+        {
+            if (count == 10) return 11;
+            if (count == 20) return 24;
+            if (count == 30) return 38;
+            if (count == 50) return 65;
+            return count;
+        }
         private int ChangeMoney(int money)
         {
-            if (money == 5000) return 5000;
-            if (money == 10000) return 11000;
-            if (money == 15000) return 16500;
-            if (money == 20000) return 23000;
-            if (money == 30000) return 34000;
+            if (money == 5000) return 5500;
+            if (money == 10000) return 12000;
+            if (money == 20000) return 26000;
+            if (money == 30000) return 40000;
+            if (money == 50000) return 70000;
             return 30000;
         }
         /// <summary>
