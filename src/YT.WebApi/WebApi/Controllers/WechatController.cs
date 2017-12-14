@@ -327,7 +327,7 @@ namespace YT.WebApi.Controllers
                 order.OrderState = false;
                 order.Reson = deliverStatus;
             }
-            return Json(new { result = "SUCCESS" });
+            return Json(new { result = "1" });
         }
         /// <summary>
         /// jack制作成功回掉
