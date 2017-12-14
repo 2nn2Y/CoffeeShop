@@ -311,7 +311,7 @@ namespace YT.WebApi.Controllers
         /// <param name="orderNo"></param>
         /// <param name="deliverStatus"></param>
         /// <returns></returns>
-        public async Task IceProduct(string assetId, string orderNo, string deliverStatus)
+        public async Task<IHttpActionResult> IceProduct(string assetId, string orderNo, string deliverStatus)
         {
       
         var order = await _orderRepository.FirstOrDefaultAsync(c =>
@@ -327,12 +327,13 @@ namespace YT.WebApi.Controllers
                 order.OrderState = false;
                 order.Reson = deliverStatus;
             }
+            return Json(new {result = "SUCCESS"});
         }
         /// <summary>
         /// jack制作成功回掉
         /// </summary>
         /// <returns></returns>
-        public async Task JackProduct(string id, string vmc, string pid, string mac)
+        public async Task<IHttpActionResult> JackProduct(string id, string vmc, string pid, string mac)
         {
            
         var order = await _orderRepository.FirstOrDefaultAsync(c =>
@@ -340,6 +341,7 @@ namespace YT.WebApi.Controllers
             if (order == null) throw new UserFriendlyException("该订单不存在");
             if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
             order.OrderState = true;
+            return Json(new { result = "SUCCESS" });
         }
         /// <summary>
         /// 获取用户卡圈列表
