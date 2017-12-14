@@ -57,7 +57,9 @@ export default {
           }
         })
         .catch(e => {
-          this.showBox("错误", e.response.data.error);
+          console.log(e);
+          sessionStorage.clear();
+          window.location.href = "http://card.youyinkeji.cn/#/author";
         });
     }
   }
