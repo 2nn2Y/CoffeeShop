@@ -128,23 +128,16 @@ namespace YT.ThreeData
             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
             if (p == null) throw new UserFriendlyException("该商品不存在");
             var o = await _storeRepository.FirstOrDefaultAsync(c => 
-            c.OrderNum.Equals(input.Order)&&c.PayState.HasValue&&c.PayState.Value);
-            if (o != null ) throw new UserFriendlyException("该订单已存在,请重新下单");
-
-            var order = new StoreOrder()
-            {
-                OrderNum = input.Order,
-                FastCode = input.FastCode,
-                DeviceNum = input.Device,
-                OpenId = input.OpenId,
-                OrderState = null,
-                PayType = PayType.BalancePay,
-                OrderType = input.OrderType,
-                PayState = null,
-                Price = p.Price,
-                ProductId = p.ProductId
-            };
-            await _storeRepository.InsertAsync(order);
+            c.OrderNum.Equals(input.Order)&&!c.PayState.HasValue);
+            if (o == null ) throw new UserFriendlyException("该订单已存在,请重新下单");
+            o.OpenId = input.OpenId;
+            o.OrderState = null;
+            o.PayType = PayType.BalancePay;
+            o.OrderType = input.OrderType;
+            o.PayState = null;
+            o.Price = p.Price;
+            o.ProductId = p.ProductId;
+            await _storeRepository.InsertOrUpdateAsync(o);
             await CurrentUnitOfWork.SaveChangesAsync();
             //使用优惠券
             if (input.Key.HasValue)
@@ -162,18 +155,18 @@ namespace YT.ThreeData
             {
                 user.Balance -= input.Price;
             }
-            order.PayState = true;
+            o.PayState = true;
             //发货
-            if (order.OrderType == OrderType.Ice)
+            if (o.OrderType == OrderType.Ice)
             {
-                var result = await PickProductIce(order);
+                var result = await PickProductIce(o);
             }
             else
             {
-                var temp = await PickProductJack(order);
+                var temp = await PickProductJack(o);
                 if (temp.status == "success")
                 {
-                    order.OrderState = true;
+                    o.OrderState = true;
                 }
             }
         }
@@ -345,8 +338,10 @@ namespace YT.ThreeData
         public async Task<dynamic> PickProductIce(StoreOrder order)
         {
             var url = order.NoticeUrl;
-            if (url.IsNullOrWhiteSpace() || order.Key.IsNullOrWhiteSpace()) return null;
-            var result = await HttpHandler.PostJson<dynamic>(url, JsonConvert.SerializeObject(new
+            if (url.IsNullOrWhiteSpace() || order.Key.IsNullOrWhiteSpace())
+                throw new UserFriendlyException("该订单无效,没有回调地址");
+
+            var result = await HttpHandler.PostJson2<dynamic>(url, JsonConvert.SerializeObject(new
             {
                 payStatus = "0",
                 key = order.Key

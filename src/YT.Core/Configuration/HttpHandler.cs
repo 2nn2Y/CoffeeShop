@@ -93,6 +93,57 @@ namespace YT.Configuration
 
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public static T PostJson2<T>(string url, string json) where T : class, new()
+        {
+            string strUrl = url;
+
+            //创建一个HTTP请求  
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strUrl);
+            //Post请求方式  
+            request.Method = "POST";
+            //内容类型
+            request.ContentType = "application/json";
+            //设置参数，并进行URL编码 
+            string paraUrlCoded = json;//System.Web.HttpUtility.UrlEncode(jsonParas);   
+            byte[] payload;
+            //将Json字符串转化为字节  
+            payload = System.Text.Encoding.UTF8.GetBytes(paraUrlCoded);
+            //设置请求的ContentLength   
+            request.ContentLength = payload.Length;
+            //发送请求，获得请求流 
+            Stream writer;
+            try
+            {
+                writer = request.GetRequestStream();//获取用于写入请求数据的Stream对象
+            }
+            catch (Exception)
+            {
+                writer = null;
+            }
+            //将请求参数写入流
+            if (writer != null)
+            {
+                writer.Write(payload, 0, payload.Length);
+                writer.Close();//关闭请求流
+            }
+            string postContent = "";
+
+            //获得响应流
+            var response = (HttpWebResponse)request.GetResponse();
+            Stream s = response.GetResponseStream();
+            StreamReader sRead = new StreamReader(s);
+            postContent = sRead.ReadToEnd();
+            sRead.Close();
+            return JsonConvert.DeserializeObject<T>(postContent);
+        }
+
+
+        /// <summary>
         /// 异步Post请求，
         /// </summary>
         /// <param name="url"></param>
