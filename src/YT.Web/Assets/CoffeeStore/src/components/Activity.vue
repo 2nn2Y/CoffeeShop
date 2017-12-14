@@ -1,19 +1,19 @@
 <template>
-  <div>
+  <div class="myActivity">
     <div style="margin: 10px;overflow: hidden;" :key="item.id" v-for="item in list">
       <masker @click.native="choose(item)"  style="border-radius: 2px;">
         <div class="m-img" :style="{ backgroundImage: 'url(' + item.imageUrl + ')'}" ></div>
         <div slot="content" class="m-title">
-          {{item.productName}}
+            <span class="m-time">{{item.description}}</span>
           <br/>
-          <span class="m-time">{{item.description}}</span>
+            {{item.productName}}
           <div>
           <span v-if="item.id==selected" class="m-selected"></span>
           </div>
         </div>
       </masker>
     </div>
-     <x-button type="primary" @click.native="buyCard">购买</x-button>
+     <x-button class="m-buy" type="primary" @click.native="buyCard">购买</x-button>
   </div>
 </template>
 
@@ -108,6 +108,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.myActivity{
+  background:#fff;
+  padding:5px 0;
+  margin-top: 10px
+}
 .m-img {
   padding-bottom: 33%;
   display: block;
@@ -120,7 +125,7 @@ export default {
 }
 
 .m-title {
-  color: #fff;
+  color: #f45c32;
   text-align: center;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   font-weight: 500;
@@ -132,6 +137,7 @@ export default {
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
+  // background: rgba(0,0,0,0.5)
 }
 .m-selected {
   font-size: 12px;
@@ -142,12 +148,28 @@ export default {
   border-top: 1px solid #f0f0f0;
   display: inline-block;
   margin-top: 5px;
+  position: absolute;
+  bottom: -22px;
+  left: 0;
 }
 .m-time {
   font-size: 12px;
   padding-top: 4px;
-  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px dashed #f0f0f0;
   display: inline-block;
   margin-top: 5px;
+  color: #fff
+}
+.m-buy{
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  background: #fff;
+  border-radius: 0;
+  color: #000;
+  border-top: 1px solid #ddd
+}
+.weui-btn:after{
+  border:none
 }
 </style>

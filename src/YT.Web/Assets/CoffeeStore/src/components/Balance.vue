@@ -1,17 +1,23 @@
 <template>
-  <div>
-    <divider>充值金额</divider>
+  <div class="myBalance">
+    <!-- <divider>充值金额</divider> -->
+    <flexbox orient="vertical">
+      <flexbox-item><div class="flex-demo">充值金额</div></flexbox-item>
+    </flexbox>
     <box gap="10px 10px">
-      <x-button @click.native="charge(1)" :gradients="['#1D62F0', '#19D5FD']">充50得50</x-button>
-      <x-button @click.native="charge(1)" :gradients="['#A644FF', '#FC5BC4']">充100得110</x-button>
-      <x-button @click.native="charge(1)" :gradients="['#FF2719', '#FF61AD']">充150得165</x-button>
-      <x-button @click.native="charge(1)" :gradients="['#6F1BFE', '#9479DF']">充200得230</x-button>
-      <x-button @click.native="charge(1)" :gradients="['#FF5E3A', '#FF9500']">充300得340</x-button>
+      <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
+      <x-button mini @click.native="charge(1)">100元</br>充100 得100</x-button>
+      <x-button mini @click.native="charge(1)">150元</br>充150得165</x-button>
+      <x-button mini @click.native="charge(1)">200元</br>充200得230</x-button>
+      <x-button mini @click.native="charge(1)">300元</br>充300得340</x-button>
     </box>
+    <div style="width:100%; text-align:center">
+      <x-button mini class="myimme">立即充值</x-button>
+    </div>
   </div>
 </template>
 <script>
-import { XButton, Box, GroupTitle, Group, Divider } from "vux";
+import { XButton, Box, GroupTitle, Group, Divider, Flexbox, FlexboxItem } from "vux";
 
 export default {
   components: {
@@ -19,7 +25,9 @@ export default {
     Box,
     GroupTitle,
     Group,
-    Divider
+    Divider,
+    Flexbox,
+    FlexboxItem
   },
   created() {
     this.wxConfig(window.location.href);
@@ -68,7 +76,39 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.myBalance{
+  background:#fff;
+  height:100%;
+  flexbox-item{
+    width:100%;
+  }
+  .flex-demo {
+    text-align: center;
+    color: #000;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0
+  }
+  button{
+    background: none;
+    border: 1px solid #ddd;
+    padding: 0;
+    width: 32.2%
+  }
+  .weui-btn:after{
+    border: none;
+  }
+  span{
+    font-size: 10px
+  }
+  .myimme{
+    color: red;
+    width: auto;
+    padding: 0 3em;
+    border-radius: 25px;
+    margin-top: 15px
+  }
+}
 .custom-primary-red {
   border-radius: 99px !important;
   border-color: #ce3c39 !important;
@@ -79,4 +119,5 @@ export default {
     background-color: transparent;
   }
 }
+
 </style>

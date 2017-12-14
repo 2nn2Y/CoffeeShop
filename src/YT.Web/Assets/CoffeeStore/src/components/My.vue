@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="myMain">
     <blur :blur-amount="40" :url="url">
       <p class="center">
         <img :src="url">
@@ -61,7 +61,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<<style lang="less">
 .center {
   text-align: center;
   padding-top: 20px;
@@ -75,4 +75,18 @@ export default {
   border-radius: 50%;
   border: 4px solid #ececec;
 }
+
+.myMain{
+  .weui-cells{
+    margin-top: 0
+  }
+  .vux-no-group-title{
+    margin-top: 0.5em
+  }
+  .weui-cell__ft{
+    font-size: 12px;
+    color: red
+  }
+}
+  
 </style>

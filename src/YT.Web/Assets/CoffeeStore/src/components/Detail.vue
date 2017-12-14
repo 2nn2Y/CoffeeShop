@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="myDetail">
     <panel :header="'商品详情'" :list="list" :type="'5'"></panel>
-    <divider>咖啡配置</divider>
     <group>
+      <flexbox orient="vertical">
+        <flexbox-item><div class="flex-demo">咖啡配置</div></flexbox-item>
+      </flexbox>
       <cell v-if="type==1" title="浓度" :value="call.o"></cell>
       <cell v-if="type==1" title="奶度" :value="call.m"></cell>
       <cell v-if="type==1" title="糖度" :value="call.s"></cell>
@@ -10,17 +12,20 @@
       <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
       <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
       <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard"></selector>
-      <cell title="总金额" v-model="totalprice"></cell>
+      <!-- <cell title="总金额" v-model="totalprice"></cell> -->
+      <div class="myTotal">
+        <span>总金额：</span>{{ totalprice }}
+      </div>
     </group>
     <grid>
       <grid-item>
-        <box gap="10px 10px">
+        <box gap="7px 7px">
           <x-button plain type="primary"  @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
         </box>
       </grid-item>
       <grid-item>
-        <box gap="10px 10px">
-           <x-button plain type="primary"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
+        <box gap="7px 7px">
+           <x-button plain type="default"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
         </box>
       </grid-item>
     </grid>
@@ -39,7 +44,9 @@ import {
   Grid,
   GridItem,
   XButton,
-  Box
+  Box,
+  Flexbox,
+  FlexboxItem
 } from "vux";
 export default {
   components: {
@@ -53,7 +60,9 @@ export default {
     Grid,
     GridItem,
     XButton,
-    Box
+    Box,
+    Flexbox,
+    FlexboxItem
   },
   created() {
     this.wxConfig(window.location.href);
@@ -220,7 +229,64 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
+.myDetail{
+  .weui-panel__hd{
+    text-align: center;
+  }
+  .weui-panel__hd:after{
+    left: 0
+  }
+  flexbox-item{
+    width:100%;
+  }
+  .flex-demo {
+    text-align: center;
+    color: #000;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+    background:#fff;
+    margin-top: 10px
+  }
+  .weui-grids{
+    position: absolute;
+    bottom: 0;
+    background: #fff;
+    width: 100%;
+    padding-bottom: 15px
+  }
+  .weui-grid{
+    padding: 0 14px
+  }
+  button{
+    font-size: 10px
+  }
+  button.weui-btn_plain-primary,
+  input.weui-btn_plain-primary{
+    background:#22ac38
+  }
+  button.weui-btn_plain-default,
+  input.weui-btn_plain-default{
+    background:#1b77f2;
+    border: 1px solid #1b77f2
+  }
+  .weui-grid:before{
+    border-right: 1px dashed #D9D9D9 
+  }
+  .weui-grid:after{
+    border-bottom: none
+  }
+  .myTotal{
+    text-align:center;
+    padding:15px 0;
+    border-top:1px solid #ddd;
+    width:94%;
+    margin-left:3%;
+    span{
+      color: red
+    }
+  }
+}
 .custom-primary-blue {
   border-radius: 120px !important;
   // border-color: #CE3C39!important;

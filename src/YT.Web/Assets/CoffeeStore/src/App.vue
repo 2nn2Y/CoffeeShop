@@ -23,7 +23,16 @@ export default {
 <style lang="less">
 @import "~vux/src/styles/reset.less";
 
-body {
-  background-color: #fbf9fe;
+html,body{
+  height: 100%;
+}
+body{
+  background-color: #f3f3f3;
+}
+#app{
+  height: 100%
+}
+#vux_view_box_body{
+  padding: 0
 }
 </style>

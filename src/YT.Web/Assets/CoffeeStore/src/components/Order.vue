@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="myOrder">
     <panel :header="'我的订单'"
     :footer="footer" :list="list" @on-click-item="detail" :type="'5'" @on-click-footer="next"></panel>
   </div>
@@ -59,3 +59,12 @@ export default {
   }
 };
 </script>
+<style lang="less">
+.myOrder{
+  padding-top: 10px;
+  .weui-panel__hd{
+    color: #000
+  }
+}
+</style>
+
