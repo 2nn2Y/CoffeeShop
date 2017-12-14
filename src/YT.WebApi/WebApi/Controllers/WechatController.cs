@@ -256,7 +256,7 @@ namespace YT.WebApi.Controllers
             }
             //  102 - 10152 - 222 - 990 - 2017120509563310152abcde - 1
             var codeUrl =
-                $"http://card.youyinkeji.cn/?#/detail/{order.ProductId}^{order.DeviceNum}^{fast}^{product.Price}^{order.OrderNum}^{2}";
+                $"http://card.youyinkeji.cn/#/detail/{order.ProductId}^{order.DeviceNum}^{fast}^{product.Price}^{order.OrderNum}^{2}";
             return Json(new { result = "SUCCESS", qr_code = codeUrl });
         }
         /// <summary>
