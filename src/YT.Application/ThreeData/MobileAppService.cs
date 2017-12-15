@@ -631,7 +631,7 @@ namespace YT.ThreeData
         /// 取货
         /// </summary>
         /// <returns></returns>
-        Task<dynamic> PickProductJack(StoreOrder order);
+        Task<dynamic    > PickProductJack(StoreOrder order);
 
         /// <summary>
         /// 取货

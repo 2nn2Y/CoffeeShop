@@ -237,7 +237,7 @@ namespace YT.WebApi.Controllers
 
             var order = await _orderRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(OrderNo) && !c.PayState.HasValue);
             var product = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == ProductNum);
-            if (product == null) return Json(new { result = "FAIL" });
+            if (product == null) return Json(new { result = "0" });
             var fast = order?.FastCode ?? "000";
             if (order == null)
             {
@@ -257,7 +257,7 @@ namespace YT.WebApi.Controllers
             //  102 - 10152 - 222 - 990 - 2017120509563310152abcde - 1
             var codeUrl =
                 $"http://card.youyinkeji.cn/#/detail/{order.ProductId}^{order.DeviceNum}^{fast}^{product.Price}^{order.OrderNum}^{2}";
-            return Json(new { result = "SUCCESS", qr_code = codeUrl });
+            return Json(new { result = "1", qr_code = codeUrl });
         }
         /// <summary>
         /// 获取卡圈ticket
@@ -316,8 +316,8 @@ namespace YT.WebApi.Controllers
 
             var order = await _orderRepository.FirstOrDefaultAsync(c =>
                         c.OrderNum.Equals(orderNo) && c.DeviceNum.Equals(assetId) && !c.OrderState.HasValue);
-            if (order == null) throw new UserFriendlyException("该订单不存在");
-            if (!order.PayState.HasValue || !order.PayState.Value) throw new UserFriendlyException("该订单未支付");
+            if (order == null) return Json(new { result = "0" });
+            if (!order.PayState.HasValue || !order.PayState.Value) return Json(new { result = "0" });
             if (deliverStatus.Equals("0"))
             {
                 order.OrderState = true;
