@@ -7,9 +7,15 @@
       <p class="center">{{nickname}}</p>
     </blur>
     <group>
-      <cell :title="money" link="/balance" value="充值" is-link></cell>
-      <cell :title="card" link="/mycard" value="" is-link></cell>
-      <cell title="我的订单" link="/order" value="" is-link></cell>
+      <cell :title="money" link="/balance" value="充值" is-link>
+        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/kafeijuan_a_xh.png">
+      </cell>
+      <cell :title="card" link="/mycard" value="" is-link>
+        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/kajuan_a_xh.png">
+      </cell>
+      <cell title="我的订单" link="/order" value="" is-link>
+        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/dingdan_a_xh.png">
+      </cell>
     </group>
   </div>
 </template>

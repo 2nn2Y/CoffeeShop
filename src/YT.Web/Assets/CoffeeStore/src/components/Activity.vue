@@ -163,11 +163,11 @@ export default {
 .m-buy{
   position: absolute;
   bottom: 0;
-  height: 50px;
+  height:60px;
   background: #fff;
   border-radius: 0;
-  color: #000;
-  border-top: 1px solid #ddd
+  color: #4c4c4c;
+  border-top: 1px solid #ddd;
 }
 .weui-btn:after{
   border:none

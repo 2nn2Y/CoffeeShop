@@ -1,9 +1,12 @@
 <template>
   <div class="myDetail">
-    <panel :header="'商品详情'" :list="list" :type="'5'"></panel>
+    <flexbox orient="vertical">
+      <flexbox-item><div class="flex-demo"><img src="../assets/xiangping_a_xh.png"> 商品详情</div></flexbox-item>
+    </flexbox>
+    <panel :list="list" :type="'5'"></panel>
     <group>
       <flexbox orient="vertical">
-        <flexbox-item><div class="flex-demo">咖啡配置</div></flexbox-item>
+        <flexbox-item><div class="flex-demo"><img src="../assets/peizhi_a_xh.png"> 咖啡配置</div></flexbox-item>
       </flexbox>
       <cell v-if="type==1" title="浓度" :value="call.o"></cell>
       <cell v-if="type==1" title="奶度" :value="call.m"></cell>
@@ -14,17 +17,17 @@
       <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard"></selector>
       <!-- <cell title="总金额" v-model="totalprice"></cell> -->
       <div class="myTotal">
-        <span>总金额：</span>{{ totalprice }}
+        <span>总金额：{{ totalprice }}</span>
       </div>
     </group>
     <grid>
       <grid-item>
-        <box gap="7px 7px">
+        <box gap="7px 13px">
           <x-button plain type="primary"  @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
         </box>
       </grid-item>
       <grid-item>
-        <box gap="7px 7px">
+        <box gap="7px 13px">
            <x-button plain type="default"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
         </box>
       </grid-item>
@@ -233,6 +236,8 @@ export default {
 .myDetail{
   .weui-panel__hd{
     text-align: center;
+    color: #000;
+    font-size: 18px
   }
   .weui-panel__hd:after{
     left: 0
@@ -246,17 +251,25 @@ export default {
     border-bottom: 1px solid #ddd;
     padding-bottom: 9px;
     background:#fff;
-    margin-top: 10px
+    padding-top: 10px;
+    font-size: 17px;
+    img{
+      vertical-align: middle;
+      width:30px;
+      height:30px;
+    }
   }
   .weui-grids{
     position: absolute;
     bottom: 0;
     background: #fff;
     width: 100%;
-    padding-bottom: 15px
   }
   .weui-grid{
-    padding: 0 14px
+    padding: 7px 14px
+  }
+  .weui-panel{
+    margin-top: 0
   }
   button{
     font-size: 10px

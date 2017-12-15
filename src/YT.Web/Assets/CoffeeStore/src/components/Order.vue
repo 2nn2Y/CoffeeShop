@@ -63,7 +63,18 @@ export default {
 .myOrder{
   padding-top: 10px;
   .weui-panel__hd{
-    color: #000
+    color: #000;
+    padding: 15px 15px 15px;
+    font-size: 15px;
+    color: #2c2c2c
+  }
+  .weui-cell{
+    padding: 15px 15px;
+    color: #464646;
+    font-size: 15px;
+  }
+  .weui-cell:before{
+    border-top: 1px solid #eee
   }
 }
 </style>
