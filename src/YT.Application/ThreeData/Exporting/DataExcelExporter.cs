@@ -223,6 +223,7 @@ namespace YT.ThreeData.Exporting
                         AddHeader(
                             sheet,
                            "区域",
+                           "设备名称",
                            "产品名称",
                            "销量",
                            "总价",
@@ -232,6 +233,7 @@ namespace YT.ThreeData.Exporting
                         AddObjects(
                             sheet, 2, orders,
                             _ => _.City,
+                            _ => _.DeviceName,
                             _ => _.ProductName,
                             _ => _.Count,
                             _ => _.Price * 1.0 / 100,
