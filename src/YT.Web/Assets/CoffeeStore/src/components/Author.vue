@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <img src="../assets/timg.jpg" style="width:375px;height:620px;">
+  <div class="myAuthor">
+    <img src="../assets/home.png" style="width:100%; height:100%;">
   </div>
 </template>
 <script >
@@ -65,6 +65,10 @@ export default {
   }
 };
 </script>
-<style scoped>
-
+<style lang="less" scoped>
+.myAuthor{
+  height: 100%;
+  overflow: hidden;
+}
 </style>
+
