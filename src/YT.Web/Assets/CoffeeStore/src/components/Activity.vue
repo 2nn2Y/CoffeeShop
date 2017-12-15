@@ -131,13 +131,14 @@ export default {
   font-weight: 500;
   font-size: 16px;
   position: absolute;
-  left: 0;
+  left: 3.5%;
   right: 0;
-  width: 100%;
+  width: 93%;
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
-  // background: rgba(0,0,0,0.5)
+  padding-bottom: 5px;
+  background: url('../assets/juanbeijing_a_xxh.png')
 }
 .m-selected {
   font-size: 12px;
@@ -154,11 +155,11 @@ export default {
 }
 .m-time {
   font-size: 12px;
-  padding-top: 4px;
+  padding: 4px 0;
   border-bottom: 1px dashed #f0f0f0;
   display: inline-block;
   margin-top: 5px;
-  color: #fff
+  color: #efefef
 }
 .m-buy{
   position: absolute;
