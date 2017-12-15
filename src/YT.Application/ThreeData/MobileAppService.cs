@@ -326,7 +326,7 @@ namespace YT.ThreeData
             var mac = ToMd5(temp);
 
             var param = $@"ID={order.OrderNum}&PTYPE=FASTCODE&PID={order.ProductId}&VMC={
-                order.DeviceNum}&FASTCODe={order.FastCode}&USERNAME={"shuoyibuer"}&MAC={mac}";
+                order.DeviceNum}&FASTCODE={order.FastCode}&USERNAME={"shuoyibuer"}&MAC={mac}";
             url = url + "?" + param;
             var result = await HttpHandler.PostAsync<dynamic>(url);
             return result;
