@@ -321,12 +321,12 @@ namespace YT.ThreeData
         public async Task<dynamic> PickProductJack(StoreOrder order)
         {
             var url = "http://103.231.67.143:8079/FASTCODE";
-            var temp = $@"ID={order.OrderNum}&UserName={"shuoyibuer"}&Password={"coffee888"}&Vmc={
-                order.DeviceNum}&Ptype=Fastcode&Pid={order.ProductId}&Fastcode={order.FastCode}";
+            var temp = $@"ID={order.OrderNum}&USERNAME={"shuoyibuer"}&PASSWORD={"coffee888"}&VMC={
+                order.DeviceNum}&PTYPE=FASTCODE&PID={order.ProductId}&FASTCODE={order.FastCode}";
             var mac = ToMd5(temp);
 
-            var param = $@"ID={order.OrderNum}&Ptype=Fastcode&Pid={order.ProductId}&Vmc={
-                order.DeviceNum}&Fastcode={order.FastCode}&Username={"shuoyibuer"}&Mac={mac}";
+            var param = $@"ID={order.OrderNum}&PTYPE=FASTCODE&PID={order.ProductId}&VMC={
+                order.DeviceNum}&FASTCODe={order.FastCode}&USERNAME={"shuoyibuer"}&MAC={mac}";
             url = url + "?" + param;
             var result = await HttpHandler.PostAsync<dynamic>(url);
             return result;

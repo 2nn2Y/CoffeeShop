@@ -259,10 +259,14 @@ namespace YT.WebApi.Controllers
                 {
                     var info = YtConsts.Types.FirstOrDefault(c => c.Type.Equals(warn.WarnNum));
                     var time = (DateTime.Now - warn.WarnTime).TotalHours;
-                    time = Math.Round(time, 2);
                    
-                    temp += $@"设备:{warn.DeviceNum}在{warn.WarnTime}时间出现{info?.Chinese}类型的问题已持续{time}小时,请尽快处理\n
+                    time = Math.Round(time, 2);
+                    if (time <= 2)
+                    {
+                        temp += $@"设备:{warn.DeviceNum}在{warn.WarnTime}时间出现{info?.Chinese}类型的问题已持续{time}小时,请尽快处理\n
                                  <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww480b7545345a38f7&redirect_uri=http://wx.youyinkeji.cn/#/author&response_type=code&scope=snsapi_userinfo&agentid=1000002&state=STATE#wechat_redirect'>报警处理中心</a>";
+
+                    }
                 });
                 if (!temp.IsNullOrWhiteSpace())
                 {
