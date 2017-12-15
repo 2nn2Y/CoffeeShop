@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Logging;
 using Newtonsoft.Json;
 using YT.Configuration;
 using YT.Models;
@@ -35,12 +36,12 @@ namespace YT.ThreeData
         /// </summary>
         public async Task GenderOrder()
         {
-            var now = DateTime.Now;
             var p =
          new QueryParams("CURRENT");
             var t =
             p.ReturnParams();
             var result = HttpHandler.Post(p.Url + "?" + t);
+            LogHelper.Logger.Warn(" url+"+ p.Url + "?" + t + " ------------------------------"+ result);
             var temp = JsonConvert.DeserializeObject<ResultItem>(result);
             await InsertOrder(temp.Record);
         }

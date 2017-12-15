@@ -164,13 +164,13 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.DeviceNum, c.PointName, c.ProductName }
+                         group c by new { c.DeviceNum, c.SchoolName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
                              Count = h.Count(),
                              Price = h.Sum(c => c.Price),
-                             DeviceName = h.Key.PointName,
+                             DeviceName = h.Key.SchoolName,
                              DeviceNum = h.Key.DeviceNum,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
@@ -753,13 +753,13 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.DeviceNum, c.PointName, c.ProductName }
+                         group c by new { c.DeviceNum, c.SchoolName, c.ProductName }
                 into h
                          select new ProductSaleDto()
                          {
                              Count = h.Count(),
                              Price = h.Sum(c => c.Price),
-                             DeviceName = h.Key.PointName,
+                             DeviceName = h.Key.SchoolName,
                              DeviceNum = h.Key.DeviceNum,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
