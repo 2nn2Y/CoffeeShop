@@ -98,7 +98,8 @@ namespace YT.Web
             var controller = IocManager.Resolve<SignController>();
             //同步订单  每12分钟一次
             RecurringJob.AddOrUpdate(() => background.GenderOrder(), "0/12 * * * *");
-          //  同步报警信息  15分钟一次
+           // RecurringJob.AddOrUpdate(() => background.GenderMonthOrder(), "0/59 * * * *");
+            //  同步报警信息  15分钟一次
             RecurringJob.AddOrUpdate(() => controller.GenderWarning(), "0/15 * * * *");
             //同步微信图片 1小时一次
             RecurringJob.AddOrUpdate(()=>controller.GenderImage(), "0/59 * * * *");

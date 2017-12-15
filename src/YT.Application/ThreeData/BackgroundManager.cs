@@ -36,8 +36,6 @@ namespace YT.ThreeData
         public async Task GenderOrder()
         {
             var now = DateTime.Now;
-            var start = now.ToString("yyyymmddhhMMss");
-            var end = now.AddMinutes(-10).ToString("yyyymmddhhMMss");
             var p =
          new QueryParams("CURRENT");
             var t =
@@ -46,6 +44,22 @@ namespace YT.ThreeData
             var temp = JsonConvert.DeserializeObject<ResultItem>(result);
             await InsertOrder(temp.Record);
         }
+        /// <summary>
+        /// test
+        /// </summary>
+        //public async Task GenderMonthOrder()
+        //{
+        //    var now = DateTime.Now.AddMonths(-1);
+        //    var time = now.ToString("yyyyMM");
+        //    var p =
+        // new QueryParams("HISTORY",month:time);
+        //    var param = $"QID={p.Qid}&QLEVEL={p.Qlevel}&USERNAME={p.Username}&MONTH={p.Month}&MAC={p.Mac}";
+
+        //   // http://103.231.67.143:8079/QUERY?QID=100003&QLEVEL=HISTORY&USERNAME=user&MONTH=201702&MAC=33a0fd9aa421b45aaafc4a0f39398109
+        //    var result = HttpHandler.Post(p.Url + "?" + param);
+        //    var temp = JsonConvert.DeserializeObject<ResultItem>(result);
+        //    await InsertOrder(temp.Record);
+        //}
         /// <summary>
         /// 获取报警数据
         /// </summary>
@@ -104,7 +118,8 @@ namespace YT.ThreeData
         private async Task InsertOrder(dynamic list)
         {
             if(list==null) return;
-            var orders = await _orderRepository.GetAllListAsync();
+            var left = DateTime.Now.AddDays(-1);
+            var orders = await _orderRepository.GetAllListAsync(c=>c.Date>=left);
             foreach (var item in list)
             {
                 if (item[1] == null || item[3] == null || item[4] == null) continue;
