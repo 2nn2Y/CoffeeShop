@@ -2,14 +2,14 @@
   <div class="myBalance">
     <!-- <divider>充值金额</divider> -->
     <flexbox orient="vertical">
-      <flexbox-item><div class="flex-demo">充值金额</div></flexbox-item>
+      <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 充值金额</div></flexbox-item>
     </flexbox>
     <box gap="10px 10px">
       <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
-      <x-button mini @click.native="charge(1)">100元</br>充100 得100</x-button>
-      <x-button mini @click.native="charge(1)">150元</br>充150得165</x-button>
-      <x-button mini @click.native="charge(1)">200元</br>充200得230</x-button>
-      <x-button mini @click.native="charge(1)">300元</br>充300得340</x-button>
+      <x-button mini @click.native="charge(1)">100元</br><span>充100 得100</span></x-button>
+      <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
+      <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
+      <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button>
     </box>
     <div style="width:100%; text-align:center">
       <x-button mini class="myimme">立即充值</x-button>
@@ -87,13 +87,24 @@ export default {
     text-align: center;
     color: #000;
     border-bottom: 1px solid #ddd;
-    padding: 5px 0
+    padding: 8px 0;
+    img{
+      vertical-align: middle;
+      width:25px;
+      height:25px;
+    }
   }
   button{
     background: none;
     border: 1px solid #ddd;
     padding: 0;
-    width: 32.2%
+    width: 32.2%;
+    font-size: 14px;
+    &:hover{
+      background:#ffede6;
+      border: 1px solid #ffede6;
+      color:#f45c32
+    }
   }
   .weui-btn:after{
     border: none;
@@ -102,11 +113,12 @@ export default {
     font-size: 10px
   }
   .myimme{
-    color: red;
+    color: #f45c32;
     width: auto;
     padding: 0 3em;
     border-radius: 25px;
-    margin-top: 15px
+    margin-top: 15px;
+    border:1px solid #fc5c32
   }
 }
 .custom-primary-red {
