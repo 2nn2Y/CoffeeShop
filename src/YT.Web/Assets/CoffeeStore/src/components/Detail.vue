@@ -22,12 +22,12 @@
     </group>
     <grid>
       <grid-item>
-        <box gap="7px 13px">
+        <box gap="0px 13px">
           <x-button plain type="primary"  @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
         </box>
       </grid-item>
-      <grid-item>
-        <box gap="7px 13px">
+      <grid-item style="border-left: 1px dashed #ddd">
+        <box gap="0px 13px">
            <x-button plain type="default"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
         </box>
       </grid-item>
@@ -242,6 +242,9 @@ export default {
   .weui-panel__hd:after{
     left: 0
   }
+  .vux-selector.weui-cell_select-after{
+    padding:8px 15px
+  }
   flexbox-item{
     width:100%;
   }
@@ -255,8 +258,9 @@ export default {
     font-size: 17px;
     img{
       vertical-align: middle;
-      width:30px;
-      height:30px;
+      width:23px;
+      height:23px;
+      margin-right: 10px
     }
   }
   .weui-grids{
@@ -264,25 +268,29 @@ export default {
     bottom: 0;
     background: #fff;
     width: 100%;
+    height: 45px;
+    padding: 8px 0;
+    button{
+      font-size: 14px;
+      padding: 4px 0;
+    }
+    button.weui-btn_plain-primary,
+    input.weui-btn_plain-primary{
+      background:#22ac38
+    }
+    button.weui-btn_plain-default,
+    input.weui-btn_plain-default{
+      background:#1b77f2;
+      border: 1px solid #1b77f2
+    }
   }
   .weui-grid{
-    padding: 7px 14px
+    padding: 0 !important
   }
   .weui-panel{
     margin-top: 0
   }
-  button{
-    font-size: 10px
-  }
-  button.weui-btn_plain-primary,
-  input.weui-btn_plain-primary{
-    background:#22ac38
-  }
-  button.weui-btn_plain-default,
-  input.weui-btn_plain-default{
-    background:#1b77f2;
-    border: 1px solid #1b77f2
-  }
+  
   .weui-grid:before{
     border-right: 1px dashed #D9D9D9 
   }
@@ -291,7 +299,7 @@ export default {
   }
   .myTotal{
     text-align:center;
-    padding:15px 0;
+    padding:21px 0;
     border-top:1px solid #ddd;
     width:94%;
     margin-left:3%;

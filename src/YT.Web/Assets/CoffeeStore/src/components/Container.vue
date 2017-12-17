@@ -3,7 +3,7 @@
     <view-box ref="viewBox">
       <app-header></app-header>
       <router-view></router-view>
-      <app-footer></app-footer>
+      <!-- <app-footer></app-footer> -->
     </view-box>
   </div>
 </template>

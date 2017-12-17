@@ -1,15 +1,17 @@
 <template>
   <div class="myActivity">
-    <div style="margin: 10px;overflow: hidden;" :key="item.id" v-for="item in list">
+    <div style="margin: 10px;overflow: hidden;border-radius:10px" :key="item.id" v-for="item in list">
       <masker @click.native="choose(item)"  style="border-radius: 2px;">
         <div class="m-img" :style="{ backgroundImage: 'url(' + item.imageUrl + ')'}" ></div>
         <div slot="content" class="m-title">
-            <span class="m-time">{{item.description}}</span>
-          <br/>
-            {{item.productName}}
-          <div>
-          <span v-if="item.id==selected" class="m-selected"></span>
-          </div>
+            <div class="titleImg">
+              <span class="m-time">{{item.description}}</span>
+              <br/>
+              {{item.productName}}
+            </div>
+            <div>
+              <span v-if="item.id==selected" class="m-selected"></span>
+            </div>
         </div>
       </masker>
     </div>
@@ -131,15 +133,22 @@ export default {
   font-weight: 500;
   font-size: 16px;
   position: absolute;
-  left: 3.5%;
+  left: 0;
   right: 0;
-  width: 93%;
+  width: 100%;
   text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 22%;
+  /* transform: translateY(-50%); */
   padding-bottom: 5px;
-  background: url('../assets/juanbeijing_a_xxh.png')
+  height: 74%;
+  .titleImg{
+      background: url('../assets/juanbeijing_a_xxh.png');
+      width: 93%;
+      position: absolute;
+      left: 3.5%;
+  }
 }
+
 .m-selected {
   font-size: 12px;
   width: 100%;
@@ -150,16 +159,18 @@ export default {
   display: inline-block;
   margin-top: 5px;
   position: absolute;
-  bottom: -22px;
+  bottom: 0;
   left: 0;
+  border-radius: 10px
 }
 .m-time {
   font-size: 12px;
-  padding: 4px 0;
+  padding: 8px 0;
   border-bottom: 1px dashed #f0f0f0;
   display: inline-block;
   margin-top: 5px;
-  color: #efefef
+  color: #efefef;
+  margin-bottom: 5px
 }
 .m-buy{
   position: absolute;

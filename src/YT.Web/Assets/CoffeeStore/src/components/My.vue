@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<<style lang="less">
+<style lang="less">
 .center {
   text-align: center;
   padding-top: 20px;
@@ -83,6 +83,9 @@ export default {
 }
 
 .myMain{
+  .weui-cell{
+    padding: 16px 15px
+  }
   .weui-cells{
     margin-top: 0
   }
@@ -94,5 +97,8 @@ export default {
     color: red
   }
 }
-  
+.myMain>div:nth-child(1){
+  height: 250px !important;
+  padding-top:50px
+}
 </style>

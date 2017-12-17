@@ -4,14 +4,19 @@
     <flexbox orient="vertical">
       <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 充值金额</div></flexbox-item>
     </flexbox>
-    <box gap="10px 10px">
-      <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
+    <box gap="15px 10px">
+      <!-- <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
       <x-button mini @click.native="charge(1)">100元</br><span>充100 得100</span></x-button>
       <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
       <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
-      <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button>
+      <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button> -->
+      <span @click.native="charge(1)">50元<br/><font>充50 得50</font></span>
+      <span @click.native="charge(1)">100元<br/><font>充100 得100</font></span>
+      <span @click.native="charge(1)">150元<br/><font>充150 得165</font></span>
+      <span @click.native="charge(1)">200元<br/><font>充200 得230</font></span>
+      <span @click.native="charge(1)">300元<br/><font>充300 得340</font></span>
     </box>
-    <div style="width:100%; text-align:center">
+    <div class="immeCharge">
       <x-button mini class="myimme">立即充值</x-button>
     </div>
   </div>
@@ -78,47 +83,69 @@ export default {
 
 <style lang="less" scoped>
 .myBalance{
-  background:#fff;
-  height:100%;
+  height:calc(100% - 7px);
+  background: url('../assets/charge.png');
+  background-size: 100% 100%;
   flexbox-item{
     width:100%;
   }
   .flex-demo {
     text-align: center;
-    color: #000;
-    border-bottom: 1px solid #ddd;
+    color: #fff;
     padding: 8px 0;
     img{
       vertical-align: middle;
       width:25px;
       height:25px;
+      margin-right:5px
     }
   }
-  button{
+  .immeCharge{
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    background: rgba(10,7,0,.4);
+    height: 60px;
+    line-height: 56px;
+    button{
+      background: #f45c32;
+      color: #fff;
+      margin: 0
+    }
+  }
+  span{
+    display: inline-block;
     background: none;
-    border: 1px solid #ddd;
+    border: 6px solid #cfd0d0;
     padding: 0;
-    width: 32.2%;
-    font-size: 14px;
+    width: 29%;
+    font-size: 16px;
+    border-radius: 10px;
+    margin-top: 10px;
+    text-align: center;
+    padding:2px 0;
+    background: #e8e9e9;
     &:hover{
-      background:#ffede6;
-      border: 1px solid #ffede6;
+      background: #ffede6;
+      border: 6px solid #f9c2b4;
       color:#f45c32
     }
   }
   .weui-btn:after{
     border: none;
   }
-  span{
-    font-size: 10px
+  font{
+    font-size: 12px
   }
   .myimme{
     color: #f45c32;
     width: auto;
-    padding: 0 3em;
+    padding: 0.1em 5em;
     border-radius: 25px;
     margin-top: 15px;
-    border:1px solid #fc5c32
+    border:1px solid #fc5c32;
+    font-size: 15px
   }
 }
 .custom-primary-red {
