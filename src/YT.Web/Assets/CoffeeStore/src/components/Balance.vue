@@ -96,7 +96,7 @@ export default {
 
 <style lang="less" scoped>
 .myBalance {
-  height: calc(100% - 7px);
+  height: 100%;
   background: url("../assets/charge.png");
   background-size: 100% 100%;
   flexbox-item {
@@ -119,8 +119,7 @@ export default {
     position: absolute;
     bottom: 0;
     background: rgba(10, 7, 0, 0.4);
-    height: 56px;
-    line-height: 58px;
+    padding: 0.6em 0;
     button {
       background: #f45c32;
       color: #fff;
