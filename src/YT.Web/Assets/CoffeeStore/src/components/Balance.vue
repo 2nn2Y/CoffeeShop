@@ -4,43 +4,28 @@
     <flexbox orient="vertical">
       <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 充值金额</div></flexbox-item>
     </flexbox>
-<<<<<<< HEAD
-    <box gap="15px 10px">
-      <!-- <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
-      <x-button mini @click.native="charge(1)">100元</br><span>充100 得100</span></x-button>
-      <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
-      <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
-      <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button> -->
-      <span @click="changeMoney(1)">50元<br/><font>充50 得50</font></span>
-      <span @click="changeMoney(1)">100元<br/><font>充100 得100</font></span>
-      <span @click="changeMoney(1)">150元<br/><font>充150 得165</font></span>
-      <span @click="changeMoney(1)">200元<br/><font>充200 得230</font></span>
-      <span @click="changeMoney(1)">300元<br/><font>充300 得340</font></span>
-    </box>
-=======
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
-          <span @click.native="changeMoney(1)">50元<br/><font>充50 得50</font></span>
+          <span @click="changeMoney(1)">50元<br/><font>充50 得50</font></span>
         </div>
         <div class="vux-1px-r">
-          <span @click.native="changeMoney(1)">100元<br/><font>充100 得100</font></span>
+          <span @click="changeMoney(1)">100元<br/><font>充100 得100</font></span>
         </div>
         <div>
-          <span @click.native="changeMoney(1)">150元<br/><font>充150 得165</font></span>
+          <span @click="changeMoney(1)">150元<br/><font>充150 得165</font></span>
         </div>
       </div>
       <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
           <div class="vux-1px-r">
-            <span @click.native="changeMoney(1)">200元<br/><font>充200 得230</font></span>
+            <span @click="changeMoney(1)">200元<br/><font>充200 得230</font></span>
           </div>
           <div class="vux-1px-r">
-            <span @click.native="changeMoney(1)">300元<br/><font>充300 得340</font></span>
+            <span @click="changeMoney(1)">300元<br/><font>充300 得340</font></span>
           </div>
           <div></div>
         </div>
     </card>
->>>>>>> 87f69c237f5203777d39568af68e8cefc9b05c86
     <div class="immeCharge">
       <x-button @click.native="charge" mini class="myimme">立即充值</x-button>
     </div>
@@ -152,14 +137,14 @@ export default {
       margin: 0;
     }
   }
-  .weui-panel{
-    background:none;
+  .weui-panel {
+    background: none;
   }
-  .weui-panel:after{
-    border-bottom: none
+  .weui-panel:after {
+    border-bottom: none;
   }
-  .weui-panel:before{
-    border-top: none
+  .weui-panel:before {
+    border-top: none;
   }
   span {
     display: inline-block;
@@ -207,17 +192,17 @@ export default {
   }
 }
 .card-demo-flex {
-    display: flex;
-  }
-  .card-demo-content01 {
-    padding: 5px 10px 0
-  }
-  .card-padding {
-    padding: 15px;
-  }
-  .card-demo-flex > div {
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
-  }
+  display: flex;
+}
+.card-demo-content01 {
+  padding: 5px 10px 0;
+}
+.card-padding {
+  padding: 15px;
+}
+.card-demo-flex > div {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+}
 </style>
