@@ -4,18 +4,6 @@
     <flexbox orient="vertical">
       <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 充值金额</div></flexbox-item>
     </flexbox>
-    <box gap="15px 10px">
-      <!-- <x-button mini @click.native="charge(1)">50元<br/><span>充50 得50</span></x-button>
-      <x-button mini @click.native="charge(1)">100元</br><span>充100 得100</span></x-button>
-      <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
-      <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
-      <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button> -->
-      <!-- <span @click.native="changeMoney(1)">50元<br/><font>充50 得50</font></span>
-      <span @click.native="changeMoney(1)">100元<br/><font>充100 得100</font></span>
-      <span @click.native="changeMoney(1)">150元<br/><font>充150 得165</font></span>
-      <span @click.native="changeMoney(1)">200元<br/><font>充200 得230</font></span>
-      <span @click.native="changeMoney(1)">300元<br/><font>充300 得340</font></span> -->
-    </box>
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
