@@ -29,17 +29,16 @@ export default {
   methods: {
     login() {
       const url =
-        "http://services.youyinkeji.cn/api/wechat/GetInfoByCode?code=" +
+        "http://services.youyinkeji.cn/api/Wechat/GetOpenIdByCode?code=" +
         window.location.href.split("=")[1];
       // 通过cookie中保存的token 获取用户信息
       this.$http
         .get(url)
         .then(response => {
-          if (response && response.data) {
-            if (response.data.openid) {
-              sessionStorage.setItem("openid", response.data.openid);
-              sessionStorage.setItem("nickname", response.data.nickname);
-              sessionStorage.setItem("headimgurl", response.data.headimgurl);
+          console.log(response);
+          if (response) {
+            if (response.data) {
+              sessionStorage.setItem("openid", response.data);
               const beforeUrl = sessionStorage.getItem("beforeUrl");
               if (beforeUrl) {
                 window.location.href =
@@ -47,12 +46,6 @@ export default {
               } else {
                 window.location.href = "http://card.youyinkeji.cn/#/my";
               }
-            }
-          } else {
-            if (sessionStorage.getItem("userId")) {
-              const ww = encodeURI("http://card.youyinkeji.cn");
-              // 跳转到微信授权页面
-              window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9065b59568dcf5a8&redirect_uri=${ww}&response_type=code&scope=snsapi_userinfo&state=333#wechat_redirect`;
             }
           }
         })
@@ -66,7 +59,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.myAuthor{
+.myAuthor {
   height: 100%;
   overflow: hidden;
 }

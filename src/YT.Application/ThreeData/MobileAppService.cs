@@ -193,7 +193,7 @@ namespace YT.ThreeData
                     DeviceNum = input.Device,
                     PayState = null,
                     Price = p.Price,
-                    ProductId = p.Id
+                    ProductId = p.ProductId
                 };
             }
             else

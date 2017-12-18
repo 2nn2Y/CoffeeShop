@@ -295,6 +295,15 @@ namespace YT.Models
         /// 余额
         /// </summary>
         public int Balance { get; set; }
+        /// <summary>
+        /// 昵称
+        /// </summary>
+
+        public string NickName { get; set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        public string ImageUrl { get; set; }
     }
     /// <summary>
     /// 用戶卡券

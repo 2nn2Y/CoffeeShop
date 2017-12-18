@@ -1,10 +1,10 @@
 <template>
   <div class="myMain">
-    <blur :blur-amount="40" :url="url">
+    <blur :blur-amount="40" :url="info.imageUrl">
       <p class="center">
-        <img :src="url">
+        <img :src="info.imageUrl">
       </p>
-      <p class="center">{{nickname}}</p>
+      <p class="center">{{info.nickName}}</p>
     </blur>
     <group>
       <cell :title="money" link="/balance" value="充值" is-link>
@@ -37,15 +37,13 @@ export default {
   },
   data() {
     return {
-      url: sessionStorage.getItem("headimgurl"),
-      nickname: sessionStorage.getItem("nickname"),
-      balance: 0,
-      cards: 0
+      cards: 0,
+      info: { balance: 0 }
     };
   },
   computed: {
     money() {
-      return `咖啡券(${this.balance * 1.0 / 100})`;
+      return `咖啡券(${this.info.balance * 1.0 / 100})`;
     },
     card() {
       return `我的卡券(${this.cards})`;
@@ -54,11 +52,12 @@ export default {
   methods: {
     init() {
       const url =
-        "http://services.youyinkeji.cn/api/Wechat/GetUserBalance?openId=" +
+        "http://services.youyinkeji.cn/api/Wechat/GetInfoByOpenId?openId=" +
         sessionStorage.getItem("openid");
       this.$http.get(url).then(r => {
-        if (r.data) {
-          this.balance = r.data.balance;
+        console.log(r);
+        if (r && r.data) {
+          this.info = r.data.info;
           this.cards = r.data.cards;
         }
       });
@@ -82,23 +81,24 @@ export default {
   border: 4px solid #ececec;
 }
 
-.myMain{
-  .weui-cell{
+.myMain {
+  .weui-cell {
     padding: 16px 15px
   }
-  .weui-cells{
+  .weui-cells {
     margin-top: 0
   }
-  .vux-no-group-title{
+  .vux-no-group-title {
     margin-top: 0.5em
   }
-  .weui-cell__ft{
+  .weui-cell__ft {
     font-size: 12px;
     color: red
   }
 }
-.myMain>div:nth-child(1){
+
+.myMain>div:nth-child(1) {
   height: 250px !important;
-  padding-top:50px
+  padding-top: 50px
 }
 </style>

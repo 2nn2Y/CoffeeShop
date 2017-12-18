@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Http;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Extensions;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Web.Models;
@@ -462,62 +463,72 @@ namespace YT.WebApi.Controllers
             return result;
         }
         /// <summary>
-        /// 获取用户信息
+        /// 根据openid 获取用户信息
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="openId"></param>
         /// <returns></returns>
-        public async Task<dynamic> GetInfoByCode(string code)
+        public async Task<dynamic> GetInfoByOpenId(string openId)
         {
-            var temp =
-             $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
-            var ut = await HttpHandler.GetAsync<JObject>(temp);
-            if (ut.GetValue("access_token") == null) throw new UserFriendlyException(JsonConvert.SerializeObject(ut));
-            var token = ut.GetValue("access_token").ToString();
-            var openid = ut.GetValue("openid").ToString();
             var fulltoken = await GetTokenFromCache();
-            //   string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openid}&lang=zh_CN";
-            string url = $" https://api.weixin.qq.com/cgi-bin/user/info?access_token={fulltoken}&openid={openid}&lang=zh_CN";
-
+            string url = $" https://api.weixin.qq.com/cgi-bin/user/info?access_token={fulltoken}&openid={openId}&lang=zh_CN";
             var result = await HttpHandler.GetAsync<JObject>(url);
             //   var openId = result.GetValue("openid").ToString();
-            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openid));
-            //      subscribe: 1
-            //subscribe_time:  1512439891
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
             if (user == null)
             {
-                var t = new StoreUser()
+                user = new StoreUser()
                 {
                     Balance = 0,
-                    OpenId = openid
+                    OpenId = openId,
+                    NickName=result.GetValue("nickname").ToString(),
+                    ImageUrl= result.GetValue("headimgurl").ToString(),
                 };
-                await _userRepository.InsertAsync(t);
+                await _userRepository.InsertAsync(user);
                 await _cardRepository.InsertAsync(new UserCard()
                 {
                     Cost = 280,
                     Key = Guid.NewGuid(),
-                    OpenId = openid,
+                    OpenId = openId,
                     ProductName = "2.8元代金券(赠送)",
                     State = false
                 });
-                result.Add("balance", 0);
             }
             else
             {
-                var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openid && c.Cost == 280);
+                var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
+                if (user.ImageUrl.IsNullOrWhiteSpace() || user.NickName.IsNullOrWhiteSpace())
+                {
+                    user.ImageUrl = result.GetValue("headimgurl").ToString();
+                    user.NickName = result.GetValue("nickname").ToString();
+                }
                 if (card == null)
                 {
                     await _cardRepository.InsertAsync(new UserCard()
                     {
                         Cost = 280,
                         Key = Guid.NewGuid(),
-                        OpenId = openid,
+                        OpenId = openId,
                         ProductName = "2.8元代金券(赠送)",
                         State = false
                     });
                 }
-                result.Add("balance", user.Balance);
             }
-            return result;
+            var cards = await _cardRepository.CountAsync(c => c.OpenId.Equals(openId) && !c.State);
+            return new { info=user,cards=cards };
+        }
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task<dynamic> GetOpenIdByCode(string code)
+        {
+            var temp =
+             $"https://api.weixin.qq.com/sns/oauth2/access_token?appid={WxPayConfig.Appid}&secret={WxPayConfig.Appsecret}&code={code}&grant_type=authorization_code";
+            var ut = await HttpHandler.GetAsync<JObject>(temp);
+            if (ut.GetValue("access_token") == null) throw new UserFriendlyException(JsonConvert.SerializeObject(ut));
+            var openid = ut.GetValue("openid").ToString();
+            return openid;
         }
         /// <summary>
         /// 获取验证信息

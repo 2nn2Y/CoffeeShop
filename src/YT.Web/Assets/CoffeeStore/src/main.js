@@ -58,24 +58,24 @@ router.afterEach(() => {
 })
 router.beforeEach((to, from, next) => {
   store.commit("updateLoading", true)
-  if (to.path.indexOf("detail") > 0 || to.path.indexOf("my") > 0 || to.path.indexOf("activity") > 0) {
+  if (to.path.indexOf("detail") > 0 || to.path.indexOf("my") > 0 || to.path.indexOf("activity") > 0 || to.path.indexOf("balance") > 0) {
     // 保存用户进入的url
     sessionStorage.setItem("beforeUrl", to.fullPath);
   }
-  // const userId = sessionStorage.getItem("openid");
-  // if (window.location.href.indexOf("code") >= 0 && !userId) {
-  //   Vue.prototype.toRight();
-  // }
-  // if (to.path === "/author" && userId) {
-  //   next("/coffee");
-  //   return false;
-  // }
+  const userId = sessionStorage.getItem("openid");
+  if (window.location.href.indexOf("code") >= 0 && !userId) {
+    Vue.prototype.toRight();
+  }
+  if (to.path === "/author" && userId) {
+    next("/coffee");
+    return false;
+  }
 
-  // if (!userId && to.path !== "/author") {
-  //   // 保存用户进入的url
-  //   next("/author");
-  //   return false;
-  // }
+  if (!userId && to.path !== "/author") {
+    // 保存用户进入的url
+    next("/author");
+    return false;
+  }
   next();
 })
 /* eslint-disable no-new */
