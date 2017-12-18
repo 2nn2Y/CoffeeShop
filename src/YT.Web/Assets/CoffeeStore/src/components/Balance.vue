@@ -10,11 +10,11 @@
       <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
       <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
       <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button> -->
-      <span @click.native="changeMoney(1)">50元<br/><font>充50 得50</font></span>
-      <span @click.native="changeMoney(1)">100元<br/><font>充100 得100</font></span>
-      <span @click.native="changeMoney(1)">150元<br/><font>充150 得165</font></span>
-      <span @click.native="changeMoney(1)">200元<br/><font>充200 得230</font></span>
-      <span @click.native="changeMoney(1)">300元<br/><font>充300 得340</font></span>
+      <span @click="changeMoney(1)">50元<br/><font>充50 得50</font></span>
+      <span @click="changeMoney(1)">100元<br/><font>充100 得100</font></span>
+      <span @click="changeMoney(1)">150元<br/><font>充150 得165</font></span>
+      <span @click="changeMoney(1)">200元<br/><font>充200 得230</font></span>
+      <span @click="changeMoney(1)">300元<br/><font>充300 得340</font></span>
     </box>
     <div class="immeCharge">
       <x-button @click.native="charge" mini class="myimme">立即充值</x-button>
@@ -65,7 +65,7 @@ export default {
         "http://services.youyinkeji.cn/api/services/app/mobile/ChargePay";
       const params = {
         openId: _self.openId,
-        price: this.money
+        price: _self.money
       };
       _self.$http.post(service, params).then(r => {
         if (r.data && r.data.success) {
