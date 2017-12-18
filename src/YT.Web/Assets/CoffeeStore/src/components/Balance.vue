@@ -10,11 +10,11 @@
       <x-button mini @click.native="charge(1)">150元</br><span>充150 得165</span></x-button>
       <x-button mini @click.native="charge(1)">200元</br><span>充200 得230</span></x-button>
       <x-button mini @click.native="charge(1)">300元</br><span>充300 得340</span></x-button> -->
-      <span @click.native="charge(1)">50元<br/><font>充50 得50</font></span>
-      <span @click.native="charge(1)">100元<br/><font>充100 得100</font></span>
-      <span @click.native="charge(1)">150元<br/><font>充150 得165</font></span>
-      <span @click.native="charge(1)">200元<br/><font>充200 得230</font></span>
-      <span @click.native="charge(1)">300元<br/><font>充300 得340</font></span>
+      <span @click.native="changeMoney(1)">50元<br/><font>充50 得50</font></span>
+      <span @click.native="changeMoney(1)">100元<br/><font>充100 得100</font></span>
+      <span @click.native="changeMoney(1)">150元<br/><font>充150 得165</font></span>
+      <span @click.native="changeMoney(1)">200元<br/><font>充200 得230</font></span>
+      <span @click.native="changeMoney(1)">300元<br/><font>充300 得340</font></span>
     </box>
     <div class="immeCharge">
       <x-button mini class="myimme">立即充值</x-button>
@@ -22,7 +22,15 @@
   </div>
 </template>
 <script>
-import { XButton, Box, GroupTitle, Group, Divider, Flexbox, FlexboxItem } from "vux";
+import {
+  XButton,
+  Box,
+  GroupTitle,
+  Group,
+  Divider,
+  Flexbox,
+  FlexboxItem
+} from "vux";
 
 export default {
   components: {
@@ -38,7 +46,9 @@ export default {
     this.wxConfig(window.location.href);
   },
   data() {
-    return {};
+    return {
+      money: 0
+    };
   },
   computed: {
     openId() {
@@ -46,13 +56,16 @@ export default {
     }
   },
   methods: {
-    charge(money) {
+    changeMoney(mo) {
+      this.money = mo;
+    },
+    charge() {
       var _self = this;
       const service =
         "http://services.youyinkeji.cn/api/services/app/mobile/ChargePay";
       const params = {
         openId: _self.openId,
-        price: money
+        price: this.money
       };
       _self.$http.post(service, params).then(r => {
         if (r.data && r.data.success) {
@@ -82,39 +95,39 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.myBalance{
-  height:calc(100% - 7px);
-  background: url('../assets/charge.png');
+.myBalance {
+  height: calc(100% - 7px);
+  background: url("../assets/charge.png");
   background-size: 100% 100%;
-  flexbox-item{
-    width:100%;
+  flexbox-item {
+    width: 100%;
   }
   .flex-demo {
     text-align: center;
     color: #fff;
     padding: 8px 0;
-    img{
+    img {
       vertical-align: middle;
-      width:25px;
-      height:25px;
-      margin-right:5px
+      width: 25px;
+      height: 25px;
+      margin-right: 5px;
     }
   }
-  .immeCharge{
+  .immeCharge {
     width: 100%;
     text-align: center;
     position: absolute;
     bottom: 0;
-    background: rgba(10,7,0,.4);
+    background: rgba(10, 7, 0, 0.4);
     height: 60px;
     line-height: 56px;
-    button{
+    button {
       background: #f45c32;
       color: #fff;
-      margin: 0
+      margin: 0;
     }
   }
-  span{
+  span {
     display: inline-block;
     background: none;
     border: 6px solid #cfd0d0;
@@ -124,28 +137,28 @@ export default {
     border-radius: 10px;
     margin-top: 10px;
     text-align: center;
-    padding:2px 0;
+    padding: 2px 0;
     background: #e8e9e9;
-    &:hover{
+    &:hover {
       background: #ffede6;
       border: 6px solid #f9c2b4;
-      color:#f45c32
+      color: #f45c32;
     }
   }
-  .weui-btn:after{
+  .weui-btn:after {
     border: none;
   }
-  font{
-    font-size: 12px
+  font {
+    font-size: 12px;
   }
-  .myimme{
+  .myimme {
     color: #f45c32;
     width: auto;
     padding: 0.1em 5em;
     border-radius: 25px;
     margin-top: 15px;
-    border:1px solid #fc5c32;
-    font-size: 15px
+    border: 1px solid #fc5c32;
+    font-size: 15px;
   }
 }
 .custom-primary-red {
@@ -158,5 +171,4 @@ export default {
     background-color: transparent;
   }
 }
-
 </style>

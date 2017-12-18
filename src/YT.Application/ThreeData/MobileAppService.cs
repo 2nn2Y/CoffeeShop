@@ -114,11 +114,6 @@ namespace YT.ThreeData
             }
             return model;
         }
-        /// <summary>
-        /// 余额支付
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         public async Task BalancePay(InsertOrderInput input)
         {
             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(input.OpenId));
@@ -127,16 +122,31 @@ namespace YT.ThreeData
 
             var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
             if (p == null) throw new UserFriendlyException("该商品不存在");
-            var o = await _storeRepository.FirstOrDefaultAsync(c => 
-            c.OrderNum.Equals(input.Order)&&!c.PayState.HasValue);
-            if (o == null ) throw new UserFriendlyException("该订单已存在,请重新下单");
-            o.OpenId = input.OpenId;
-            o.OrderState = null;
-            o.PayType = PayType.BalancePay;
-            o.OrderType = input.OrderType;
-            o.PayState = null;
-            o.Price = p.Price;
-            o.ProductId = p.ProductId;
+            var o = await _storeRepository.FirstOrDefaultAsync(c =>
+            c.OrderNum.Equals(input.Order));
+            if (o != null && o.PayState.HasValue && o.PayState.Value) throw new UserFriendlyException("该订单已存在,请重新下单");
+            o = new StoreOrder()
+            {
+                FastCode = input.FastCode,
+                OpenId = input.OpenId,
+                PayType = PayType.LinePay,
+                OrderType = input.OrderType,
+                OrderState = null,
+                OrderNum = input.Order,
+                DeviceNum = input.Device,
+                PayState = null,
+                Price = p.Price,
+                ProductId = p.ProductId
+            };
+            //o.OpenId = input.OpenId;
+            //o.OrderState = null;
+            //o.PayType = PayType.BalancePay;
+            //o.OrderType = input.OrderType;
+            //o.PayState = null;
+            //o.Price = p.Price;
+            //o.ProductId = p.ProductId;
+            //o.FastCode = input.FastCode;
+            //o.OrderNum = input.Order;
             await _storeRepository.InsertOrUpdateAsync(o);
             await CurrentUnitOfWork.SaveChangesAsync();
             //使用优惠券
@@ -146,7 +156,7 @@ namespace YT.ThreeData
                 if (card != null)
                 {
                     var price = p.Price - card.Cost;
-                    price= price < 0 ? 0 : price;
+                    price = price < 0 ? 0 : price;
                     user.Balance -= price;
                     card.State = true;
                 }
