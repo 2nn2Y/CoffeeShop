@@ -161,7 +161,7 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
-  border-radius: 10px
+  /* border-radius: 10px */
 }
 .m-time {
   font-size: 12px;

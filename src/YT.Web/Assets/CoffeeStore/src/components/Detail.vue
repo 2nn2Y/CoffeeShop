@@ -271,7 +271,7 @@ export default {
     height: 45px;
     padding: 8px 0;
     button{
-      font-size: 14px;
+      font-size: 15px;
       padding: 4px 0;
     }
     button.weui-btn_plain-primary,

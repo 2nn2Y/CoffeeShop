@@ -119,8 +119,8 @@ export default {
     position: absolute;
     bottom: 0;
     background: rgba(10, 7, 0, 0.4);
-    height: 60px;
-    line-height: 56px;
+    height: 56px;
+    line-height: 58px;
     button {
       background: #f45c32;
       color: #fff;
