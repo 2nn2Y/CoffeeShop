@@ -17,7 +17,7 @@
       <span @click.native="changeMoney(1)">300元<br/><font>充300 得340</font></span>
     </box>
     <div class="immeCharge">
-      <x-button mini class="myimme">立即充值</x-button>
+      <x-button @click.native="charge" mini class="myimme">立即充值</x-button>
     </div>
   </div>
 </template>

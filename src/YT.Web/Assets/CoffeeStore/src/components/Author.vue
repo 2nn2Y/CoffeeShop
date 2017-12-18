@@ -35,7 +35,7 @@ export default {
       this.$http
         .get(url)
         .then(response => {
-          console.log(response);
+          //  this.showBox("", JSON.stringify(response));
           if (response) {
             if (response.data) {
               sessionStorage.setItem("openid", response.data);
