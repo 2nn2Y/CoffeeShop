@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.myCard{
+.myCard {
   .m-img {
     padding-bottom: 33%;
     display: block;
@@ -57,34 +57,8 @@ export default {
     background-position: center center;
     cursor: pointer;
     border-radius: 2px;
-    background: url('../assets/juan1_a_xh.png') center center
+    background: url("../assets/juan1_a_xh.png") center center;
   }
-
-<<<<<<< HEAD
-.m-title {
-  color: #fff;
-  text-align: center;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  font-weight: 500;
-  font-size: 16px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #f45c32;
-}
-
-.m-time {
-  font-size: 12px;
-  padding: 3px 0;
-  border-bottom: 1px solid #f0f0f0;
-  display: inline-block;
-  margin-top: 5px;
-  color: #fff;
-=======
   .m-title {
     color: #fff;
     text-align: center;
@@ -98,7 +72,7 @@ export default {
     text-align: center;
     top: 50%;
     transform: translateY(-50%);
-    color: #f45c32
+    color: #f45c32;
   }
 
   .m-time {
@@ -107,8 +81,7 @@ export default {
     border-bottom: 1px solid #f0f0f0;
     display: inline-block;
     margin-top: 5px;
-    color: #fff
+    color: #fff;
   }
->>>>>>> 4897b5c691e6f5d2fa561546a23f2807aef5762b
 }
 </style>
