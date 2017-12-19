@@ -320,6 +320,14 @@ namespace YT.Models
         /// </summary>
         public string ProductName { get; set; }
         /// <summary>
+        /// 描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string Image { get; set; }
+        /// <summary>
         /// 抵扣金额
         /// </summary>
         public  int Cost { get; set; }

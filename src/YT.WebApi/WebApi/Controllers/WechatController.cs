@@ -175,6 +175,7 @@ namespace YT.WebApi.Controllers
                                 {
                                     Key = Guid.NewGuid(),
                                     OpenId = order.OpenId,
+                                    Description=p.Description,Image=p.ImageUrl,
                                     State = false,
                                     ProductName = p.ProductName.Split('*').First(),
                                     Cost = p.Cost ?? 0
@@ -489,6 +490,7 @@ namespace YT.WebApi.Controllers
                     Cost = 280,
                     Key = Guid.NewGuid(),
                     OpenId = openId,
+                    Image="",Description = "",
                     ProductName = "2.8元代金券(赠送)",
                     State = false
                 });
@@ -508,6 +510,8 @@ namespace YT.WebApi.Controllers
                         Cost = 280,
                         Key = Guid.NewGuid(),
                         OpenId = openId,
+                        Image = "",
+                        Description = "",
                         ProductName = "2.8元代金券(赠送)",
                         State = false
                     });
