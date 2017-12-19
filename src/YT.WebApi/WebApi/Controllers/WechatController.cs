@@ -334,7 +334,7 @@ namespace YT.WebApi.Controllers
         /// jack制作成功回掉
         /// </summary>
         /// <returns></returns>
-        public async Task<IHttpActionResult> JackProduct(string id, string vmc, string pid, string mac)
+        public async Task<IHttpActionResult> JackProduct(string vmc, string id, string pid, string mac)
         {
 
             var order = await _orderRepository.FirstOrDefaultAsync(c =>
@@ -480,7 +480,7 @@ namespace YT.WebApi.Controllers
                 {
                     Balance = 0,
                     OpenId = openId,
-                    NickName=result.GetValue("nickname").ToString(),
+                    NickName= result.GetValue("nickname").ToString(),
                     ImageUrl= result.GetValue("headimgurl").ToString(),
                 };
                 await _userRepository.InsertAsync(user);
