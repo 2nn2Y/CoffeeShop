@@ -148,10 +148,6 @@
       <HintPath>..\packages\Hangfire.MemoryStorage.1.5.2\lib\net40\Hangfire.MemoryStorage.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Hangfire.MySql, Version=0.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hangfire.MySql.0.0.7\lib\net45\Hangfire.MySql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Hangfire.SqlServer, Version=1.6.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.SqlServer.1.6.13\lib\net45\Hangfire.SqlServer.dll</HintPath>
     </Reference>
@@ -448,31 +444,8 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="LinqToDB.Templates\CopyMe.MySql.tt.txt" />
     <Content Include="log4net.config" />
     <Content Include="Views\Layout\_TenantCustomCss.cshtml" />
-    <Content Include="LinqToDB.Templates\Validation.ttinclude" />
-    <Content Include="LinqToDB.Templates\T4Model.ttinclude" />
-    <Content Include="LinqToDB.Templates\PluralizationService.ttinclude" />
-    <Content Include="LinqToDB.Templates\NotifyPropertyChanged.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Tools.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Sybase.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.SqlServer.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.SQLite.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.SqlCe.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.PostgreSQL.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Oracle.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.MySql.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Informix.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Firebird.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.DB2.ttinclude" />
-    <Content Include="LinqToDB.Templates\LinqToDB.Access.ttinclude" />
-    <Content Include="LinqToDB.Templates\EditableObject.ttinclude" />
-    <Content Include="LinqToDB.Templates\DataModel.ttinclude" />
-    <Content Include="LinqToDB.Templates\DataAnnotations.ttinclude" />
-    <Content Include="LinqToDB.Templates\!ReadMe.LinqToDB.md" />
-    <Content Include="LinqToDB.Templates\LinqToDB.MySql.Tools.ttinclude" />
     <None Include="Properties\PublishProfiles\aspnetzero - Web Deploy.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

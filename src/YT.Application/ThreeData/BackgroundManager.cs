@@ -48,6 +48,22 @@ namespace YT.ThreeData
         /// <summary>
         /// test
         /// </summary>
+        public async Task GenderTodayOrder()
+        {
+            var start = DateTime.Now;
+            var left = DateTime.Now.AddHours(-23);
+            var p =
+         new QueryParams("SPECIFY",left.ToString("yyyyMMddHHmmss"), start.ToString("yyyyMMddHHmmss"));
+            var t =
+            p.ReturnParams();
+            var result = HttpHandler.Post(p.Url + "?" + t);
+            LogHelper.Logger.Warn(" url+" + p.Url + "?" + t + " ------------------------------" + result);
+            var temp = JsonConvert.DeserializeObject<ResultItem>(result);
+            await InsertOrder(temp.Record);
+        }
+        /// <summary>
+        /// test
+        /// </summary>
         //public async Task GenderMonthOrder()
         //{
         //    var now = DateTime.Now.AddMonths(-1);

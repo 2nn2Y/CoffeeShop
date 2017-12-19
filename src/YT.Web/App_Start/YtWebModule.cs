@@ -55,8 +55,8 @@ namespace YT.Web
             Configuration.BackgroundJobs.UseHangfire(
                 configuration =>
                 {
-                    configuration.GlobalConfiguration.UseMySqlStorage("Default");
-               // configuration.GlobalConfiguration.UseMemoryStorage();
+                  //  configuration.GlobalConfiguration.UseMySqlStorage("Default");
+                configuration.GlobalConfiguration.UseMemoryStorage();
             });
 
             //Uncomment this line to use Redis cache instead of in-memory cache.
@@ -101,7 +101,8 @@ namespace YT.Web
             var controller = IocManager.Resolve<SignController>();
             //同步订单  每12分钟一次
             RecurringJob.AddOrUpdate(() => background.GenderOrder(), "0/12 * * * *");
-           // RecurringJob.AddOrUpdate(() => background.GenderMonthOrder(), "0/59 * * * *");
+            RecurringJob.AddOrUpdate(() => background.GenderTodayOrder(), "0 0/23 * * *");
+            // RecurringJob.AddOrUpdate(() => background.GenderMonthOrder(), "0/59 * * * *");
             //  同步报警信息  15分钟一次
             RecurringJob.AddOrUpdate(() => controller.GenderWarning(), "0/15 * * * *");
             //同步微信图片 1小时一次
