@@ -137,7 +137,7 @@ export default {
   right: 0;
   width: 100%;
   text-align: center;
-  top: 22%;
+  top: 17%;
   /* transform: translateY(-50%); */
   padding-bottom: 5px;
   height: 74%;
@@ -146,6 +146,7 @@ export default {
       width: 93%;
       position: absolute;
       left: 3.5%;
+      padding-bottom: 6px
   }
 }
 
