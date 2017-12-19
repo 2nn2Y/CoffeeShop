@@ -1,6 +1,6 @@
 <template>
   <div class="myActivity">
-    <div style="margin: 10px;overflow: hidden;border-radius:10px" :key="item.id" v-for="item in list">
+    <div style="margin: 10px;overflow: hidden;border-radius:8px" :key="item.id" v-for="item in list">
       <masker @click.native="choose(item)"  style="border-radius: 2px;">
         <div class="m-img" :style="{ backgroundImage: 'url(' + item.imageUrl + ')'}" ></div>
         <div slot="content" class="m-title">

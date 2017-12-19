@@ -1,12 +1,12 @@
 <template>
   <div>
     <div style="margin: 10px;overflow: hidden;" :key="item" v-for="item in list">
-      <masker  style="border-radius: 2px;">
+      <masker  style="border-radius: 8px;">
         <div class="m-img" style="background-image:url(https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg)"></div>
         <div slot="content" class="m-title">
-          {{item.value}}
-          <br/>
           <span class="m-time">{{item.key}}</span>
+          <br/>
+          {{item.value}}
         </div>
       </masker>
     </div>
@@ -71,13 +71,15 @@ export default {
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
+  color: #f45c32
 }
 
 .m-time {
   font-size: 12px;
-  padding-top: 4px;
-  border-top: 1px solid #f0f0f0;
+  padding: 3px 0;
+  border-bottom: 1px solid #f0f0f0;
   display: inline-block;
   margin-top: 5px;
+  color: #fff
 }
 </style>
