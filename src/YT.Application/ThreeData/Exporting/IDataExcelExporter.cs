@@ -23,7 +23,12 @@ namespace YT.ThreeData.Exporting
         /// <param name="orders"></param>
         /// <returns></returns>
          FileDto ExportOrderDetails(List<OrderDetail> orders);
-     
+        /// <summary>
+        /// 到处订单
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        FileDto ExportStoreOrders(List<StoreOrderListDto> orders);
 
         /// <summary>
         /// 获取产品销量

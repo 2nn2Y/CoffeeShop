@@ -17,13 +17,25 @@ namespace YT.ThreeData
     /// </summary>
    public interface IDataAppService:IApplicationService
     {
-
+        /// <summary>
+        /// 导出订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<FileDto> ExportStoreOrders(GetStoreOrderInput input);
         /// <summary>
         /// 获取成交订单
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<PagedResultDto<OrderDetail>> GetOrderDetails(GetOrderInput input);
+        Task<PagedResultDto<OrderDetail>> GetOrderDetails(GetOrderInput input);
+
+        /// <summary>
+        /// 获取订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PagedResultDto<StoreOrderListDto>> GetStoreOrders(GetStoreOrderInput input);
         /// <summary>
         /// 获取产品销量
         /// </summary>

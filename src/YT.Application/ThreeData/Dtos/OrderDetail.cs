@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
+using YT.Models;
 
 namespace YT.ThreeData.Dtos
 {
@@ -129,5 +132,67 @@ namespace YT.ThreeData.Dtos
         /// 戒指
         /// </summary>
         public DateTime? End { get; set; }
+    }
+    /// <summary>
+    /// 订单详情
+    /// </summary>
+    public class StoreOrderListDto:EntityDto<int>
+    {
+        /// <summary>
+        /// 用户id
+        /// </summary>
+        public string UserName { get; set; }
+        /// <summary>
+        /// 订单编号
+        /// </summary>
+        public string OrderNum { get; set; }
+        /// <summary>
+        /// 微信支付订单
+        /// </summary>
+        public string WechatOrder { get; set; }
+        /// <summary>
+        /// 订单结果描述
+        /// </summary>
+        public string Reson { get; set; }
+        /// <summary>
+        /// 支付方式
+        /// </summary>
+        public PayType PayType { get; set; }
+        /// <summary>
+        /// 订单类型
+        /// </summary>
+        public OrderType OrderType { get; set; }
+        /// <summary>
+        /// 支付状态
+        /// </summary>
+        public bool? PayState { get; set; }
+        /// <summary>
+        /// 使用代金券
+        /// </summary>
+        public string Card { get; set; }
+        /// <summary>
+        /// 交易时间
+        /// </summary>
+        public DateTime DateTime { get; set; }
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public bool? OrderState { get; set; }
+        /// <summary>
+        /// 机器编号
+        /// </summary>
+        public string DeviceNum { get; set; }
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// 商品id
+        /// </summary>
+        public string ProductName { get; set; }
+        /// <summary>
+        /// 快捷码
+        /// </summary>
+        public string FastCode { get; set; }
     }
 }

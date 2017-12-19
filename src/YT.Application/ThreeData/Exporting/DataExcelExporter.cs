@@ -109,7 +109,7 @@ namespace YT.ThreeData.Exporting
                           _ => _.DeviceNum,
                           _ => _.OrderNum,
                           _ => _.ProductName,
-                          _ => _.Price*1.0/100,
+                          _ => _.Price * 1.0 / 100,
                           _ => ChangeType(_.PayType),
                           _ => _timeZoneConverter.Convert(_.Date, _abpSession.TenantId, _abpSession.GetUserId())
                           );
@@ -121,8 +121,56 @@ namespace YT.ThreeData.Exporting
                       }
                   });
         }
+        /// <summary>
+        /// 导出订单
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        public FileDto ExportStoreOrders(List<StoreOrderListDto> orders)
+        {
+            return CreateExcelPackage(
+                   "订单详情.xlsx",
+                   excelPackage =>
+                   {
+                       var sheet = excelPackage.Workbook.Worksheets.Add("订单详情");
+                       sheet.OutLineApplyStyle = true;
+                       AddHeader(
+                           sheet,
+                          "用户id",
+                          "产品名",
+                          "订单号",
+                          "价格",
+                          "支付类型",
+                          "支付状态",
+                          "订单状态",
+                          "成交时间"
+                           );
+                       AddObjects(
+                           sheet, 2, orders,
+                           _ => _.UserName,
+                           _ => _.ProductName,
+                           _ => _.OrderNum,
+                           _ => _.Price*1.0/100,
+                           _ =>
+                               _.PayType == PayType.BalancePay
+                                   ? "余额支付"
+                                   : (_.PayType == PayType.ActivityPay
+                                       ? "活动支付"
+                                       : (_.PayType == PayType.LinePay ? "在线支付" : "充值")),
+                        _ => _.PayState,
+                        _ => _.OrderState,
+                           _ => _timeZoneConverter.Convert(_.DateTime, _abpSession.TenantId, _abpSession.GetUserId())
+                       );
+                       var lastLoginTimeColumn = sheet.Column(6);
+                       lastLoginTimeColumn.Style.Numberformat.Format = "yyyy-mm-dd";
+                       for (var i = 1; i <= 10; i++)
+                       {
+                           sheet.Column(i).AutoFit();
+                       }
+                   });
+        }
 
-     
+
         /// <summary>
         /// 获取产品销量
         /// </summary>
@@ -495,7 +543,7 @@ namespace YT.ThreeData.Exporting
                         sheet, 2, input,
                         _ => _.UserId,
                         _ => _.UserName,
-                        _ => _.IsSign?"是":"否",
+                        _ => _.IsSign ? "是" : "否",
                         _ => _timeZoneConverter.Convert(_.CreationTime, _abpSession.TenantId, _abpSession.GetUserId()),
                         _ => _.SignLocation,
                         _ => _timeZoneConverter.Convert(_.Start, _abpSession.TenantId, _abpSession.GetUserId()),

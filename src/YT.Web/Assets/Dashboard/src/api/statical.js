@@ -136,3 +136,17 @@ export function exportWarns(data) {
     data
   });
 }
+export function getStoreOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/GetStoreOrders',
+    method: 'post',
+    data
+  });
+}
+export function exportStoreOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/ExportStoreOrders',
+    method: 'post',
+    data
+  });
+}

@@ -15,6 +15,7 @@ using YT.ThreeData.Dtos;
 using YT.ThreeData.Exporting;
 using Abp.Linq.Extensions;
 using Abp.Timing.Timezone;
+using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 namespace YT.ThreeData
 {
@@ -31,6 +32,8 @@ namespace YT.ThreeData
         private readonly IRepository<UserPoint> _userPointRepository;
         private readonly IRepository<SignRecord> _recordRepository;
         private readonly IDataExcelExporter _dataExcelExporter;
+        private readonly IRepository<StoreOrder> _storeOrdeRepository;
+        private readonly IRepository<StoreUser> _storeUserRepository;
         private readonly ITimeZoneConverter _timeZoneConverter;
 
         /// <summary>
@@ -45,13 +48,15 @@ namespace YT.ThreeData
         /// <param name="userPointRepository"></param>
         /// <param name="recordRepository"></param>
         /// <param name="timeZoneConverter"></param>
+        /// <param name="storeOrdeRepository"></param>
+        /// <param name="storeUserRepository"></param>
         public DataAppService(ICacheManager cacheManager,
             IRepository<Order> orderRepository,
             IRepository<Point> pointRepository,
             IRepository<Product> productRepository,
             IDataExcelExporter dataExcelExporter,
             IRepository<Warn> warnRepository,
-            IRepository<UserPoint> userPointRepository, IRepository<SignRecord> recordRepository, ITimeZoneConverter timeZoneConverter)
+            IRepository<UserPoint> userPointRepository, IRepository<SignRecord> recordRepository, ITimeZoneConverter timeZoneConverter, IRepository<StoreOrder> storeOrdeRepository, IRepository<StoreUser> storeUserRepository)
         {
             _cacheManager = cacheManager;
             _orderRepository = orderRepository;
@@ -62,6 +67,8 @@ namespace YT.ThreeData
             _userPointRepository = userPointRepository;
             _recordRepository = recordRepository;
             _timeZoneConverter = timeZoneConverter;
+            _storeOrdeRepository = storeOrdeRepository;
+            _storeUserRepository = storeUserRepository;
         }
         #region 统计报表
         /// <summary>
@@ -96,7 +103,94 @@ namespace YT.ThreeData
                     }).ToList();
             return new PagedResultDto<OrderDetail>(count, result);
         }
+        /// <summary>
+        /// 获取订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<StoreOrderListDto>> GetStoreOrders(GetStoreOrderInput input)
+        {
+            var p = await _productRepository.GetAllListAsync(c => c.ProductName.Contains(input.ProductName));
+            var pids = p.Select(c => c.ProductId).ToList();
+            var query =
+                _storeOrdeRepository.GetAll()
+                    .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                    .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+                    .Where(c => c.PayState.HasValue && c.PayState.Value)
+                    .Where(c => c.OrderState.HasValue && c.OrderState.Value)
+                    .WhereIf( pids.Any(), c => pids.Contains(c.ProductId));
 
+            var count = await query.CountAsync();
+            var result = await
+                query.OrderByDescending(c => c.CreationTime)
+                    .Skip(input.SkipCount)
+                    .Take(input.MaxResultCount)
+                    .ToListAsync();
+            var f = from c in result
+                join d in p on c.ProductId equals d.ProductId
+                into h
+                from hh in h.DefaultIfEmpty()
+                select new StoreOrderListDto()
+                {
+                    Card = hh?.ProductName,
+                    DeviceNum = c.DeviceNum,
+                    FastCode = c.FastCode,
+                    Id = c.Id,
+                    OrderNum = c.OrderNum,
+                    OrderState = c.OrderState,
+                    OrderType = c.OrderType,
+                    PayState = c.PayState,
+                    PayType = c.PayType,
+                    Price = c.Price,
+                    ProductName = hh?.ProductName,
+                    Reson = c.Reson,
+                    UserName = c.OpenId,
+                    WechatOrder = c.WechatOrder,
+                    DateTime = c.CreationTime
+                };
+            return new PagedResultDto<StoreOrderListDto>(count, f.ToList());
+        }
+        /// <summary>
+        /// 导出订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<FileDto> ExportStoreOrders(GetStoreOrderInput input)
+        {
+            var p = await _productRepository.GetAllListAsync(c => c.ProductName.Contains(input.ProductName));
+            var pids = p.Select(c => c.ProductId).ToList();
+            var query =
+                _storeOrdeRepository.GetAll()
+                    .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                    .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+                    .Where(c => c.PayState.HasValue && c.PayState.Value)
+                    .Where(c => c.OrderState.HasValue && c.OrderState.Value)
+                    .WhereIf(pids.Any(), c => pids.Contains(c.ProductId));
+          
+            var f = from c in await query.ToListAsync()
+                    join d in p on c.ProductId equals d.ProductId
+                    into h
+                    from hh in h.DefaultIfEmpty()
+                    select new StoreOrderListDto()
+                    {
+                        Card = hh?.ProductName,
+                        DeviceNum = c.DeviceNum,
+                        FastCode = c.FastCode,
+                        Id = c.Id,
+                        OrderNum = c.OrderNum,
+                        OrderState = c.OrderState,
+                        OrderType = c.OrderType,
+                        PayState = c.PayState,
+                        PayType = c.PayType,
+                        Price = c.Price,
+                        ProductName = hh?.ProductName,
+                        Reson = c.Reson,
+                        UserName = c.OpenId,
+                        WechatOrder = c.WechatOrder,
+                        DateTime = c.CreationTime
+                    };
+            return _dataExcelExporter.ExportStoreOrders(f.ToList());
+        }
         /// <summary>
         /// 获取产品销量
         /// </summary>
@@ -403,7 +497,7 @@ namespace YT.ThreeData
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
             var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
-                         join e in users on c.DeviceNum equals e.PointId 
+                         join e in users on c.DeviceNum equals e.PointId
                          select new DeviceWarnDto()
                          {
                              DeviceName = c.PointName,
@@ -543,7 +637,7 @@ namespace YT.ThreeData
                            Longitude = d.Longitude,
                            SignLocation = d.Point.PointName,
                            Profiles = d.SignProfiles.Any() ?
-                           d.SignProfiles.Where(w=>w.ProfileId.HasValue).Select(w => Host + w.Profile.Url).ToList() : null
+                           d.SignProfiles.Where(w => w.ProfileId.HasValue).Select(w => Host + w.Profile.Url).ToList() : null
                        };
             var counts = temp.Count();
             var final =
@@ -560,18 +654,18 @@ namespace YT.ThreeData
             DateTime? left = null, right = null;
             if (input.Start.HasValue)
             {
-                left = new DateTime(input.Start.Value.Year,input.Start.Value.Month,input.Start.Value.Day,0,0,0);
+                left = new DateTime(input.Start.Value.Year, input.Start.Value.Month, input.Start.Value.Day, 0, 0, 0);
             }
             if (input.End.HasValue)
             {
-                right = new DateTime(input.End.Value.Year, input.End.Value.Month, input.End.Value.Day+1, 0, 0, 0);
+                right = new DateTime(input.End.Value.Year, input.End.Value.Month, input.End.Value.Day + 1, 0, 0, 0);
             }
             var query = _warnRepository.GetAll()
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
                 .WhereIf(!input.Type.IsNullOrWhiteSpace(), c => c.WarnNum.Contains(input.Type))
                 .WhereIf(input.IsDeal.HasValue, c => c.State == input.IsDeal.Value)
-              .WhereIf(left.HasValue, c => c.WarnTime>= left.Value)
-                .WhereIf(right.HasValue, c => c.WarnTime<right.Value);
+              .WhereIf(left.HasValue, c => c.WarnTime >= left.Value)
+                .WhereIf(right.HasValue, c => c.WarnTime < right.Value);
             var users = (await GetUserPointsFromCache()).WhereIf(!input.User.IsNullOrWhiteSpace(),
                 c => c.UserName.Contains(input.User));
             var temp = from c in await query.ToListAsync()
@@ -590,9 +684,9 @@ namespace YT.ThreeData
                            State = c.WarnNum,
                            WarnDate = c.WarnTime,
                            WarnType = c.WarnNum,
-                           UserName =e.UserName
+                           UserName = e.UserName
                        };
-          
+
             temp = temp.WhereIf(input.Left.HasValue, c => c.SolveTime >= input.Left.Value)
                 .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value);
             var count = temp.Count();
@@ -984,7 +1078,7 @@ namespace YT.ThreeData
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point)).ToListAsync();
             var result = from c in points
                          join d in temp on c.DeviceNum equals d.DeviceNum
-                         join e in users on c.DeviceNum equals e.PointId 
+                         join e in users on c.DeviceNum equals e.PointId
                          select new DeviceWarnDto()
                          {
                              DeviceName = c.PointName,

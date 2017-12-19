@@ -237,4 +237,35 @@ namespace YT.ThreeData.Dtos
             }
         }
     }
+
+    /// <summary>
+    /// 产品销量input
+    /// </summary>
+    public class GetStoreOrderInput : PagedAndSortedInputDto, IShouldNormalize
+    {
+
+
+        /// <summary>
+        /// 产品名
+        /// </summary>
+        public string ProductName { get; set; }
+        /// <summary>
+        /// 开始
+        /// </summary>
+        public DateTime? Start { get; set; }
+        /// <summary>
+        /// 截至
+        /// </summary>
+        public DateTime? End { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Normalize()
+        {
+            if (string.IsNullOrEmpty(Sorting))
+            {
+                Sorting = "Id";
+            }
+        }
+    }
 }
