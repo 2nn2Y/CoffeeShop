@@ -260,7 +260,7 @@ export default {
       vertical-align: middle;
       width:23px;
       height:23px;
-      margin-right: 10px
+      margin-right: 5px
     }
   }
   .weui-grids{
