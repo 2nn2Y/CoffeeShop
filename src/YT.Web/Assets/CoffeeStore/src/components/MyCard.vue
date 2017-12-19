@@ -2,11 +2,12 @@
   <div class="myCard">
     <div style="margin: 10px;overflow: hidden;" :key="item" v-for="item in list">
       <masker  style="border-radius: 8px;">
-        <div class="m-img"></div>
+        <div class="m-img" v-bind:style="{ 'background-image': 'url(' + item.image + ')','background-repeat':'no-repeat','background-size':'cover'}">
+        </div>
         <div slot="content" class="m-title">
-          <span class="m-time">{{item.key}}</span>
+          <span class="m-time">{{item.id}}</span>
           <br/>
-          {{item.value}}
+          {{item.name}}
         </div>
       </masker>
     </div>
@@ -57,7 +58,6 @@ export default {
     background-position: center center;
     cursor: pointer;
     border-radius: 2px;
-    background: url('../assets/juan1_a_xh.png') center center
   }
 
   .m-title {
