@@ -87,10 +87,18 @@ namespace YT.ThreeData
         /// 获取我的列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input)
+        public async Task<List<CardInfo>> GetUserCards(EntityDto<string> input)
         {
+
             var cards = await _cardRepository.GetAllListAsync(c => c.OpenId.Equals(input.Id) && !c.State);
-            return cards.Select(c => new KeyValuePair<Guid, string>(c.Key, c.ProductName)).ToList();
+            return cards.Select(c => new CardInfo()
+            {
+                Cost = c.Cost,
+                Id = c.Key,
+                Image = c.Image,
+                Name = c.ProductName,
+                Description = c.Description
+            }).ToList();
         }
         /// <summary>
         /// 获取产品详情
@@ -351,7 +359,7 @@ namespace YT.ThreeData
             if (url.IsNullOrWhiteSpace() || order.Key.IsNullOrWhiteSpace())
                 throw new UserFriendlyException("该订单无效,没有回调地址");
 
-            var result =  HttpHandler.PostMoths(url, JsonConvert.SerializeObject(new
+            var result = HttpHandler.PostMoths(url, JsonConvert.SerializeObject(new
             {
                 payStatus = "0",
                 key = order.Key
@@ -628,7 +636,7 @@ namespace YT.ThreeData
         /// 获取我的列表
         /// </summary>
         /// <returns></returns>
-        Task<List<KeyValuePair<Guid, string>>> GetUserCards(EntityDto<string> input);
+        Task<List<CardInfo>> GetUserCards(EntityDto<string> input);
 
         /// <summary>
         /// 卡券支付
@@ -641,7 +649,7 @@ namespace YT.ThreeData
         /// 取货
         /// </summary>
         /// <returns></returns>
-        Task<dynamic    > PickProductJack(StoreOrder order);
+        Task<dynamic> PickProductJack(StoreOrder order);
 
         /// <summary>
         /// 取货

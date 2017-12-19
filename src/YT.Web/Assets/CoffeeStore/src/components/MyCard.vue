@@ -71,7 +71,7 @@ export default {
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
-  color: #f45c32
+  color: #f45c32;
 }
 
 .m-time {
@@ -80,6 +80,6 @@ export default {
   border-bottom: 1px solid #f0f0f0;
   display: inline-block;
   margin-top: 5px;
-  color: #fff
+  color: #fff;
 }
 </style>

@@ -165,8 +165,20 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string Value { get; set; }
         /// <summary>
+        /// 显示名
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// 金额
         /// </summary>
         public int Cost { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string Image { get; set; }
     }
 }
