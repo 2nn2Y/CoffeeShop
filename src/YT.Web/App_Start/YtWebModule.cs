@@ -14,8 +14,6 @@ using Abp.Zero.Configuration;
 using Castle.MicroKernel.Registration;
 using Hangfire;
 using Hangfire.MemoryStorage;
-using Hangfire.MySql;
-using Hangfire.MySql.src;
 using Microsoft.Owin.Security;
 using YT.ThreeData;
 using YT.Web.Routing;

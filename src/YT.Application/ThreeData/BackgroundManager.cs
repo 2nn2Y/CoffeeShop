@@ -57,7 +57,7 @@ namespace YT.ThreeData
             var t =
             p.ReturnParams();
             var result = HttpHandler.Post(p.Url + "?" + t);
-            LogHelper.Logger.Warn(" url+" + p.Url + "?" + t + " ------------------------------" + result);
+         //   LogHelper.Logger.Warn(" url+" + p.Url + "?" + t + " ------------------------------" + result);
             var temp = JsonConvert.DeserializeObject<ResultItem>(result);
             await InsertOrder(temp.Record);
         }
@@ -248,15 +248,15 @@ namespace YT.ThreeData
                         $"&{nameof(Qlevel).ToUpper()}={Qlevel}&{nameof(Mac).ToUpper()}={Gender()}";
             if (!string.IsNullOrWhiteSpace(StartTime))
             {
-                temp += $"&{nameof(StartTime)}={StartTime}";
+                temp += $"&{nameof(StartTime).ToUpper()}={StartTime}";
             }
             if (!string.IsNullOrWhiteSpace(EndTime))
             {
-                temp += $"&{nameof(EndTime)}={EndTime}";
+                temp += $"&{nameof(EndTime).ToUpper()}={EndTime}";
             }
             if (!string.IsNullOrWhiteSpace(Month))
             {
-                temp += $"&{nameof(Month)}={Month}";
+                temp += $"&{nameof(Month).ToUpper()}={Month}";
             }
             return temp;
         }
