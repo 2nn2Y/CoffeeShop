@@ -14,6 +14,8 @@ using Abp.Zero.Configuration;
 using Castle.MicroKernel.Registration;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Hangfire.MySql;
+using Hangfire.MySql.src;
 using Microsoft.Owin.Security;
 using YT.ThreeData;
 using YT.Web.Routing;
@@ -52,8 +54,9 @@ namespace YT.Web
             //Uncomment these lines to use HangFire as background job manager.
             Configuration.BackgroundJobs.UseHangfire(
                 configuration =>
-            {
-                configuration.GlobalConfiguration.UseMemoryStorage();
+                {
+                    configuration.GlobalConfiguration.UseMySqlStorage("Default");
+               // configuration.GlobalConfiguration.UseMemoryStorage();
             });
 
             //Uncomment this line to use Redis cache instead of in-memory cache.

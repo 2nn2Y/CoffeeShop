@@ -52,7 +52,11 @@ Vue.prototype.toRight = function () {
   const url = `http://card.youyinkeji.cn/#/author?code=${params.code}`
   window.location.href = url
 }
-
+Vue.prototype.saveCode = function () {
+  const paths = window.location.href.split("?");
+  const params = querystring.parse(paths[1].split("&")[0]);
+  sessionStorage.setItem("code", params.code);
+}
 router.afterEach(() => {
   store.commit("updateLoading", false)
 })
@@ -63,11 +67,13 @@ router.beforeEach((to, from, next) => {
     sessionStorage.setItem("beforeUrl", to.fullPath);
   }
   const userId = sessionStorage.getItem("openid");
-  if (window.location.href.indexOf("code") >= 0 && !userId) {
-    Vue.prototype.toRight();
+  if (window.location.href.indexOf("code") >= 0 && !userId && to.path !== "/author") {
+    Vue.prototype.saveCode();
+    next("/author");
+    return false;
   }
   if (to.path === "/author" && userId) {
-    next("/coffee");
+    next("/my");
     return false;
   }
 

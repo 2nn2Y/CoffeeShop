@@ -3,19 +3,22 @@
     <img src="../assets/home.png" style="width:100%; height:100%;">
   </div>
 </template>
-<script >
+<script>
 export default {
   created() {
-    if (window.location.href.indexOf("code") >= 0) {
+    const code = sessionStorage.getItem("code");
+    if (code != null) {
       this.login();
     } else {
       const userId = sessionStorage.getItem("openid");
       if (!userId) {
         const url = encodeURI("http://card.youyinkeji.cn");
         // 跳转到微信授权页面
-        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9065b59568dcf5a8&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=666#wechat_redirect`;
+        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9065b59568dcf5a8&redirect_uri=${url}&response_type=code&scope=snsapi_base&state=666#wechat_redirect`;
       } else {
-        this.$router.push({ path: "/my" });
+        this.$router.push({
+          path: "/my"
+        });
       }
     }
   },
@@ -28,9 +31,9 @@ export default {
   },
   methods: {
     login() {
+      const code = sessionStorage.getItem("code");
       const url =
-        "http://services.youyinkeji.cn/api/Wechat/GetOpenIdByCode?code=" +
-        window.location.href.split("=")[1];
+        "http://services.youyinkeji.cn/api/Wechat/GetOpenIdByCode?code=" + code;
       // 通过cookie中保存的token 获取用户信息
       this.$http
         .get(url)
@@ -39,6 +42,7 @@ export default {
           if (response) {
             if (response.data) {
               sessionStorage.setItem("openid", response.data);
+              sessionStorage.setItem("code", "");
               const beforeUrl = sessionStorage.getItem("beforeUrl");
               if (beforeUrl) {
                 window.location.href =
@@ -64,4 +68,3 @@ export default {
   overflow: hidden;
 }
 </style>
-
