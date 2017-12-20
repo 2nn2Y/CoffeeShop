@@ -19,7 +19,7 @@
       <!-- <cell title="总金额" v-model="totalprice"></cell> -->
       <div class="myTotal">
         <span>总金额：{{ totalprice }}</span>
-        <font v-if="this.selectCard"></font>
+        <font v-if="this.cards"></font>
       </div>
     </group>
     <grid>
