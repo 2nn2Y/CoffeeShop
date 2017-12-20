@@ -2,7 +2,7 @@
   <div class="myBalance">
     <!-- <divider>充值金额</divider> -->
     <flexbox orient="vertical">
-      <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 充值金额</div></flexbox-item>
+      <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 购买金额</div></flexbox-item>
     </flexbox>
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
@@ -27,7 +27,7 @@
         </div>
     </card>
     <div class="immeCharge">
-      <x-button @click.native="charge" mini class="myimme">立即充值</x-button>
+      <x-button @click.native="charge" mini class="myimme">立即购买</x-button>
     </div>
   </div>
 </template>
