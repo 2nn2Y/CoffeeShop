@@ -319,7 +319,7 @@ namespace YT.ThreeData
             var temp = orders.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount);
 
             var result = from c in temp
-                         join d in products on c.ProductId equals d.Id
+                         join d in products on c.ProductId equals d.ProductId
                          select new StoreOrderDto()
                          {
                              Description = "",
