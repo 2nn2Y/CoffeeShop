@@ -14,11 +14,13 @@
       <!-- <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
       <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
       <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
-      <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard"></selector>
+      <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard">
+      </selector>
       <!-- <cell title="总金额" v-model="totalprice"></cell> -->
       <div class="myTotal">
         <span>总金额：{{ totalprice }}</span>
-      </div>
+        <font></font>
+      </div v-if="this.selectCard.length">
     </group>
     <grid>
       <grid-item>
@@ -303,8 +305,17 @@ export default {
     border-top:1px solid #ddd;
     width:94%;
     margin-left:3%;
+    position: relative;
     span{
       color: red
+    }
+    font{
+      position: absolute;
+      top: -2em;
+      right: 1em;
+      padding: 3px;
+      background: #f00;
+      border-radius: 50%
     }
   }
 }
