@@ -14,7 +14,9 @@
       <!-- <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
       <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
       <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
-      <selector ref="card" title="选择代金券" @on-change="change"  :value-map="['id', 'value']"  :options="cards" v-model="selectCard">
+      <selector ref="card" title="选择代金券" @on-change="change"
+       :value-map="['id', 'value']"
+         :options="cards" v-model="selectCard">
       </selector>
       <!-- <cell title="总金额" v-model="totalprice"></cell> -->
       <div class="myTotal">
@@ -235,87 +237,87 @@ export default {
 };
 </script>
 <style lang="less">
-.myDetail{
-  .weui-panel__hd{
+.myDetail {
+  .weui-panel__hd {
     text-align: center;
     color: #000;
-    font-size: 18px
+    font-size: 18px;
   }
-  .weui-panel__hd:after{
-    left: 0
+  .weui-panel__hd:after {
+    left: 0;
   }
-  .vux-selector.weui-cell_select-after{
-    padding:8px 15px
+  .vux-selector.weui-cell_select-after {
+    padding: 8px 15px;
   }
-  flexbox-item{
-    width:100%;
+  flexbox-item {
+    width: 100%;
   }
   .flex-demo {
     text-align: center;
     color: #000;
     border-bottom: 1px solid #ddd;
     padding-bottom: 9px;
-    background:#fff;
+    background: #fff;
     padding-top: 10px;
     font-size: 17px;
-    img{
+    img {
       vertical-align: middle;
-      width:23px;
-      height:23px;
-      margin-right: 5px
+      width: 23px;
+      height: 23px;
+      margin-right: 5px;
     }
   }
-  .weui-grids{
+  .weui-grids {
     position: absolute;
     bottom: 0;
     background: #fff;
     width: 100%;
     height: 45px;
     padding: 8px 0;
-    button{
+    button {
       font-size: 15px;
       padding: 4px 0;
     }
     button.weui-btn_plain-primary,
-    input.weui-btn_plain-primary{
-      background:#22ac38
+    input.weui-btn_plain-primary {
+      background: #22ac38;
     }
     button.weui-btn_plain-default,
-    input.weui-btn_plain-default{
-      background:#1b77f2;
-      border: 1px solid #1b77f2
+    input.weui-btn_plain-default {
+      background: #1b77f2;
+      border: 1px solid #1b77f2;
     }
   }
-  .weui-grid{
-    padding: 0 !important
+  .weui-grid {
+    padding: 0 !important;
   }
-  .weui-panel{
-    margin-top: 0
+  .weui-panel {
+    margin-top: 0;
   }
-  
-  .weui-grid:before{
-    border-right: 1px dashed #D9D9D9 
+
+  .weui-grid:before {
+    border-right: 1px dashed #d9d9d9;
   }
-  .weui-grid:after{
-    border-bottom: none
+  .weui-grid:after {
+    border-bottom: none;
   }
-  .myTotal{
-    text-align:center;
-    padding:21px 0;
-    border-top:1px solid #ddd;
-    width:94%;
-    margin-left:3%;
+  .myTotal {
+    text-align: center;
+    padding: 21px 0;
+    border-top: 1px solid #ddd;
+    width: 94%;
+    margin-left: 3%;
     position: relative;
-    span{
-      color: red
+    span {
+      color: red;
     }
-    font{
+    font {
       position: absolute;
       top: -2em;
       right: 1em;
       padding: 3px;
       background: #f00;
-      border-radius: 50%
+      border-radius: 50%;
     }
   }
 }
