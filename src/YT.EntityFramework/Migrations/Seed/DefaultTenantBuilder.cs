@@ -21,7 +21,7 @@ namespace YT.Migrations.Seed
         public void Create()
         {
             CreateDefaultTenant();
-            CreateDefaultProduct();
+          //  CreateDefaultProduct();
            // CreateDefaultPoint();
             CreateDefaultUserPoint();
         }
@@ -57,8 +57,6 @@ namespace YT.Migrations.Seed
             AddSettingIfNotExists(EmailSettingNames.Smtp.EnableSsl, "true");
             AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, "false");
         }
-
-
      
         private void CreateDefaultProduct()
         {
