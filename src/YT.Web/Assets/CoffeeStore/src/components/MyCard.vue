@@ -5,7 +5,7 @@
         <div class="m-img" v-bind:style="{ 'background-image': 'url(' + item.image + ')','background-repeat':'no-repeat','background-size':'cover'}">
         </div>
         <div slot="content" class="m-title">
-          <span class="m-time">{{item.id}}</span>
+          <span class="m-time">{{item.description}}</span>
           <br/>
           {{item.name}}
         </div>

@@ -7,21 +7,21 @@
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
-          <span @click="changeMoney(1)">50元<br/><font>充50 得50</font></span>
+          <span @click="changeMoney(1)">50元<br/><font>充50 得55</font></span>
         </div>
         <div class="vux-1px-r">
-          <span @click="changeMoney(1)">100元<br/><font>充100 得100</font></span>
+          <span @click="changeMoney(10000)">100元<br/><font>充100 得120</font></span>
         </div>
         <div>
-          <span @click="changeMoney(1)">150元<br/><font>充150 得165</font></span>
+          <span @click="changeMoney(20000)">200元<br/><font>充200 得260</font></span>
         </div>
       </div>
       <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
           <div class="vux-1px-r">
-            <span @click="changeMoney(1)">200元<br/><font>充200 得230</font></span>
+            <span @click="changeMoney(30000)">300元<br/><font>充300 得400</font></span>
           </div>
           <div class="vux-1px-r">
-            <span @click="changeMoney(1)">300元<br/><font>充300 得340</font></span>
+            <span @click="changeMoney(50000)">500元<br/><font>充500 得700</font></span>
           </div>
           <div></div>
         </div>
