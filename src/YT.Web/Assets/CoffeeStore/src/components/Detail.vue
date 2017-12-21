@@ -123,7 +123,11 @@ export default {
     },
     init() {
       const params = this.$route.params.id.split("^");
-      const fastcode = params[2].split("");
+      var fastcode =
+        params[2].length === 1
+          ? "00" + params[2]
+          : params[2].length === 2 ? "0" + params[2] : params[2];
+      fastcode = fastcode.split("");
       this.call.o = fastcode[0];
       this.call.m = fastcode[1];
       this.call.s = fastcode[2];
