@@ -485,6 +485,11 @@ namespace YT.WebApi.Controllers
                     OpenId = openId,
                     NickName = result.GetValue("nickname").ToString(),
                     ImageUrl = result.GetValue("headimgurl").ToString(),
+                    City = result.GetValue("city").ToString(),
+                    Country = result.GetValue("country").ToString(),
+                    Province= result.GetValue("province").ToString(),
+                    Sex= result.GetValue("sex").ToString(),
+                    Subscribe= result.GetValue("subscribe").ToString(),
                 };
                 await _userRepository.InsertAsync(user);
                 await _cardRepository.InsertAsync(new UserCard()
@@ -505,6 +510,11 @@ namespace YT.WebApi.Controllers
                 {
                     user.ImageUrl = result.GetValue("headimgurl").ToString();
                     user.NickName = result.GetValue("nickname").ToString();
+                    user.City = result.GetValue("city").ToString();
+                    user.Country = result.GetValue("country").ToString();
+                    user.Province = result.GetValue("province").ToString();
+                    user.Sex = result.GetValue("sex").ToString();
+                    user.Subscribe = result.GetValue("subscribe").ToString();
                 }
                 if (card == null)
                 {

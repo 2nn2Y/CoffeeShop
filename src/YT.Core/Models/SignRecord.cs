@@ -301,6 +301,20 @@ namespace YT.Models
 
         public string NickName { get; set; }
         /// <summary>
+        /// 性别
+        /// </summary>
+        public string Sex { get; set; }
+        /// <summary>
+        /// 是否关注
+        /// </summary>
+        public string Subscribe { get; set; }
+        /// <summary>
+        /// 城市
+        /// </summary>
+        public string City { get; set; }
+        public string Province { get; set; }
+        public string Country { get; set; }
+        /// <summary>
         /// 头像
         /// </summary>
         public string ImageUrl { get; set; }
