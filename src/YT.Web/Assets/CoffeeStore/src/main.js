@@ -10,8 +10,10 @@ import {
   WechatPlugin,
   AjaxPlugin,
   AlertModule,
-  querystring
+  querystring,
+  ConfirmPlugin
 } from "vux"
+Vue.use(ConfirmPlugin)
 Vue.use(AjaxPlugin)
 Vue.use(WechatPlugin)
 Vue.use(AlertModule)

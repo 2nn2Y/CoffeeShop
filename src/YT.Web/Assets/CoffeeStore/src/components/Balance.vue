@@ -2,31 +2,43 @@
   <div class="myBalance">
     <!-- <divider>充值金额</divider> -->
     <flexbox orient="vertical">
-      <flexbox-item><div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 购买金额</div></flexbox-item>
+      <flexbox-item>
+        <div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 购买金额</div>
+      </flexbox-item>
     </flexbox>
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
-          <span @click="changeMoney(1)">50元<br/><font>充50 得55咖啡券</font></span>
+          <span @click="changeMoney(1)">50元<br/>
+            <font>充50 得55咖啡券</font>
+          </span>
         </div>
         <div>
-          <span @click="changeMoney(10000)">100元<br/><font>充100 得120咖啡券</font></span>
+          <span @click="changeMoney(10000)">100元<br/>
+            <font>充100 得120咖啡券</font>
+          </span>
         </div>
-      </div>
-      <div slot="content" class="card-demo-flex card-demo-content01"  style="padding-top:0">
-          <div class="vux-1px-r">
-            <span @click="changeMoney(20000)">200元<br/><font>充200 得260咖啡券</font></span>
-          </div>
-          <div>
-            <span @click="changeMoney(30000)">300元<br/><font>充300 得400咖啡券</font></span>
-          </div>
       </div>
       <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
-          <div class="vux-1px-r">
-            <span @click="changeMoney(50000)">500元<br/><font>充500 得700咖啡券</font></span>
-          </div>
-          <div></div>
+        <div class="vux-1px-r">
+          <span @click="changeMoney(20000)">200元<br/>
+            <font>充200 得260咖啡券</font>
+          </span>
         </div>
+        <div>
+          <span @click="changeMoney(30000)">300元<br/>
+            <font>充300 得400咖啡券</font>
+          </span>
+        </div>
+      </div>
+      <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
+        <div class="vux-1px-r">
+          <span @click="changeMoney(50000)">500元<br/>
+            <font>充500 得700咖啡券</font>
+          </span>
+        </div>
+        <div></div>
+      </div>
     </card>
     <div class="immeCharge">
       <x-button @click.native="charge" mini class="myimme">立即购买</x-button>
@@ -57,11 +69,14 @@ export default {
     Card
   },
   created() {
+    this.from = sessionStorage.getItem("tempUrl");
+    console.log(this.from);
     this.wxConfig(window.location.href);
   },
   data() {
     return {
-      money: 0
+      money: 0,
+      from: null
     };
   },
   computed: {
@@ -75,6 +90,10 @@ export default {
     },
     charge() {
       var _self = this;
+      if (_self.money === 0) {
+        _self.showBox("未选择金额", "请选择充值金额后购买");
+        return;
+      }
       const service =
         "http://services.youyinkeji.cn/api/services/app/mobile/ChargePay";
       const params = {
@@ -93,7 +112,12 @@ export default {
             success: function(res) {
               console.log(res);
               _self.showBox("支付成功", "稍后请到我的页面查看");
-              _self.$router.push({ path: "/my" });
+              if (_self.from) {
+                sessionStorage.setItem("tempUrl", "");
+                _self.$router.push({ path: "/detail/" + _self.from });
+              } else {
+                _self.$router.push({ path: "/my" });
+              }
             },
             fail: function(res) {
               console.log(res);
@@ -183,6 +207,7 @@ export default {
     font-size: 15px;
   }
 }
+
 .custom-primary-red {
   border-radius: 99px !important;
   border-color: #ce3c39 !important;
@@ -193,16 +218,20 @@ export default {
     background-color: transparent;
   }
 }
+
 .card-demo-flex {
   display: flex;
 }
+
 .card-demo-content01 {
   padding: 5px 10px 0;
 }
+
 .card-padding {
   padding: 15px;
 }
-.card-demo-flex > div {
+
+.card-demo-flex>div {
   flex: 1;
   text-align: center;
   font-size: 12px;
