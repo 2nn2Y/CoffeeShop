@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Domain.Uow;
 using Abp.Logging;
 using Newtonsoft.Json;
 using YT.Configuration;
@@ -132,6 +133,7 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
+        [UnitOfWork(IsDisabled = true)]
         private async Task InsertOrder(dynamic list)
         {
             if(list==null) return;
@@ -152,6 +154,7 @@ namespace YT.ThreeData
                 };
                 order.Date = order.Date.AddHours(-8);
                 await _orderRepository.InsertAsync(order);
+
             }
         }
 
