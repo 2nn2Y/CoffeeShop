@@ -3,11 +3,23 @@
     <!-- <divider>充值金额</divider> -->
     <flexbox orient="vertical">
       <flexbox-item>
-        <div class="flex-demo"><img src="../assets/congzhi_a_xh.png"> 购买金额</div>
+        <div class="flex-demo">
+          <img src="../assets/congzhi_a_xh.png"> 购买金额</div>
       </flexbox-item>
     </flexbox>
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
+        <div v-for="(item,index) in list" :key="index" class="vux-1px-r">
+          <span @click="changeMoney(item)">{{item.name}}
+            <br/>
+            <font>{{item.des}}</font>
+          </span>
+        </div>
+
+ </div>
+
+
+      <!-- <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
           <span @click="changeMoney(5000)">50元<br/>
             <font>充50 得55咖啡券</font>
@@ -38,7 +50,7 @@
           </span>
         </div>
         <div></div>
-      </div>
+      </div> -->
     </card>
     <div class="immeCharge">
       <x-button @click.native="charge" mini class="myimme">立即购买</x-button>
@@ -70,13 +82,15 @@ export default {
   },
   created() {
     this.from = sessionStorage.getItem("tempUrl");
-    console.log(this.from);
+    //  console.log(this.from);
     this.wxConfig(window.location.href);
+    this.init();
   },
   data() {
     return {
-      money: 0,
-      from: null
+      money: {},
+      from: null,
+      list: []
     };
   },
   computed: {
@@ -85,6 +99,16 @@ export default {
     }
   },
   methods: {
+    init() {
+      const service =
+        "http://services.youyinkeji.cn/api/services/app/mobile/GetAllCharges";
+
+      this.$http.post(service).then(r => {
+        if (r.data && r.data.success) {
+          this.list = r.data.result;
+        }
+      });
+    },
     changeMoney(mo) {
       this.money = mo;
     },
@@ -98,7 +122,8 @@ export default {
         "http://services.youyinkeji.cn/api/services/app/mobile/ChargePay";
       const params = {
         openId: _self.openId,
-        price: _self.money
+        price: _self.money.cost,
+        productId: _self.money.id
       };
       _self.$http.post(service, params).then(r => {
         if (r.data && r.data.success) {
@@ -114,9 +139,13 @@ export default {
               _self.showBox("支付成功", "稍后请到我的页面查看");
               if (_self.from) {
                 sessionStorage.setItem("tempUrl", "");
-                _self.$router.push({ path: "/detail/" + _self.from });
+                _self.$router.push({
+                  path: "/detail/" + _self.from
+                });
               } else {
-                _self.$router.push({ path: "/my" });
+                _self.$router.push({
+                  path: "/my"
+                });
               }
             },
             fail: function(res) {

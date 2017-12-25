@@ -38,21 +38,23 @@ namespace YT.ThreeData
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Point> _pointRepository;
         private readonly IRepository<StoreOrder> _storeRepository;
+        private readonly IRepository<ChargeType> _chargeTypeRepository;
         private readonly ICacheManager _cacheManager;
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="warnRepository"></param>
-        /// <param name="cacheManager"></param>
-        /// <param name="productRepository"></param>
-        /// <param name="pointRepository"></param>
-        /// <param name="signRepository"></param>
-        /// <param name="userpointRepository"></param>
-        /// <param name="storeRepository"></param>
-        /// <param name="userRepository"></param>
-        /// <param name="cardRepository"></param>
+       /// <summary>
+       /// ctor
+       /// </summary>
+       /// <param name="warnRepository"></param>
+       /// <param name="cacheManager"></param>
+       /// <param name="productRepository"></param>
+       /// <param name="pointRepository"></param>
+       /// <param name="signRepository"></param>
+       /// <param name="userpointRepository"></param>
+       /// <param name="storeRepository"></param>
+       /// <param name="userRepository"></param>
+       /// <param name="cardRepository"></param>
+       /// <param name="chargeTypeRepository"></param>
         public MobileAppService(IRepository<Warn> warnRepository,
-            ICacheManager cacheManager, IRepository<Product> productRepository, IRepository<Point> pointRepository, IRepository<SignRecord> signRepository, IRepository<UserPoint> userpointRepository, IRepository<StoreOrder> storeRepository, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository)
+            ICacheManager cacheManager, IRepository<Product> productRepository, IRepository<Point> pointRepository, IRepository<SignRecord> signRepository, IRepository<UserPoint> userpointRepository, IRepository<StoreOrder> storeRepository, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository, IRepository<ChargeType> chargeTypeRepository)
         {
             _warnRepository = warnRepository;
             _cacheManager = cacheManager;
@@ -63,6 +65,7 @@ namespace YT.ThreeData
             _storeRepository = storeRepository;
             _userRepository = userRepository;
             _cardRepository = cardRepository;
+            _chargeTypeRepository = chargeTypeRepository;
         }
         #region H5商城
         /// <summary>
@@ -189,6 +192,16 @@ namespace YT.ThreeData
             }
         }
         /// <summary>
+        /// 获取所有充值类型
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<ChargeType>> GetAllCharges()
+        {
+            var list = await _chargeTypeRepository.GetAllListAsync();
+            return list;
+        }
+
+        /// <summary>
         /// 在线支付
         /// </summary>
         /// <param name="input"></param>
@@ -289,13 +302,15 @@ namespace YT.ThreeData
                 OrderState = null,
                 PayState = null,
                 Price = input.Price,
-                ProductId = 0
+                ProductId = input.ProductId
             };
+            var type = await _chargeTypeRepository.FirstOrDefaultAsync(input.ProductId);
+            if (type == null) throw new UserFriendlyException("充值类型不存在");
             await _storeRepository.InsertAsync(order);
             JsApiPay jsApiPay = new JsApiPay
             {
                 Openid = input.OpenId,
-                TotalFee = input.Price
+                TotalFee = type.Cost
             };
             jsApiPay.GetUnifiedOrderResult(order.OrderNum, "用户充值", "用户充值");
             var param = jsApiPay.GetJsApiParameters();
@@ -656,5 +671,10 @@ namespace YT.ThreeData
         /// </summary>
         /// <returns></returns>
         Task<dynamic> PickProductIce(StoreOrder order);
+        /// <summary>
+        /// 获取所有充值类型
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ChargeType>> GetAllCharges();
     }
 }

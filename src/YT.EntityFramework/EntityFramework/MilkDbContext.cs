@@ -74,6 +74,10 @@ namespace YT.EntityFramework
         /// 用户卡券
         /// </summary>
         public virtual  IDbSet<UserCard> UserCards { get; set; }
+        /// <summary>
+        /// 充值类型
+        /// </summary>
+        public virtual IDbSet<ChargeType> ChargeTypes { get; set; }
         
         public MilkDbContext()
             : base("Default")

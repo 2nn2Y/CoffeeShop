@@ -35,7 +35,7 @@ namespace YT.WebApi.Controllers
         private readonly IRepository<StoreUser> _userRepository;
         private readonly IRepository<UserCard> _cardRepository;
         private readonly IRepository<Product> _productRepository;
-
+        private readonly IRepository<ChargeType> _typeRepository;
         /// <summary>
         /// ctor
         /// </summary>
@@ -45,9 +45,10 @@ namespace YT.WebApi.Controllers
         /// <param name="userRepository"></param>
         /// <param name="cardRepository"></param>
         /// <param name="productRepository"></param>
+        /// <param name="typeRepository"></param>
         public WechatController(ICacheManager cacheManager,
             IRepository<StoreOrder> orderRepository,
-            IMobileAppService mobileAppService, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository, IRepository<Product> productRepository)
+            IMobileAppService mobileAppService, IRepository<StoreUser> userRepository, IRepository<UserCard> cardRepository, IRepository<Product> productRepository, IRepository<ChargeType> typeRepository)
         {
             _cacheManager = cacheManager;
             _orderRepository = orderRepository;
@@ -55,6 +56,7 @@ namespace YT.WebApi.Controllers
             _userRepository = userRepository;
             _cardRepository = cardRepository;
             _productRepository = productRepository;
+            _typeRepository = typeRepository;
         }
 
         /// <summary>
@@ -190,7 +192,8 @@ namespace YT.WebApi.Controllers
                         else if (order.PayType == PayType.PayCharge)
                         {
                             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(order.OpenId));
-                            user.Balance += ChangeMoney(order.Price);
+                            var type = await _typeRepository.FirstOrDefaultAsync(order.ProductId);
+                            user.Balance += type.Get;
                             order.OrderState = true;
                         }
                         WxPayData res = new WxPayData();
@@ -487,9 +490,9 @@ namespace YT.WebApi.Controllers
                     ImageUrl = result.GetValue("headimgurl").ToString(),
                     City = result.GetValue("city").ToString(),
                     Country = result.GetValue("country").ToString(),
-                    Province= result.GetValue("province").ToString(),
-                    Sex= result.GetValue("sex").ToString(),
-                    Subscribe= result.GetValue("subscribe").ToString(),
+                    Province = result.GetValue("province").ToString(),
+                    Sex = result.GetValue("sex").ToString(),
+                    Subscribe = result.GetValue("subscribe").ToString(),
                 };
                 await _userRepository.InsertAsync(user);
                 await _cardRepository.InsertAsync(new UserCard()
@@ -506,15 +509,15 @@ namespace YT.WebApi.Controllers
             else
             {
                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
-              
-                    user.ImageUrl = result.GetValue("headimgurl").ToString();
-                    user.NickName = result.GetValue("nickname").ToString();
-                    user.City = result.GetValue("city").ToString();
-                    user.Country = result.GetValue("country").ToString();
-                    user.Province = result.GetValue("province").ToString();
-                    user.Sex = result.GetValue("sex").ToString();
-                    user.Subscribe = result.GetValue("subscribe").ToString();
-               
+
+                user.ImageUrl = result.GetValue("headimgurl").ToString();
+                user.NickName = result.GetValue("nickname").ToString();
+                user.City = result.GetValue("city").ToString();
+                user.Country = result.GetValue("country").ToString();
+                user.Province = result.GetValue("province").ToString();
+                user.Sex = result.GetValue("sex").ToString();
+                user.Subscribe = result.GetValue("subscribe").ToString();
+
                 if (card == null)
                 {
                     await _cardRepository.InsertAsync(new UserCard()

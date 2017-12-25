@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Abp.Configuration;
@@ -21,9 +22,9 @@ namespace YT.Migrations.Seed
         public void Create()
         {
             CreateDefaultTenant();
-          //  CreateDefaultProduct();
-           // CreateDefaultPoint();
-            CreateDefaultUserPoint();
+            //  CreateDefaultProduct();
+            // CreateDefaultPoint();
+            CreateDefaultCharge();
         }
 
         private void CreateDefaultTenant()
@@ -86,10 +87,33 @@ namespace YT.Migrations.Seed
                 AddProductsIfNotExists(product);
             }
         }
-        private void CreateDefaultUserPoint()
+        private void CreateDefaultCharge()
         {
+            var plist = new List<ChargeType>()
+            {
+                new ChargeType("50Ôª", "³å50µÃ55¿§·ÈÈ¯",5000,5500),
+                new ChargeType("100Ôª", "³å100µÃ120¿§·ÈÈ¯",10000,12000),
+                new ChargeType("200Ôª", "³å200µÃ260¿§·ÈÈ¯",20000,26000),
+                new ChargeType("300Ôª", "³å300µÃ400¿§·ÈÈ¯",30000,40000),
+                new ChargeType("500Ôª", "³å500µÃ700¿§·ÈÈ¯",50000,70000),
 
+            };
+            foreach (var product in plist)
+            {
+                AddChargesIfNotExists(product);
+            }
         }
+
+        private void AddChargesIfNotExists(ChargeType product)
+        {
+            if (_context.ChargeTypes.Any(s => s.Name.Equals(product.Name)))
+            {
+                return;
+            }
+            _context.ChargeTypes.Add(product);
+            _context.SaveChanges();
+        }
+
         private void AddSettingIfNotExists(string name, string value, int? tenantId = null)
         {
             if (_context.Settings.Any(s => s.Name == name && s.TenantId == tenantId && s.UserId == null))

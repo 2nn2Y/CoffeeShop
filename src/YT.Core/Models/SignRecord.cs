@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Domain.Entities;
@@ -353,5 +354,37 @@ namespace YT.Models
         /// 状态
         /// </summary>
         public bool State { get; set; }
+    }
+    /// <summary>
+    /// 充值种类
+    /// </summary>
+    [Table("ChargeType")]
+    public class ChargeType : CreationAuditedEntity
+    {
+        public ChargeType() { }
+
+        public ChargeType(string name, string des, int cost, int get)
+        {
+            Name = name;
+            Des = des;
+            Cost = cost;
+            Get = get;
+        }
+        /// <summary>
+        /// 显示名
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Des { get; set; }
+        /// <summary>
+        /// 花费
+        /// </summary>
+        public int Cost { get; set; }
+        /// <summary>
+        /// 实得
+        /// </summary>
+        public int Get { get; set; }
     }
 }
