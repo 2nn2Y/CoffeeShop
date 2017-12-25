@@ -1,22 +1,24 @@
 <template>
   <div class="myDetail">
     <flexbox orient="vertical">
-      <flexbox-item><div class="flex-demo"><img src="../assets/xiangping_a_xh.png"> 商品详情</div></flexbox-item>
+      <flexbox-item>
+        <div class="flex-demo"><img src="../assets/xiangping_a_xh.png"> 商品详情</div>
+      </flexbox-item>
     </flexbox>
-    <panel :list="list" :type="'5'"></panel>
+    <panel :list="list" :type="5"></panel>
     <group>
       <flexbox orient="vertical">
-        <flexbox-item><div class="flex-demo"><img src="../assets/peizhi_a_xh.png"> 咖啡配置</div></flexbox-item>
+        <flexbox-item>
+          <div class="flex-demo"><img src="../assets/peizhi_a_xh.png"> 咖啡配置</div>
+        </flexbox-item>
       </flexbox>
       <cell v-if="type==1" title="浓度" :value="call.o"></cell>
       <cell v-if="type==1" title="奶度" :value="call.m"></cell>
       <cell v-if="type==1" title="糖度" :value="call.s"></cell>
       <!-- <x-number title="浓度" aria-readonly="true" :min="0" :max="5" v-model="call.o"></x-number>
-      <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
-      <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
-      <selector ref="card" title="选择代金券" @on-change="change"
-       :value-map="['id', 'value']"
-         :options="cards" v-model="selectCard">
+                            <x-number title="奶度" aria-readonly="true" :min="0" :max="5" v-model="call.m"></x-number>
+                            <x-number title="糖度" aria-readonly="true" :min="0" :max="5" v-model="call.s"></x-number> -->
+      <selector ref="card" title="选择代金券" @on-change="change" :value-map="['id', 'value']" :options="cards" v-model="selectCard">
       </selector>
       <!-- <cell title="总金额" v-model="totalprice"></cell> -->
       <div class="myTotal">
@@ -27,15 +29,16 @@
     <grid>
       <grid-item>
         <box gap="0px 13px">
-          <x-button plain type="primary"  @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
+          <x-button plain type="primary" :disabled="isLoading" @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
         </box>
       </grid-item>
       <grid-item style="border-left: 1px dashed #ddd">
         <box gap="0px 13px">
-           <x-button plain type="default"  @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
+          <x-button plain type="default" @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
         </box>
       </grid-item>
     </grid>
+
   </div>
 </template>
 
@@ -98,6 +101,7 @@ export default {
         m: 0,
         s: 0
       },
+      isLoading: false,
       order: "",
       type: null,
       device: "",
@@ -105,6 +109,7 @@ export default {
       card: null,
       model: {},
       cards: [],
+      params: "",
       list: []
     };
   },
@@ -122,6 +127,7 @@ export default {
       this.selectCard = value;
     },
     init() {
+      this.params = this.$route.params.id;
       const params = this.$route.params.id.split("^");
       var fastcode =
         params[2].length === 1
@@ -161,6 +167,7 @@ export default {
     },
     balancepay() {
       var _self = this;
+      _self.isLoading = true;
       var price =
         _self.card != null
           ? _self.model.price - _self.card[0].cost
@@ -182,17 +189,33 @@ export default {
         .then(r => {
           if (r.data && r.data.success) {
             _self.showBox("支付成功", "稍后为您出货");
+            _self.isLoading = false;
             _self.$router.push({ path: "/my" });
           }
         })
         .catch(error => {
-          console.log(error);
+          console.log(this.params);
+          sessionStorage.setItem("tempUrl", this.params);
           // 支付失败回调函数
-          _self.showBox("支付失败", error.response.data.error.message);
+          _self.$vux.confirm.show({
+            title: "支付失败",
+            content: error.response.data.error.message,
+            confirmText: "充值",
+            cancelText: "返回",
+            onCancel() {
+              _self.isLoading = false;
+              // 隐藏
+              _self.$vux.confirm.hide()
+            },
+            onConfirm() {
+              _self.$router.push({ path: "/balance", params: { from: "/detail/" + this.params } });
+            }
+          })
         });
     },
     linepay() {
       var _self = this;
+      _self.isLoading = true;
       const url =
         "http://services.youyinkeji.cn/api/services/app/mobile/LinePay";
       var price =
@@ -218,7 +241,7 @@ export default {
               timestamp: params.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
               nonceStr: params.nonceStr, // 支付签名随机串，不长于 32 位
               package: params.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
-              signType: params.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              signType: params.signType, // 签名方式，默认为"SHA1"，使用新版支付需传入"MD5"
               paySign: params.paySign, // 支付签名
               success: function(res) {
                 console.log(res);
@@ -325,9 +348,9 @@ export default {
     }
   }
 }
+
 .custom-primary-blue {
-  border-radius: 120px !important;
-  // border-color: #CE3C39!important;
+  border-radius: 120px !important; // border-color: #CE3C39!important;
   color: #ffffff !important;
   background-color: #007eff;
   &:active {
@@ -336,6 +359,7 @@ export default {
     background-color: transparent;
   }
 }
+
 .custom-primary-green {
   border-radius: 120px !important;
   color: #ffffff !important;
