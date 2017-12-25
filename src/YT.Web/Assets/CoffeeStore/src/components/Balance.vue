@@ -9,7 +9,7 @@
     <card>
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
-          <span @click="changeMoney(1)">50元<br/>
+          <span @click="changeMoney(5000)">50元<br/>
             <font>充50 得55咖啡券</font>
           </span>
         </div>
@@ -122,7 +122,7 @@ export default {
             fail: function(res) {
               console.log(res);
               // 支付失败回调函数
-              _self.showBox("支付失败", "请重试");
+              _self.showBox("支付失败", JSON.stringify(res));
             }
           });
         }
@@ -231,7 +231,7 @@ export default {
   padding: 15px;
 }
 
-.card-demo-flex>div {
+.card-demo-flex > div {
   flex: 1;
   text-align: center;
   font-size: 12px;
