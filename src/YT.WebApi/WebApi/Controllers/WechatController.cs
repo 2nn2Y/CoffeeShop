@@ -506,8 +506,7 @@ namespace YT.WebApi.Controllers
             else
             {
                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
-                if (user.ImageUrl.IsNullOrWhiteSpace() || user.NickName.IsNullOrWhiteSpace())
-                {
+              
                     user.ImageUrl = result.GetValue("headimgurl").ToString();
                     user.NickName = result.GetValue("nickname").ToString();
                     user.City = result.GetValue("city").ToString();
@@ -515,7 +514,7 @@ namespace YT.WebApi.Controllers
                     user.Province = result.GetValue("province").ToString();
                     user.Sex = result.GetValue("sex").ToString();
                     user.Subscribe = result.GetValue("subscribe").ToString();
-                }
+               
                 if (card == null)
                 {
                     await _cardRepository.InsertAsync(new UserCard()
