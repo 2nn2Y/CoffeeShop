@@ -255,11 +255,11 @@ namespace YT.WebApi.Controllers
                 var user = users.Where(w => w.UserId.ToLower() == ou.ToLower()).Select(c => c.PointId).ToList();
                 var forwarn = warns.Where(c => user.Contains(c.DeviceNum));
                 var temp = "";
-                forwarn.ForEach(warn =>
+                foreach (var warn in forwarn)
                 {
                     var info = YtConsts.Types.FirstOrDefault(c => c.Type.Equals(warn.WarnNum));
                     var time = (DateTime.Now - warn.WarnTime).TotalHours;
-                   
+
                     time = Math.Round(time, 2);
                     if (time <= 2)
                     {
@@ -267,7 +267,8 @@ namespace YT.WebApi.Controllers
                                  <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww480b7545345a38f7&redirect_uri=http://wx.youyinkeji.cn/#/author&response_type=code&scope=snsapi_userinfo&agentid=1000002&state=STATE#wechat_redirect'>报警处理中心</a>";
 
                     }
-                });
+                }
+             
                 if (!temp.IsNullOrWhiteSpace())
                 {
                     await SendMessage(temp, ou);

@@ -133,7 +133,6 @@ namespace YT.ThreeData
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        [UnitOfWork(IsDisabled = true)]
         private async Task InsertOrder(dynamic list)
         {
             if(list==null) return;
@@ -153,7 +152,8 @@ namespace YT.ThreeData
                     Date = DateTime.Parse(item[5].ToString())
                 };
                 order.Date = order.Date.AddHours(-8);
-                await _orderRepository.InsertAsync(order);
+                 _orderRepository.Insert(order);
+               
 
             }
         }
