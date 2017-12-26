@@ -8,7 +8,7 @@
         </div>
       </flexbox-item>
     </flexbox>
-    <flexbox :gutter="0" wrap="wrap">
+    <flexbox :gutter="0" wrap="wrap" style="padding-top:10px">
       <flexbox-item :span="1/2" v-for="(item,index) in list" :key="index">
         <div class="flex-demo">
           <span @click="changeMoney(item)">{{item.name}}
@@ -182,7 +182,6 @@ export default {
     width: 29%;
     font-size: 16px;
     border-radius: 10px;
-    margin-top: 10px;
     text-align: center;
     padding: 2px 0;
     background: #e8e9e9;
