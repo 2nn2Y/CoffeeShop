@@ -4,54 +4,20 @@
     <flexbox orient="vertical">
       <flexbox-item>
         <div class="flex-demo">
-          <img src="../assets/congzhi_a_xh.png"> 购买金额</div>
+          <img src="../assets/congzhi_a_xh.png"> 购买金额
+        </div>
       </flexbox-item>
     </flexbox>
-    <card>
-      <div slot="content" class="card-demo-flex card-demo-content01">
-        <div v-for="(item,index) in list" :key="index" class="vux-1px-r">
+    <flexbox :gutter="0" wrap="wrap">
+      <flexbox-item :span="1/2" v-for="(item,index) in list" :key="index">
+        <div class="flex-demo">
           <span @click="changeMoney(item)">{{item.name}}
             <br/>
             <font>{{item.des}}</font>
           </span>
         </div>
-
- </div>
-
-
-      <!-- <div slot="content" class="card-demo-flex card-demo-content01">
-        <div class="vux-1px-r">
-          <span @click="changeMoney(5000)">50元<br/>
-            <font>充50 得55咖啡券</font>
-          </span>
-        </div>
-        <div>
-          <span @click="changeMoney(10000)">100元<br/>
-            <font>充100 得120咖啡券</font>
-          </span>
-        </div>
-      </div>
-      <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
-        <div class="vux-1px-r">
-          <span @click="changeMoney(20000)">200元<br/>
-            <font>充200 得260咖啡券</font>
-          </span>
-        </div>
-        <div>
-          <span @click="changeMoney(30000)">300元<br/>
-            <font>充300 得400咖啡券</font>
-          </span>
-        </div>
-      </div>
-      <div slot="content" class="card-demo-flex card-demo-content01" style="padding-top:0">
-        <div class="vux-1px-r">
-          <span @click="changeMoney(50000)">500元<br/>
-            <font>充500 得700咖啡券</font>
-          </span>
-        </div>
-        <div></div>
-      </div> -->
-    </card>
+      </flexbox-item>
+    </flexbox>
     <div class="immeCharge">
       <x-button @click.native="charge" mini class="myimme">立即购买</x-button>
     </div>
@@ -161,6 +127,13 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.flex-demo {
+  text-align: center;
+  color: #fff;
+  // background-color: #20b907;
+  border-radius: 4px;
+  background-clip: padding-box;
+}
 .myBalance {
   height: 100%;
   background: url("../assets/charge.png");
@@ -214,6 +187,7 @@ export default {
     padding: 2px 0;
     background: #e8e9e9;
     width: 83%;
+    color: #000;
     &:hover {
       background: #ffede6;
       border: 6px solid #f9c2b4;
@@ -235,34 +209,5 @@ export default {
     border: 1px solid #fc5c32;
     font-size: 15px;
   }
-}
-
-.custom-primary-red {
-  border-radius: 99px !important;
-  border-color: #ce3c39 !important;
-  color: #ce3c39 !important;
-  &:active {
-    border-color: rgba(206, 60, 57, 0.6) !important;
-    color: rgba(206, 60, 57, 0.6) !important;
-    background-color: transparent;
-  }
-}
-
-.card-demo-flex {
-  display: flex;
-}
-
-.card-demo-content01 {
-  padding: 5px 10px 0;
-}
-
-.card-padding {
-  padding: 15px;
-}
-
-.card-demo-flex > div {
-  flex: 1;
-  text-align: center;
-  font-size: 12px;
 }
 </style>

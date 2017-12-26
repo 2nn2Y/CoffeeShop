@@ -146,7 +146,8 @@ export default {
       width: 93%;
       position: absolute;
       left: 3.5%;
-      padding-bottom: 6px
+      padding-bottom: 6px;
+      background-size: 100% 100%
   }
 }
 
