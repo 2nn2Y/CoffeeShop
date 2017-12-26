@@ -168,7 +168,7 @@ namespace YT.WebApi.Controllers
                             }
                             else
                             {
-                                count = order.Price / 780;
+                                count = order.Price / 500;
                             }
                             count = ChangeCard(count);
                             for (int i = 0; i < count; i++)
@@ -218,21 +218,13 @@ namespace YT.WebApi.Controllers
         }
         private int ChangeCard(int count)
         {
-            if (count == 10) return 11;
-            if (count == 20) return 24;
-            if (count == 30) return 38;
-            if (count == 50) return 65;
+            if (count == 6) return 7;
+            if (count == 10) return 12;
+            if (count == 16) return 20;
+            if (count == 20) return 25;
             return count;
         }
-        private int ChangeMoney(int money)
-        {
-            if (money == 5000) return 5500;
-            if (money == 10000) return 12000;
-            if (money == 20000) return 26000;
-            if (money == 30000) return 40000;
-            if (money == 50000) return 70000;
-            return 30000;
-        }
+      
         /// <summary>
         /// 生成二维码
         /// </summary>
