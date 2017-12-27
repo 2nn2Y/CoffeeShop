@@ -5,14 +5,14 @@
       <div slot="content" >
       <x-button @click.native="detail(a)"
        v-for="(a,i) in undeal"
-       :key="i" :gradients="['#FF2719', '#FF61AD']" type="warn">{{a.deviceName}}--{{a.content}}</x-button>
+       :key="i" :gradients="['#FF2719', '#FF61AD']" type="warn">{{a.deviceName}}--{{a.description}}</x-button>
       </div>
     </card>
       <card :header="{title: '已处理'}">
       <div slot="content" >
       <x-button  @click.native="detail(b)"
        v-for="(b,i) in deal"
-       :key="i" type="info" :gradients="['#1D62F0', '#19D5FD']" >{{b.deviceName}}--{{b.content}}</x-button>
+       :key="i" type="info" :gradients="['#1D62F0', '#19D5FD']" >{{b.deviceName}}--{{b.description}}</x-button>
       </div>
     </card>
     </view-box>
