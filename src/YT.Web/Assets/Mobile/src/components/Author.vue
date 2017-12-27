@@ -1,9 +1,6 @@
 <template>
   <div >
-    <!-- <img src="../assets/timg.jpg" style="width:375px;height:620px;"> -->
-    url:{{url}}
-    请求结果{{response}}
-    错误:{{err}}
+     <img src="../assets/timg.jpg" style="width:375px;height:620px;"> 
   </div>
 </template>
 <script >
