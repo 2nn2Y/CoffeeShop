@@ -7,6 +7,9 @@
             <FormItem label="设备编号">
               <Input v-model="params.device" style="width: 140px" placeholder="设备编号"></Input>
             </FormItem>
+             <FormItem label="点位名称">
+              <Input v-model="params.point" style="width: 140px" placeholder="点位名称"></Input>
+            </FormItem>
             <FormItem label="故障类型">
               <Input v-model="params.type" style="width: 140px" placeholder="故障类型"></Input>
             </FormItem>
@@ -121,7 +124,8 @@ export default {
         type: "",
         user: "",
         start: null,
-        end: null
+        end: null,
+        point: ""
       }
     };
   },
