@@ -5,7 +5,7 @@
         <div class="flex-demo"><img src="../assets/xiangping_a_xh.png"> 商品详情</div>
       </flexbox-item>
     </flexbox>
-    <panel :list="list" :type="5"></panel>
+    <panel :list="list" type="5"></panel>
     <group>
       <flexbox orient="vertical">
         <flexbox-item>
@@ -205,12 +205,15 @@ export default {
             onCancel() {
               _self.isLoading = false;
               // 隐藏
-              _self.$vux.confirm.hide()
+              _self.$vux.confirm.hide();
             },
             onConfirm() {
-              _self.$router.push({ path: "/balance", params: { from: "/detail/" + this.params } });
+              _self.$router.push({
+                path: "/balance",
+                params: { from: "/detail/" + this.params }
+              });
             }
-          })
+          });
         });
     },
     linepay() {
