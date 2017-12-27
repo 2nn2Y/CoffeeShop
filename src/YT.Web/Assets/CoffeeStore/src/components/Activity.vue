@@ -166,7 +166,7 @@ export default {
   /* border-radius: 10px */
 }
 .m-time {
-  font-size: 12px;
+  font-size: 14px;
   padding: 8px 0;
   border-bottom: 1px dashed #f0f0f0;
   display: inline-block;
