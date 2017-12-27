@@ -133,6 +133,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string Device { get; set; }
         /// <summary>
+        /// 点位名称
+        /// </summary>
+        public string Point { get; set; }
+        /// <summary>
         /// 是否解决
         /// </summary>
         public bool? IsDeal { get; set; }

@@ -688,7 +688,8 @@ namespace YT.ThreeData
                        };
 
             temp = temp.WhereIf(input.Left.HasValue, c => c.SolveTime >= input.Left.Value)
-                .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value);
+                .WhereIf(input.Right.HasValue, c => c.SolveTime < input.Right.Value)
+                .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.Point));
             var count = temp.Count();
             var result = temp.OrderBy(c => c.IsSolve)
                 .ThenByDescending(c => c.UnSolveTime).Skip(input.SkipCount)
