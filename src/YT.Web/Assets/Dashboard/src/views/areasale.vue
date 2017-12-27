@@ -10,8 +10,11 @@
              <FormItem label="区域">
               <Input v-model="params.city" style="width: 140px" placeholder="区域"></Input>
             </FormItem>
-             <FormItem label="设备">
-              <Input v-model="params.device" style="width: 140px" placeholder="设备"></Input>
+             <FormItem label="设备编号">
+              <Input v-model="params.deviceNum" style="width: 140px" placeholder="设备编号"></Input>
+            </FormItem>
+              <FormItem label="设备名称">
+              <Input v-model="params.deviceName" style="width: 140px" placeholder="设备名称"></Input>
             </FormItem>
              <FormItem label="产品名称">
               <Input v-model="params.productName" style="width: 140px" placeholder="产品名称"></Input>
@@ -73,7 +76,8 @@ export default {
       ],
       searchApi: getAreaProductsSale,
       params: {
-        device: "",
+        deviceNum: "",
+        deviceName: "",
         area: "",
         city: "",
         productName: "",

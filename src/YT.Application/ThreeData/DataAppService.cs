@@ -288,7 +288,8 @@ namespace YT.ThreeData
         {
             var query = await
                _orderRepository.GetAll()
-                   .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
+                   .WhereIf(!input.DeviceNum.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.DeviceNum))
+
                    .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
                    .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var points = (await GetPointsFromCache())
@@ -303,7 +304,7 @@ namespace YT.ThreeData
                        new
                        {
                            c.Date,
-                           c.DeviceNum,
+                           d.DeviceNum,
                            c.OrderNum,
                            c.PayType,
                            c.Price,
@@ -315,7 +316,7 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName }
+                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName,c.DeviceNum }
                 into h
                          select new ProductSaleDto()
                          {
@@ -326,11 +327,15 @@ namespace YT.ThreeData
                              DeviceName = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
-                             End = input.End
+                             End = input.End,DeviceNum = h.Key.DeviceNum
                          };
+            orders =
+                orders
+                    .WhereIf(!input.DeviceName.IsNullOrWhiteSpace(), c => c.DeviceName.Contains(input.DeviceName));
             var count = orders.Count();
             var result =
-                orders.OrderByDescending(c => c.Count)
+                orders
+                .OrderByDescending(c => c.Count)
                     .Skip(input.SkipCount)
                     .Take(input.MaxResultCount).ToList();
 
@@ -875,10 +880,11 @@ namespace YT.ThreeData
         public async Task<FileDto> ExportAreaProductsSale(GetSaleInput input)
         {
             var query = await
-              _orderRepository.GetAll()
-                  .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device))
-                  .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
-                  .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
+               _orderRepository.GetAll()
+                   .WhereIf(!input.DeviceNum.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.DeviceNum))
+
+                   .WhereIf(input.Start.HasValue, c => c.Date >= input.Start.Value)
+                   .WhereIf(input.End.HasValue, c => c.Date < input.End.Value).ToListAsync();
             var points = (await GetPointsFromCache())
                 .WhereIf(!input.Area.IsNullOrWhiteSpace(), c => c.City.Contains(input.Area))
                 .WhereIf(!input.City.IsNullOrWhiteSpace(), c => c.PointName.Contains(input.City));
@@ -891,7 +897,7 @@ namespace YT.ThreeData
                        new
                        {
                            c.Date,
-                           c.DeviceNum,
+                           d.DeviceNum,
                            c.OrderNum,
                            c.PayType,
                            c.Price,
@@ -903,7 +909,7 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName }
+                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName, c.DeviceNum }
                 into h
                          select new ProductSaleDto()
                          {
@@ -914,12 +920,16 @@ namespace YT.ThreeData
                              DeviceName = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
-                             End = input.End
+                             End = input.End,
+                             DeviceNum = h.Key.DeviceNum
                          };
+            orders =
+                orders
+                    .WhereIf(!input.DeviceName.IsNullOrWhiteSpace(), c => c.DeviceName.Contains(input.DeviceName));
             var result =
-                orders.OrderByDescending(c => c.Count)
-                   .ToList();
-
+                orders
+                .OrderByDescending(c => c.Count)
+                  .ToList();
             return _dataExcelExporter.ExportAreaProductsSale(result);
         }
 

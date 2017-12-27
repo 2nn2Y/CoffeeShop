@@ -49,7 +49,11 @@ namespace YT.ThreeData.Dtos
         /// <summary>
         /// 过滤条件
         /// </summary>
-        public string Device { get; set; }
+        public string DeviceName { get; set; }
+        /// <summary>
+        /// 设备编号
+        /// </summary>
+        public string DeviceNum { get; set; }
         /// <summary>
         /// 权限过滤
         /// </summary>
