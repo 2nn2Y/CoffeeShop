@@ -420,22 +420,17 @@ namespace YT.ThreeData
                          select new MobileWarnDto()
                          {
                              Content = warn.WarnNum,
-                             Description = warn.WarnContent,
+                             Description = YtConsts.Types.FirstOrDefault(w => w.Type.Equals(warn.WarnNum))?.Chinese,
                              DeviceId = warn.DeviceNum,
                              Id = warn.Id,
                              State = warn.State,
-                             DeviceName = e.PointName,WarnTime = warn.WarnTime
+                             DeviceName = e.SchoolName
                          };
-            foreach (var mobileWarnDto in result)
-            {
-                mobileWarnDto.Description =
-                    YtConsts.Types.FirstOrDefault(c => c.Type.Equals(mobileWarnDto.Content))?.Chinese;
-            }
-            var now = DateTime.Now.Date;
+          
             return new WarnDto()
             {
                 Anomaly = result.Where(c => !c.State).ToList(),
-                Normal = result.Where(c => c.State).Where(c=>c.WarnTime.Date==now).ToList()
+                Normal = result.Where(c => c.State).ToList()
             };
         }
         /// <summary>
@@ -471,6 +466,8 @@ namespace YT.ThreeData
                     Id = warn.Id,
                     State = warn.State
                 };
+                result.Description =
+                  YtConsts.Types.FirstOrDefault(c => c.Type.Equals(result.Content))?.Chinese;
                 return result;
             }
             throw new UserFriendlyException("该报警信息不存在");
