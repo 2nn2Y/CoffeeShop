@@ -478,14 +478,40 @@ namespace YT.WebApi.Controllers
                 {
                     Balance = 0,
                     OpenId = openId,
-                    NickName = result.GetValue("nickname").ToString(),
-                    ImageUrl = result.GetValue("headimgurl").ToString(),
-                    City = result.GetValue("city").ToString(),
-                    Country = result.GetValue("country").ToString(),
-                    Province = result.GetValue("province").ToString(),
-                    Sex = result.GetValue("sex").ToString(),
-                    Subscribe = result.GetValue("subscribe").ToString(),
                 };
+                if (result.GetValue("headimgurl") != null)
+                {
+                    user.ImageUrl = result.GetValue("headimgurl").ToString();
+
+                }
+                if (result.GetValue("nickname") != null)
+                {
+                    user.NickName = result.GetValue("nickname").ToString();
+                }
+                if (result.GetValue("city") != null)
+                {
+                    user.City = result.GetValue("city").ToString();
+                }
+                if (result.GetValue("country") != null)
+                {
+                    user.Country = result.GetValue("country").ToString();
+
+                }
+                if (result.GetValue("province") != null)
+                {
+                    user.Province = result.GetValue("province").ToString();
+
+                }
+                if (result.GetValue("sex") != null)
+                {
+                    user.Sex = result.GetValue("sex").ToString();
+
+                }
+                if (result.GetValue("subscribe") != null)
+                {
+                    user.Subscribe = result.GetValue("subscribe").ToString();
+                }
+
                 await _userRepository.InsertAsync(user);
                 await _cardRepository.InsertAsync(new UserCard()
                 {
@@ -502,35 +528,35 @@ namespace YT.WebApi.Controllers
             {
                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
 
-                if (!result.GetValue("headimgurl").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("headimgurl")!=null)
                 {
                     user.ImageUrl = result.GetValue("headimgurl").ToString();
 
                 }
-                if (!result.GetValue("nickname").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("nickname") != null)
                 {
                     user.NickName = result.GetValue("nickname").ToString();
                 }
-                if (!result.GetValue("city").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("city") != null)
                 {
                     user.City = result.GetValue("city").ToString();
                 }
-                if (!result.GetValue("country").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("country") != null)
                 {
                     user.Country = result.GetValue("country").ToString();
 
                 }
-                if (!result.GetValue("province").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("province") != null)
                 {
                     user.Province = result.GetValue("province").ToString();
 
                 }
-                if (!result.GetValue("sex").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("sex") != null)
                 {
                     user.Sex = result.GetValue("sex").ToString();
 
                 }
-                if (!result.GetValue("subscribe").ToString().IsNullOrWhiteSpace())
+                if (result.GetValue("subscribe") != null)
                 {
                     user.Subscribe = result.GetValue("subscribe").ToString();
                 }
