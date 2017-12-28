@@ -62,6 +62,10 @@ namespace YT.ThreeData.Dtos
         /// 描述
         /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        /// 报警时间
+        /// </summary>
+        public DateTime WarnTime { get; set; }
     }
 
     /// <summary>

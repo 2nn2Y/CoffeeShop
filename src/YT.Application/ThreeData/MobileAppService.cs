@@ -424,17 +424,18 @@ namespace YT.ThreeData
                              DeviceId = warn.DeviceNum,
                              Id = warn.Id,
                              State = warn.State,
-                             DeviceName = e.PointName
+                             DeviceName = e.PointName,WarnTime = warn.WarnTime
                          };
             foreach (var mobileWarnDto in result)
             {
                 mobileWarnDto.Description =
                     YtConsts.Types.FirstOrDefault(c => c.Type.Equals(mobileWarnDto.Content))?.Chinese;
             }
+            var now = DateTime.Now.Date;
             return new WarnDto()
             {
                 Anomaly = result.Where(c => !c.State).ToList(),
-                Normal = result.Where(c => c.State).ToList()
+                Normal = result.Where(c => c.State).Where(c=>c.WarnTime.Date==now).ToList()
             };
         }
         /// <summary>
