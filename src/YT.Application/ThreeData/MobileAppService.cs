@@ -424,13 +424,13 @@ namespace YT.ThreeData
                              DeviceId = warn.DeviceNum,
                              Id = warn.Id,
                              State = warn.State,
-                             DeviceName = e.SchoolName
+                             DeviceName = e.SchoolName,WarnTime = warn.WarnTime
                          };
-          
+            var now = DateTime.Now.Date;
             return new WarnDto()
             {
                 Anomaly = result.Where(c => !c.State).ToList(),
-                Normal = result.Where(c => c.State).ToList()
+                Normal = result.Where(c => c.State).Where(c=>c.WarnTime.Date==now).ToList()
             };
         }
         /// <summary>
