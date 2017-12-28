@@ -224,7 +224,7 @@ namespace YT.WebApi.Controllers
             if (count == 20) return 25;
             return count;
         }
-      
+
         /// <summary>
         /// 生成二维码
         /// </summary>
@@ -502,13 +502,38 @@ namespace YT.WebApi.Controllers
             {
                 var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
 
-                user.ImageUrl = result.GetValue("headimgurl").ToString();
-                user.NickName = result.GetValue("nickname").ToString();
-                user.City = result.GetValue("city").ToString();
-                user.Country = result.GetValue("country").ToString();
-                user.Province = result.GetValue("province").ToString();
-                user.Sex = result.GetValue("sex").ToString();
-                user.Subscribe = result.GetValue("subscribe").ToString();
+                if (!result.GetValue("headimgurl").ToString().IsNullOrWhiteSpace())
+                {
+                    user.ImageUrl = result.GetValue("headimgurl").ToString();
+
+                }
+                if (!result.GetValue("nickname").ToString().IsNullOrWhiteSpace())
+                {
+                    user.NickName = result.GetValue("nickname").ToString();
+                }
+                if (!result.GetValue("city").ToString().IsNullOrWhiteSpace())
+                {
+                    user.City = result.GetValue("city").ToString();
+                }
+                if (!result.GetValue("country").ToString().IsNullOrWhiteSpace())
+                {
+                    user.Country = result.GetValue("country").ToString();
+
+                }
+                if (!result.GetValue("province").ToString().IsNullOrWhiteSpace())
+                {
+                    user.Province = result.GetValue("province").ToString();
+
+                }
+                if (!result.GetValue("sex").ToString().IsNullOrWhiteSpace())
+                {
+                    user.Sex = result.GetValue("sex").ToString();
+
+                }
+                if (!result.GetValue("subscribe").ToString().IsNullOrWhiteSpace())
+                {
+                    user.Subscribe = result.GetValue("subscribe").ToString();
+                }
 
                 if (card == null)
                 {
