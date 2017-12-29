@@ -39,6 +39,64 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string PayType { get; set; }
     }
+
+
+    /// <summary>
+    /// 订单详情
+    /// </summary>
+    public class OrderListInfo
+    {
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 用户id
+        /// </summary>
+        public string OpenId { get; set; }
+        /// <summary>
+        /// 订单编号
+        /// </summary>
+        public string OrderNum { get; set; }
+    
+        /// <summary>
+        /// 订单结果描述
+        /// </summary>
+        public string Reson { get; set; }
+        /// <summary>
+        /// 支付方式
+        /// </summary>
+        public PayType PayType { get; set; }
+
+        
+        /// <summary>
+        /// 支付状态
+        /// </summary>
+        public bool? PayState { get; set; }
+      
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public bool? OrderState { get; set; }
+        /// <summary>
+        /// 机器编号
+        /// </summary>
+
+        public string DeviceNum { get; set; }
+      
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// 点为名
+        /// </summary>
+        public string PointName { get; set; }
+        /// <summary>
+        /// 昵称
+        /// </summary>
+        public string NickName { get; set; }
+    }
     /// <summary>
     /// 产品销售dto
     /// </summary>

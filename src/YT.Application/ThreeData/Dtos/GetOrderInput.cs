@@ -42,6 +42,46 @@ namespace YT.ThreeData.Dtos
         }
     }
     /// <summary>
+    /// 获取用户订单详情 
+    /// </summary>
+    public class GeUsertOrderInput : PagedAndSortedInputDto, IShouldNormalize
+    {
+        /// <summary>
+        /// 过滤条件
+        /// </summary>
+        public string UserName { get; set; }
+        /// <summary>
+        /// 点位详情
+        /// </summary>
+        public string Point { get; set; }
+        /// <summary>
+        /// 订单类型
+        /// </summary>
+        public PayType PayType { get; set; }
+        /// <summary>
+        /// 设备编号 
+        /// </summary>
+        public string Device { get; set; }
+        /// <summary>
+        /// 开始
+        /// </summary>
+        public DateTime? Start { get; set; }
+        /// <summary>
+        /// 截至
+        /// </summary>
+        public DateTime? End { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Normalize()
+        {
+            if (string.IsNullOrEmpty(Sorting))
+            {
+                Sorting = "Id";
+            }
+        }
+    }
+    /// <summary>
     /// 获取销售报表
     /// </summary>
     public class GetSaleInput : PagedAndSortedInputDto, IShouldNormalize

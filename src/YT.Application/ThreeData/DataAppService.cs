@@ -118,7 +118,7 @@ namespace YT.ThreeData
                     .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                     .Where(c => c.PayState.HasValue && c.PayState.Value)
                     .Where(c => c.OrderState.HasValue && c.OrderState.Value)
-                    .WhereIf( pids.Any(), c => pids.Contains(c.ProductId));
+                    .WhereIf(pids.Any(), c => pids.Contains(c.ProductId));
 
             var count = await query.CountAsync();
             var result = await
@@ -127,27 +127,27 @@ namespace YT.ThreeData
                     .Take(input.MaxResultCount)
                     .ToListAsync();
             var f = from c in result
-                join d in p on c.ProductId equals d.ProductId
-                into h
-                from hh in h.DefaultIfEmpty()
-                select new StoreOrderListDto()
-                {
-                    Card = hh?.ProductName,
-                    DeviceNum = c.DeviceNum,
-                    FastCode = c.FastCode,
-                    Id = c.Id,
-                    OrderNum = c.OrderNum,
-                    OrderState = c.OrderState,
-                    OrderType = c.OrderType,
-                    PayState = c.PayState,
-                    PayType = c.PayType,
-                    Price = c.Price,
-                    ProductName = hh?.ProductName,
-                    Reson = c.Reson,
-                    UserName = c.OpenId,
-                    WechatOrder = c.WechatOrder,
-                    DateTime = c.CreationTime
-                };
+                    join d in p on c.ProductId equals d.ProductId
+                    into h
+                    from hh in h.DefaultIfEmpty()
+                    select new StoreOrderListDto()
+                    {
+                        Card = hh?.ProductName,
+                        DeviceNum = c.DeviceNum,
+                        FastCode = c.FastCode,
+                        Id = c.Id,
+                        OrderNum = c.OrderNum,
+                        OrderState = c.OrderState,
+                        OrderType = c.OrderType,
+                        PayState = c.PayState,
+                        PayType = c.PayType,
+                        Price = c.Price,
+                        ProductName = hh?.ProductName,
+                        Reson = c.Reson,
+                        UserName = c.OpenId,
+                        WechatOrder = c.WechatOrder,
+                        DateTime = c.CreationTime
+                    };
             return new PagedResultDto<StoreOrderListDto>(count, f.ToList());
         }
         /// <summary>
@@ -166,7 +166,7 @@ namespace YT.ThreeData
                     .Where(c => c.PayState.HasValue && c.PayState.Value)
                     .Where(c => c.OrderState.HasValue && c.OrderState.Value)
                     .WhereIf(pids.Any(), c => pids.Contains(c.ProductId));
-          
+
             var f = from c in await query.ToListAsync()
                     join d in p on c.ProductId equals d.ProductId
                     into h
@@ -316,7 +316,7 @@ namespace YT.ThreeData
                        };
 
             var orders = from c in temp
-                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName,c.DeviceNum }
+                         group c by new { c.City, c.PointName, c.SchoolName, c.ProductName, c.DeviceNum }
                 into h
                          select new ProductSaleDto()
                          {
@@ -327,7 +327,8 @@ namespace YT.ThreeData
                              DeviceName = h.Key.SchoolName,
                              ProductName = h.Key.ProductName,
                              Start = input.Start,
-                             End = input.End,DeviceNum = h.Key.DeviceNum
+                             End = input.End,
+                             DeviceNum = h.Key.DeviceNum
                          };
             orders =
                 orders
@@ -608,6 +609,45 @@ namespace YT.ThreeData
             return new PagedResultDto<SignStaticialDto>(counts, final);
         }
 
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<OrderListInfo>> GetUserOrdersAsync(GeUsertOrderInput input)
+        {
+            var orders = _storeOrdeRepository.GetAll();
+            var points = _pointRepository.GetAll()
+                .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
+            orders = orders.Where(c => c.PayType == input.PayType)
+                .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
+            var users = await _storeUserRepository.GetAllListAsync();
+            var temp = from c in await orders.ToListAsync()
+                       join d in await points.ToListAsync() on c.DeviceNum equals d.DeviceNum
+                       join u in users on c.OpenId equals u.OpenId into h
+                       from hh in h.DefaultIfEmpty()
+                       select new OrderListInfo
+                       {
+                           DeviceNum = c.DeviceNum,
+                           NickName = hh?.NickName,
+                           OpenId = c.OpenId,
+                           OrderNum = c.OrderNum,
+                           OrderState = c.OrderState,
+                           PayState = c.PayState,
+                           PayType = c.PayType,
+                           PointName = d.SchoolName,
+                           Price = c.Price,
+                           Reson = c.Reson,
+                           CreationTime=c.CreationTime
+                       };
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(), c => c.NickName != null && c.NickName.Contains(input.UserName));
+            var count = temp.Count();
+            var result = temp.OrderBy(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+            return new PagedResultDto<OrderListInfo>(count, result);
+        }
 
         /// <summary>
         /// 获取统计明细
@@ -1274,7 +1314,43 @@ namespace YT.ThreeData
             }
             return _dataExcelExporter.ExportWarns(result);
         }
-
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<FileDto> ExportUserOrdersAsync(GeUsertOrderInput input)
+        {
+            var orders = _storeOrdeRepository.GetAll();
+            var points = _pointRepository.GetAll()
+                .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
+            orders = orders.Where(c => c.PayType == input.PayType)
+                .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
+            var users = await _storeUserRepository.GetAllListAsync();
+            var temp = from c in await orders.ToListAsync()
+                       join d in await points.ToListAsync() on c.DeviceNum equals d.DeviceNum
+                       join u in users on c.OpenId equals u.OpenId into h
+                       from hh in h.DefaultIfEmpty()
+                       select new OrderListInfo
+                       {
+                           DeviceNum = c.DeviceNum,
+                           NickName = hh?.NickName,
+                           OpenId = c.OpenId,
+                           OrderNum = c.OrderNum,
+                           OrderState = c.OrderState,
+                           PayState = c.PayState,
+                           PayType = c.PayType,
+                           PointName = d.SchoolName,
+                           Price = c.Price,
+                           Reson = c.Reson,
+                           CreationTime = c.CreationTime
+                       };
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(), c => c.NickName != null && c.NickName.Contains(input.UserName));
+            return _dataExcelExporter.ExportUserOrdersAsync(temp.ToList());
+        }
         private string ChangeType(string type)
         {
             switch (type)

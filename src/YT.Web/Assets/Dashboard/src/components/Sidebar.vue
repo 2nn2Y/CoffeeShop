@@ -48,7 +48,9 @@ export default {
             { content: "区域销量", url: "/areasale" },
             { content: "支付渠道", url: "/paytype" },
             { content: "时段销量", url: "/timearea" },
-            { content: "订单信息", url: "/store" }
+            { content: "订单信息", url: "/store" },
+            { content: "充值记录", url: "/charge" },
+            { content: "卡券记录", url: "/activity" },
           ]
         }
       ]

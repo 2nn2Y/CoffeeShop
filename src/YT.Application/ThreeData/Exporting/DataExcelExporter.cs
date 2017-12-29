@@ -150,7 +150,7 @@ namespace YT.ThreeData.Exporting
                            _ => _.UserName,
                            _ => _.ProductName,
                            _ => _.OrderNum,
-                           _ => _.Price*1.0/100,
+                           _ => _.Price * 1.0 / 100,
                            _ =>
                                _.PayType == PayType.BalancePay
                                    ? "余额支付"
@@ -620,6 +620,50 @@ namespace YT.ThreeData.Exporting
                 default:
                     return "";
             }
+        }
+        /// <summary>
+        /// 用户订单导出
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+
+        public FileDto ExportUserOrdersAsync(List<OrderListInfo> orders)
+        {
+            return CreateExcelPackage(
+             "订单信息.xlsx",
+             excelPackage =>
+             {
+                 var sheet = excelPackage.Workbook.Worksheets.Add("订单信息");
+                 sheet.OutLineApplyStyle = true;
+                 AddHeader(
+                     sheet,
+                    "设备编号",
+                    "设备点位",
+                    "昵称",
+                    "订单号",
+                    "支付状态",
+                    "价格",
+                    "支付类型",
+                    "订单状态",
+                    "创建时间"
+                     );
+                 AddObjects(
+                     sheet, 2, orders,
+                     _ => _.DeviceNum,
+                     _ => _.PointName,
+                     _ => _.NickName,
+                     _ => _.OrderNum,
+                     _ => _.PayState.HasValue?_.PayState.Value?"支付成功":"支付失败":"未支付",
+                     _ => _.Price,
+                     _ => _.PayType==PayType.PayCharge?"充值":_.PayType==PayType.ActivityPay?"购买卡券":"",
+                     _ => _.OrderState.HasValue?_.OrderState.Value?"成功":"失败":"未知",
+                     _ => _.CreationTime
+                     );
+                 for (var i = 1; i <= 10; i++)
+                 {
+                     sheet.Column(i).AutoFit();
+                 }
+             });
         }
     }
 }

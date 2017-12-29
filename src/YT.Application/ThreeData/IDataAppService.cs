@@ -29,7 +29,18 @@ namespace YT.ThreeData
         /// <param name="input"></param>
         /// <returns></returns>
         Task<PagedResultDto<OrderDetail>> GetOrderDetails(GetOrderInput input);
-
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PagedResultDto<OrderListInfo>> GetUserOrdersAsync(GeUsertOrderInput input);
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<FileDto> ExportUserOrdersAsync(GeUsertOrderInput input);
         /// <summary>
         /// 获取订单
         /// </summary>

@@ -14,15 +14,19 @@ namespace YT.ThreeData.Exporting
      /// <param name="userListDtos"></param>
      /// <returns></returns>
         FileDto ExportToFile(List<UserListDto> userListDtos);
+        /// <summary>
+        /// 订单打出
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        FileDto ExportUserOrdersAsync(List<OrderListInfo> orders);
 
-   
-      
         /// <summary>
         /// 获取成交订单
         /// </summary>
         /// <param name="orders"></param>
         /// <returns></returns>
-         FileDto ExportOrderDetails(List<OrderDetail> orders);
+        FileDto ExportOrderDetails(List<OrderDetail> orders);
         /// <summary>
         /// 到处订单
         /// </summary>

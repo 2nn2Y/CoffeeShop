@@ -37,7 +37,9 @@ export default new Router({
       { path: '/signdetail', component: resolve => require(['views/signdetail'], resolve) },
       { path: '/warndevice', component: resolve => require(['views/warndevice'], resolve) },
       { path: '/warn', component: resolve => require(['views/warn'], resolve) },
-      { path: '/store', component: resolve => require(['views/store'], resolve) }
+      { path: '/store', component: resolve => require(['views/store'], resolve) },
+      { path: '/charge', component: resolve => require(['views/charge'], resolve) },
+      { path: '/activity', component: resolve => require(['views/activity'], resolve) }
     ]
   }]
 })
