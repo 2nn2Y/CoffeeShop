@@ -51,6 +51,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
         public string UserName { get; set; }
         /// <summary>
+        /// 商品名
+        /// </summary>
+        public string ProductName { get; set; }
+        /// <summary>
         /// 点位详情
         /// </summary>
         public string Point { get; set; }
@@ -70,6 +74,14 @@ namespace YT.ThreeData.Dtos
         /// 截至
         /// </summary>
         public DateTime? End { get; set; }
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public bool? State { get; set; }
+        /// <summary>
+        /// 订单类型
+        /// </summary>
+        public OrderType? OrderType { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -297,6 +309,10 @@ namespace YT.ThreeData.Dtos
         /// 产品名
         /// </summary>
         public string ProductName { get; set; }
+        /// <summary>
+        /// 点位名称
+        /// </summary>
+        public string Point { get; set; }
         /// <summary>
         /// 开始
         /// </summary>

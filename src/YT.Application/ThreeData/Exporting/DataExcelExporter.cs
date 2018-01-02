@@ -637,26 +637,70 @@ namespace YT.ThreeData.Exporting
                  sheet.OutLineApplyStyle = true;
                  AddHeader(
                      sheet,
+                    "会员昵称",
+                    "设备名称",
                     "设备编号",
-                    "设备点位",
-                    "昵称",
+                    "商品名称",
                     "订单号",
+                    "订单类型",
+                    "支付金额",
                     "支付状态",
-                    "价格",
-                    "支付类型",
                     "订单状态",
                     "创建时间"
                      );
                  AddObjects(
                      sheet, 2, orders,
-                     _ => _.DeviceNum,
-                     _ => _.PointName,
                      _ => _.NickName,
+                     _ => _.PointName,
+                     _ => _.DeviceNum,
+                     _ => _.ProductName,
                      _ => _.OrderNum,
-                     _ => _.PayState.HasValue?_.PayState.Value?"支付成功":"支付失败":"未支付",
+                     _ => _.OrderType == OrderType.Ice ? "冰山" : "技诺",
                      _ => _.Price,
-                     _ => _.PayType==PayType.PayCharge?"充值":_.PayType==PayType.ActivityPay?"购买卡券":"",
+                     _ => _.PayState.HasValue?_.PayState.Value?"支付成功":"支付失败":"未支付",
                      _ => _.OrderState.HasValue?_.OrderState.Value?"成功":"失败":"未知",
+                     _ => _.CreationTime
+                     );
+                 for (var i = 1; i <= 10; i++)
+                 {
+                     sheet.Column(i).AutoFit();
+                 }
+             });
+        }
+        /// <summary>
+        /// 用户订单导出
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+
+        public FileDto ExportChargeAndActivityOrdersAsync(List<OrderListInfo> orders)
+        {
+            return CreateExcelPackage(
+             "充值和购卡记录.xlsx",
+             excelPackage =>
+             {
+                 var sheet = excelPackage.Workbook.Worksheets.Add("订单信息");
+                 sheet.OutLineApplyStyle = true;
+                 AddHeader(
+                     sheet,
+                    "会员昵称",
+                    "商品名称",
+                    "订单号",
+                    "订单类型",
+                    "支付金额",
+                    "支付状态",
+                    "订单状态",
+                    "创建时间"
+                     );
+                 AddObjects(
+                     sheet, 2, orders,
+                     _ => _.NickName,
+                     _ => _.ProductName,
+                     _ => _.OrderNum,
+                     _ => _.PayType == PayType.ActivityPay ? "活动支付" : "充值",
+                     _ => _.Price,
+                     _ => _.PayState.HasValue ? _.PayState.Value ? "支付成功" : "支付失败" : "未支付",
+                     _ => _.OrderState.HasValue ? _.OrderState.Value ? "成功" : "失败" : "未知",
                      _ => _.CreationTime
                      );
                  for (var i = 1; i <= 10; i++)

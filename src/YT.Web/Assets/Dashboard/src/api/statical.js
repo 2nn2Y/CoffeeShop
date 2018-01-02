@@ -150,3 +150,32 @@ export function exportStoreOrders(data) {
     data
   });
 }
+
+export function getUserOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/GetUserOrdersAsync',
+    method: 'post',
+    data
+  });
+}
+export function exportUserOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/ExportUserOrdersAsync',
+    method: 'post',
+    data
+  });
+}
+export function getActivityAndChargeOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/GetChargeAndActivityOrdersAsync',
+    method: 'post',
+    data
+  });
+}
+export function exportActivityAndChargeOrders(data) {
+  return fetch({
+    url: '/api/services/app/data/ExportChargeAndActivityOrdersAsync',
+    method: 'post',
+    data
+  });
+}

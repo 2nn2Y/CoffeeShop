@@ -47,6 +47,10 @@ namespace YT.ThreeData.Dtos
     public class OrderListInfo
     {
         /// <summary>
+        /// 订单类型
+        /// </summary>
+        public OrderType OrderType { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreationTime { get; set; }
@@ -83,6 +87,10 @@ namespace YT.ThreeData.Dtos
         /// </summary>
 
         public string DeviceNum { get; set; }
+        /// <summary>
+        /// 商品ming
+        /// </summary>
+        public string ProductName { get; set; }
       
         /// <summary>
         /// 价格

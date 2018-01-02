@@ -4,9 +4,31 @@
       <milk-table ref="list" :layout="[20,2,2]" :columns="cols" :search-api="searchApi" :params="params">
         <template slot="search">
           <Form ref="params" :model="params" inline :label-width="60">
-            <FormItem label="产品名">
+            <FormItem label="会员昵称">
+              <Input v-model="params.userName" style="width: 140px" placeholder="会员昵称"></Input>
+            </FormItem>
+            <FormItem label="商品名称">
               <Input v-model="params.productName" style="width: 140px" placeholder="产品名"></Input>
             </FormItem>
+            <FormItem label="设备名称">
+              <Input v-model="params.point" style="width: 140px" placeholder="点位名"></Input>
+            </FormItem>
+            <FormItem label="设备编号">
+              <Input v-model="params.device" style="width: 140px" placeholder="设备编号"></Input>
+            </FormItem>
+            <FormItem label="订单类型">
+              <Select v-model="params.state" style="width:140px">
+                <Option value="">全部</Option>
+                <Option value="1" >冰山</Option>
+                <Option value="2">技诺</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="订单状态">
+              <Select v-model="params.state" style="width:140px">
+                <Option value="">全部</Option>
+                <Option value="true" >已完成</Option>
+                <Option value="false">未完成</Option>
+              </Select>
             </FormItem>
             <FormItem label="开始时间">
               <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
@@ -25,7 +47,7 @@
 </template>
 
 <script>
-import { getStoreOrders, exportStoreOrders } from "api/statical";
+import { getUserOrders, exportUserOrders } from "api/statical";
 
 export default {
   name: "store",
@@ -33,26 +55,37 @@ export default {
     return {
       cols: [
         {
-          title: "用户编号",
-          key: "userName"
+          title: "会员昵称",
+          key: "nickName"
         },
         {
-          title: "产品名称",
-          key: "productName"
-        },
-        {
-          title: "订单号",
-          key: "orderNum"
+          title: "设备名称",
+          key: "pointName"
         },
         {
           title: "设备编号",
           key: "deviceNum"
         },
         {
+          title: "商品名称",
+          key: "productName"
+        },
+        {
+          title: "订单编号",
+          key: "orderNum"
+        },
+        {
           title: "订单类型",
           key: "orderType",
           render: (h, params) => {
-            return params.row.orderType == 1 ? "基诺订单" : "冰山订单";
+            return params.row.orderType == 1 ? "技诺订单" : "冰山订单";
+          }
+        },
+        {
+          title: "支付金额",
+          key: "price",
+          render: (h, params) => {
+            return params.row.price / 100;
           }
         },
         {
@@ -74,14 +107,6 @@ export default {
           }
         },
         {
-          title: "价格",
-          key: "price",
-          render: (h, params) => {
-            return params.row.price / 100;
-          }
-        },
-
-        {
           title: "支付时间",
           key: "date",
           render: (h, params) => {
@@ -89,15 +114,25 @@ export default {
           }
         }
       ],
-      searchApi: getStoreOrders,
-      params: { productName: "", start: null, end: null }
+      searchApi: getUserOrders,
+      params: {
+        payType: 1,
+        orderType: null,
+        userName: "",
+        point: "",
+        device: "",
+        state: null,
+        productName: "",
+        start: null,
+        end: null
+      }
     };
   },
   components: {},
   created() {},
   methods: {
     exportData() {
-      exportStoreOrders(this.params)
+      exportUserOrders(this.params)
         .then(r => {
           if (r.success) {
             this.$down(

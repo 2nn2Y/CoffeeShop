@@ -160,7 +160,7 @@ namespace YT.WebApi.Controllers
                         //活动支付  添加 卡券
                         else if (order.PayType == PayType.ActivityPay)
                         {
-                            var p = await _productRepository.FirstOrDefaultAsync(c => c.Id == order.ProductId);
+                            var p = await _productRepository.FirstOrDefaultAsync(c => c.ProductId == order.ProductId);
                             var count = 0;
                             if (order.Price == 1)
                             {

@@ -112,6 +112,7 @@ namespace YT.ThreeData
         {
             var p = await _productRepository.GetAllListAsync(c => c.ProductName.Contains(input.ProductName));
             var pids = p.Select(c => c.ProductId).ToList();
+           
             var query =
                 _storeOrdeRepository.GetAll()
                     .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
@@ -616,12 +617,15 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<PagedResultDto<OrderListInfo>> GetUserOrdersAsync(GeUsertOrderInput input)
         {
+            var products = await _productRepository.GetAllListAsync();
             var orders = _storeOrdeRepository.GetAll();
             var points = _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
-            orders = orders.Where(c => c.PayType == input.PayType)
+            orders = orders.Where(c=>c.PayType==input.PayType)
                 .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
@@ -629,9 +633,12 @@ namespace YT.ThreeData
                        join d in await points.ToListAsync() on c.DeviceNum equals d.DeviceNum
                        join u in users on c.OpenId equals u.OpenId into h
                        from hh in h.DefaultIfEmpty()
+                       join p in  products on c.ProductId equals  p.ProductId 
+                       into pp from ppp in pp.DefaultIfEmpty()
                        select new OrderListInfo
                        {
                            DeviceNum = c.DeviceNum,
+                           ProductName = ppp?.ProductName,
                            NickName = hh?.NickName,
                            OpenId = c.OpenId,
                            OrderNum = c.OrderNum,
@@ -643,12 +650,102 @@ namespace YT.ThreeData
                            Reson = c.Reson,
                            CreationTime=c.CreationTime
                        };
-            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(), c => c.NickName != null && c.NickName.Contains(input.UserName));
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(),
+                    c => c.NickName != null && c.NickName.Contains(input.UserName))
+                .WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                    c => c.ProductName != null && c.ProductName.Contains(input.ProductName));
             var count = temp.Count();
-            var result = temp.OrderBy(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+            var result = temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             return new PagedResultDto<OrderListInfo>(count, result);
         }
 
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<OrderListInfo>> GetChargeAndActivityOrdersAsync(GeUsertOrderInput input)
+        {
+            var products = await _productRepository.GetAllListAsync();
+            var orders = _storeOrdeRepository.GetAll();
+
+            orders = orders
+                .WhereIf(input.PayType == PayType.ActivityPay, c => c.PayType == PayType.ActivityPay)
+                .WhereIf(input.PayType == PayType.PayCharge, c => c.PayType == PayType.PayCharge)
+                .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
+            var users = await _storeUserRepository.GetAllListAsync();
+            var temp = from c in await orders.ToListAsync()
+                       join u in users on c.OpenId equals u.OpenId into h
+                       from hh in h.DefaultIfEmpty()
+                       join p in products on c.ProductId equals p.ProductId
+                       into pp
+                       from ppp in pp.DefaultIfEmpty()
+                       select new OrderListInfo
+                       {
+                           DeviceNum = c.DeviceNum,
+                           ProductName = ppp?.ProductName,
+                           NickName = hh?.NickName,
+                           OpenId = c.OpenId,
+                           OrderNum = c.OrderNum,
+                           OrderState = c.OrderState,
+                           PayState = c.PayState,
+                           PayType = c.PayType,
+                           Price = c.Price,
+                           Reson = c.Reson,
+                           CreationTime = c.CreationTime
+                       };
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(),
+                    c => c.NickName != null && c.NickName.Contains(input.UserName))
+                .WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                    c => c.ProductName != null && c.ProductName.Contains(input.ProductName));
+            var count = temp.Count();
+            var result = temp.OrderByDescending(c => c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+            return new PagedResultDto<OrderListInfo>(count, result);
+        }
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<FileDto> ExportChargeAndActivityOrdersAsync(GeUsertOrderInput input)
+        {
+            var products = await _productRepository.GetAllListAsync();
+            var orders = _storeOrdeRepository.GetAll();
+            orders = orders
+                .WhereIf(input.PayType == PayType.ActivityPay, c => c.PayType == PayType.ActivityPay)
+                .WhereIf(input.PayType == PayType.PayCharge, c => c.PayType == PayType.PayCharge)
+                .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
+            var users = await _storeUserRepository.GetAllListAsync();
+            var temp = from c in await orders.ToListAsync()
+                       join u in users on c.OpenId equals u.OpenId into h
+                       from hh in h.DefaultIfEmpty()
+                       join p in products on c.ProductId equals p.ProductId
+                       into pp
+                       from ppp in pp.DefaultIfEmpty()
+                       select new OrderListInfo
+                       {
+                           DeviceNum = c.DeviceNum,
+                           ProductName = ppp?.ProductName,
+                           NickName = hh?.NickName,
+                           OpenId = c.OpenId,
+                           OrderNum = c.OrderNum,
+                           OrderState = c.OrderState,
+                           PayState = c.PayState,
+                           PayType = c.PayType,
+                           Price = c.Price,
+                           Reson = c.Reson,
+                           CreationTime = c.CreationTime
+                       };
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(),
+                    c => c.NickName != null && c.NickName.Contains(input.UserName))
+                .WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                    c => c.ProductName != null && c.ProductName.Contains(input.ProductName));
+            return _dataExcelExporter.ExportChargeAndActivityOrdersAsync(temp.ToList());
+        }
         /// <summary>
         /// 获取统计明细
         /// </summary>
@@ -1321,23 +1418,31 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<FileDto> ExportUserOrdersAsync(GeUsertOrderInput input)
         {
+            var products = await _productRepository.GetAllListAsync();
             var orders = _storeOrdeRepository.GetAll();
             var points = _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
             orders = orders.Where(c => c.PayType == input.PayType)
-                .Where(c => c.OpenId != null || c.OpenId != "")
-                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
-                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
+            .Where(c => c.OpenId != null || c.OpenId != "")
+            .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
+            .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+            .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
+            .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+            .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
             var temp = from c in await orders.ToListAsync()
                        join d in await points.ToListAsync() on c.DeviceNum equals d.DeviceNum
                        join u in users on c.OpenId equals u.OpenId into h
                        from hh in h.DefaultIfEmpty()
+                       join p in products on c.ProductId equals p.ProductId
+                       into pp
+                       from ppp in pp.DefaultIfEmpty()
                        select new OrderListInfo
                        {
                            DeviceNum = c.DeviceNum,
+                           ProductName = ppp?.ProductName,
                            NickName = hh?.NickName,
+                           OrderType = c.OrderType,
                            OpenId = c.OpenId,
                            OrderNum = c.OrderNum,
                            OrderState = c.OrderState,
@@ -1348,7 +1453,10 @@ namespace YT.ThreeData
                            Reson = c.Reson,
                            CreationTime = c.CreationTime
                        };
-            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(), c => c.NickName != null && c.NickName.Contains(input.UserName));
+            temp = temp.WhereIf(!input.UserName.IsNullOrWhiteSpace(),
+                    c => c.NickName != null && c.NickName.Contains(input.UserName))
+                .WhereIf(!input.ProductName.IsNullOrWhiteSpace(),
+                    c => c.ProductName != null && c.ProductName.Contains(input.ProductName));
             return _dataExcelExporter.ExportUserOrdersAsync(temp.ToList());
         }
         private string ChangeType(string type)

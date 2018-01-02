@@ -64,7 +64,14 @@ namespace YT.ThreeData.Exporting
         /// <param name="orders"></param>
         /// <returns></returns>
          FileDto ExportPayTypeSale(List<ProductSaleDto> orders);
-     
+
+        /// <summary>
+        /// 用户订单导出
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+
+        FileDto ExportChargeAndActivityOrdersAsync(List<OrderListInfo> orders);
 
         /// <summary>
         /// 获取时间区域统计

@@ -125,6 +125,11 @@ namespace YT.ThreeData
             }
             return model;
         }
+        /// <summary>
+        /// 余额支付
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public async Task BalancePay(InsertOrderInput input)
         {
             var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(input.OpenId));
@@ -140,7 +145,7 @@ namespace YT.ThreeData
             {
                 FastCode = input.FastCode,
                 OpenId = input.OpenId,
-                PayType = PayType.LinePay,
+                PayType = PayType.BalancePay,
                 OrderType = input.OrderType,
                 OrderState = null,
                 OrderNum = input.Order,
@@ -149,15 +154,6 @@ namespace YT.ThreeData
                 Price = p.Price,
                 ProductId = p.ProductId
             };
-            //o.OpenId = input.OpenId;
-            //o.OrderState = null;
-            //o.PayType = PayType.BalancePay;
-            //o.OrderType = input.OrderType;
-            //o.PayState = null;
-            //o.Price = p.Price;
-            //o.ProductId = p.ProductId;
-            //o.FastCode = input.FastCode;
-            //o.OrderNum = input.Order;
             await _storeRepository.InsertOrUpdateAsync(o);
             await CurrentUnitOfWork.SaveChangesAsync();
             //使用优惠券
@@ -181,10 +177,12 @@ namespace YT.ThreeData
             if (o.OrderType == OrderType.Ice)
             {
                 var result = await PickProductIce(o);
+                Logger.Warn($"出货通知日志:{o.OrderNum}----{result}");
             }
             else
             {
                 var temp = await PickProductJack(o);
+                Logger.Warn($"出货通知日志:{o.OrderNum}----{temp}");
                 if (temp.status == "success")
                 {
                     o.OrderState = true;
@@ -275,7 +273,7 @@ namespace YT.ThreeData
                 OrderState = null,
                 PayState = null,
                 Price = p.Price,
-                ProductId = p.Id
+                ProductId = p.ProductId
             };
             await _storeRepository.InsertAsync(order);
             JsApiPay jsApiPay = new JsApiPay

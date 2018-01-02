@@ -190,5 +190,18 @@ namespace YT.ThreeData
           Task<FileDto> ExportWarns(GetWarnInfoInput input);
 
         #endregion
+
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task<PagedResultDto<OrderListInfo>> GetChargeAndActivityOrdersAsync(GeUsertOrderInput input);
+        /// <summary>
+        /// 获取用户订单类型
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<FileDto> ExportChargeAndActivityOrdersAsync(GeUsertOrderInput input);
     }
 }
