@@ -578,6 +578,115 @@ namespace YT.WebApi.Controllers
             var cards = await _cardRepository.CountAsync(c => c.OpenId.Equals(openId) && !c.State);
             return new { info = user, cards = cards };
         }
+
+        /// <summary>
+        /// 根据openid 获取用户信息
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        private async Task<dynamic> GetInfoByTokenAndOpenId(string token, string openId)
+        {
+            string url = $"https://api.weixin.qq.com/sns/userinfo?access_token={token}&openid={openId}&lang=zh_CN";
+            var result = await HttpHandler.GetAsync<JObject>(url);
+            var user = await _userRepository.FirstOrDefaultAsync(c => c.OpenId.Equals(openId));
+            if (user == null)
+            {
+                user = new StoreUser()
+                {
+                    Balance = 0,
+                    OpenId = openId,
+                };
+                if (result.GetValue("headimgurl") != null)
+                {
+                    user.ImageUrl = result.GetValue("headimgurl").ToString();
+                }
+                if (result.GetValue("nickname") != null)
+                {
+                    user.NickName = result.GetValue("nickname").ToString();
+                }
+                if (result.GetValue("city") != null)
+                {
+                    user.City = result.GetValue("city").ToString();
+                }
+                if (result.GetValue("country") != null)
+                {
+                    user.Country = result.GetValue("country").ToString();
+                }
+                if (result.GetValue("province") != null)
+                {
+                    user.Province = result.GetValue("province").ToString();
+                }
+                if (result.GetValue("sex") != null)
+                {
+                    user.Sex = result.GetValue("sex").ToString();
+                }
+                if (result.GetValue("subscribe") != null)
+                {
+                    user.Subscribe = result.GetValue("subscribe").ToString();
+                }
+
+                await _userRepository.InsertAsync(user);
+                await _cardRepository.InsertAsync(new UserCard()
+                {
+                    Cost = 280,
+                    Key = Guid.NewGuid(),
+                    OpenId = openId,
+                    Image = "http://103.45.102.47:8888/Files/Images/b.jpg",
+                    Description = "新用户体验券",
+                    ProductName = "2.8元代金券",
+                    State = false
+                });
+            }
+            else
+            {
+                var card = await _cardRepository.FirstOrDefaultAsync(c => c.OpenId == openId && c.Cost == 280);
+                if (result.GetValue("headimgurl") != null)
+                {
+                    user.ImageUrl = result.GetValue("headimgurl").ToString();
+                }
+                if (result.GetValue("nickname") != null)
+                {
+                    user.NickName = result.GetValue("nickname").ToString();
+                }
+                if (result.GetValue("city") != null)
+                {
+                    user.City = result.GetValue("city").ToString();
+                }
+                if (result.GetValue("country") != null)
+                {
+                    user.Country = result.GetValue("country").ToString();
+
+                }
+                if (result.GetValue("province") != null)
+                {
+                    user.Province = result.GetValue("province").ToString();
+                }
+                if (result.GetValue("sex") != null)
+                {
+                    user.Sex = result.GetValue("sex").ToString();
+                }
+                if (result.GetValue("subscribe") != null)
+                {
+                    user.Subscribe = result.GetValue("subscribe").ToString();
+                }
+                if (card == null)
+                {
+                    await _cardRepository.InsertAsync(new UserCard()
+                    {
+                        Cost = 280,
+                        Key = Guid.NewGuid(),
+                        OpenId = openId,
+                        Image = "http://103.45.102.47:8888/Files/Images/b.jpg",
+                        Description = "新用户体验券",
+                        ProductName = "2.8元代金券",
+                        State = false
+                    });
+                }
+            }
+            var cards = await _cardRepository.CountAsync(c => c.OpenId.Equals(openId) && !c.State);
+            return new { info = user, cards = cards };
+        }
         /// <summary>
         /// 获取用户信息
         /// </summary>
@@ -590,6 +699,7 @@ namespace YT.WebApi.Controllers
             var ut = await HttpHandler.GetAsync<JObject>(temp);
             if (ut.GetValue("access_token") == null) throw new UserFriendlyException(JsonConvert.SerializeObject(ut));
             var openid = ut.GetValue("openid").ToString();
+           // return await GetInfoByTokenAndOpenId(ut.GetValue("access_token").ToString(), openid);
             return openid;
         }
         /// <summary>
