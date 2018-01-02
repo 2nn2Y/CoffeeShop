@@ -431,7 +431,6 @@ namespace YT.ThreeData
                            d.PointName,
                            d.SchoolName,
                        };
-
             var orders = from c in temp
                          group c by new { c.SchoolName, c.Date.Hour }
                 into h
@@ -470,7 +469,9 @@ namespace YT.ThreeData
                     final.Add(dto);
                 }
             }
-            return new PagedResultDto<TimeAreaDto>(list.Count, final);
+            var count = final.Count;
+            var tt = final.OrderBy(c => c.Area).Skip(input.SkipCount).Take(input.MaxResultCount);
+            return new PagedResultDto<TimeAreaDto>(count, tt.ToList());
         }
 
 
