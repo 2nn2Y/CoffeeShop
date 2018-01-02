@@ -539,16 +539,6 @@ namespace YT.WebApi.Controllers
                     user.Sex = result.GetValue("sex").ToString();
                 }
                 await _userRepository.InsertAsync(user);
-                await _cardRepository.InsertAsync(new UserCard()
-                {
-                    Cost = 280,
-                    Key = Guid.NewGuid(),
-                    OpenId = openId,
-                    Image = "http://103.45.102.47:8888/Files/Images/b.jpg",
-                    Description = "新用户体验券",
-                    ProductName = "2.8元代金券",
-                    State = false
-                });
             }
             else
             {
