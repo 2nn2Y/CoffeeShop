@@ -622,7 +622,7 @@ namespace YT.ThreeData
             var orders = _storeOrdeRepository.GetAll();
             var points = _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
-            orders = orders.Where(c=>c.PayType==input.PayType)
+            orders = orders.WhereIf(input.PayType==PayType.BalancePay||input.PayType==PayType.LinePay,c=>c.PayType==PayType.BalancePay||c.PayType==PayType.LinePay)
                 .Where(c => c.OpenId != null || c.OpenId != "")
                 .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
@@ -644,6 +644,7 @@ namespace YT.ThreeData
                            OpenId = c.OpenId,
                            OrderNum = c.OrderNum,
                            OrderState = c.OrderState,
+                           OrderType = c.OrderType,
                            PayState = c.PayState,
                            PayType = c.PayType,
                            PointName = d.SchoolName,
@@ -692,6 +693,7 @@ namespace YT.ThreeData
                            OrderNum = c.OrderNum,
                            OrderState = c.OrderState,
                            PayState = c.PayState,
+                           OrderType = c.OrderType,
                            PayType = c.PayType,
                            Price = c.Price,
                            Reson = c.Reson,

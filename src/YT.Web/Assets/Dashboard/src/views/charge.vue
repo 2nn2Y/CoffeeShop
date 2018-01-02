@@ -70,9 +70,9 @@ export default {
         },
         {
           title: "支付时间",
-          key: "date",
+          key: "creationTime",
           render: (h, params) => {
-            return this.$fmtTime(params.row.dateTime);
+            return this.$fmtTime(params.row.creationTime);
           }
         }
       ],

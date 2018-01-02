@@ -78,7 +78,7 @@ export default {
           title: "订单类型",
           key: "orderType",
           render: (h, params) => {
-            return params.row.orderType == 1 ? "技诺订单" : "冰山订单";
+            return params.row.orderType == 1 ? "技诺支付" : "冰山支付";
           }
         },
         {
@@ -108,9 +108,9 @@ export default {
         },
         {
           title: "支付时间",
-          key: "date",
+          key: "creationTime",
           render: (h, params) => {
-            return this.$fmtTime(params.row.dateTime);
+            return this.$fmtTime(params.row.creationTime);
           }
         }
       ],
