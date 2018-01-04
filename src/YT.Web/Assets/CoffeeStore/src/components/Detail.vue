@@ -29,12 +29,12 @@
     <grid>
       <grid-item>
         <box gap="0px 13px">
-          <x-button plain type="primary" :disabled="isLoading" @click.native="balancepay" class="custom-primary-green">余额支付</x-button>
+          <x-button plain type="primary" :disabled="isLoading" @click.native="balancepay" class="custom-primary-green">会员支付</x-button>
         </box>
       </grid-item>
       <grid-item style="border-left: 1px dashed #ddd">
         <box gap="0px 13px">
-          <x-button plain type="default" @click.native="linepay" class="custom-primary-blue">在线支付</x-button>
+          <x-button plain type="default" @click.native="linepay" class="custom-primary-blue">微信支付</x-button>
         </box>
       </grid-item>
     </grid>
