@@ -716,6 +716,7 @@ namespace YT.ThreeData
         {
             var products = await _productRepository.GetAllListAsync();
             var orders = _storeOrdeRepository.GetAll();
+
             orders = orders
                 .WhereIf(input.PayType == PayType.ActivityPay, c => c.PayType == PayType.ActivityPay)
                 .WhereIf(input.PayType == PayType.PayCharge, c => c.PayType == PayType.PayCharge)
@@ -738,6 +739,7 @@ namespace YT.ThreeData
                            OrderNum = c.OrderNum,
                            OrderState = c.OrderState,
                            PayState = c.PayState,
+                           OrderType = c.OrderType,
                            PayType = c.PayType,
                            Price = c.Price,
                            Reson = c.Reson,

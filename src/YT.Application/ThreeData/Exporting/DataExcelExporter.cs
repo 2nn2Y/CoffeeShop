@@ -659,7 +659,7 @@ namespace YT.ThreeData.Exporting
                      _ => _.Price,
                      _ => _.PayState.HasValue?_.PayState.Value?"支付成功":"支付失败":"未支付",
                      _ => _.OrderState.HasValue?_.OrderState.Value?"成功":"失败":"未知",
-                     _ => _.CreationTime
+                     _ => _.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
                      );
                  for (var i = 1; i <= 10; i++)
                  {
