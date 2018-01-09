@@ -1425,13 +1425,13 @@ namespace YT.ThreeData
             var orders = _storeOrdeRepository.GetAll();
             var points = _pointRepository.GetAll()
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
-            orders = orders.Where(c => c.PayType == input.PayType)
-            .Where(c => c.OpenId != null || c.OpenId != "")
-            .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
-            .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-            .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
-            .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
-            .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
+            orders = orders.WhereIf(input.PayType == PayType.BalancePay || input.PayType == PayType.LinePay, c => c.PayType == PayType.BalancePay || c.PayType == PayType.LinePay)
+                .Where(c => c.OpenId != null || c.OpenId != "")
+                .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
+                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
+                .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
+                .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
             var temp = from c in await orders.ToListAsync()
                        join d in await points.ToListAsync() on c.DeviceNum equals d.DeviceNum
@@ -1445,10 +1445,10 @@ namespace YT.ThreeData
                            DeviceNum = c.DeviceNum,
                            ProductName = ppp?.ProductName,
                            NickName = hh?.NickName,
-                           OrderType = c.OrderType,
                            OpenId = c.OpenId,
                            OrderNum = c.OrderNum,
                            OrderState = c.OrderState,
+                           OrderType = c.OrderType,
                            PayState = c.PayState,
                            PayType = c.PayType,
                            PointName = d.SchoolName,
