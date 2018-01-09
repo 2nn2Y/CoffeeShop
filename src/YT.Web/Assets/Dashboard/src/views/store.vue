@@ -17,10 +17,10 @@
               <Input v-model="params.device" style="width: 140px" placeholder="设备编号"></Input>
             </FormItem>
             <FormItem label="订单类型">
-              <Select v-model="params.state" style="width:140px">
+              <Select v-model="params.orderType" style="width:140px">
                 <Option value="">全部</Option>
-                <Option value="1" >冰山</Option>
-                <Option value="2">技诺</Option>
+                <Option value="2" >冰山</Option>
+                <Option value="1">技诺</Option>
               </Select>
             </FormItem>
             <FormItem label="订单状态">

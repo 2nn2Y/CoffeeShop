@@ -624,9 +624,10 @@ namespace YT.ThreeData
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
             orders = orders.WhereIf(input.PayType==PayType.BalancePay||input.PayType==PayType.LinePay,c=>c.PayType==PayType.BalancePay||c.PayType==PayType.LinePay)
                 .Where(c => c.OpenId != null || c.OpenId != "")
-                .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
+                .WhereIf(input.OrderType.HasValue, c => c.OrderType == input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
+                .WhereIf(input.State.HasValue&&input.State.Value, c => c.OrderState == input.State.Value)
+                .WhereIf(input.State.HasValue&&!input.State.Value, c => !c.OrderState.HasValue)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
@@ -1429,9 +1430,10 @@ namespace YT.ThreeData
                 .WhereIf(!input.Point.IsNullOrWhiteSpace(), c => c.SchoolName.Contains(input.Point));
             orders = orders.WhereIf(input.PayType == PayType.BalancePay || input.PayType == PayType.LinePay, c => c.PayType == PayType.BalancePay || c.PayType == PayType.LinePay)
                 .Where(c => c.OpenId != null || c.OpenId != "")
-                .WhereIf(input.OrderType.HasValue, c => c.OrderType >= input.OrderType.Value)
+                .WhereIf(input.OrderType.HasValue, c => c.OrderType == input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.State.HasValue, c => c.OrderState == input.State)
+                .WhereIf(input.State.HasValue && input.State.Value, c => c.OrderState == input.State.Value)
+                .WhereIf(input.State.HasValue && !input.State.Value, c => !c.OrderState.HasValue)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
