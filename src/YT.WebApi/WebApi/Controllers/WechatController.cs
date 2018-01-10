@@ -151,10 +151,10 @@ namespace YT.WebApi.Controllers
                             else
                             {
                                 var temp = await _mobileAppService.PickProductJack(order);
-                                if (temp.status == "success")
-                                {
-                                    order.OrderState = true;
-                                }
+                                //if (temp.status == "success")
+                                //{
+                                //    order.OrderState = true;
+                                //}
                             }
                         }
                         //活动支付  添加 卡券
