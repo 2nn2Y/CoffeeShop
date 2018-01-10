@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace YT
 {
     public interface IAppFolders
@@ -12,4 +14,5 @@ namespace YT
         string LogsFolder { get; set; }
       
     }
+ 
 }

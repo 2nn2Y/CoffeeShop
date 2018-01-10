@@ -20,16 +20,20 @@ namespace YT.ThreeData
     public class BackgroundManager : IDomainService
     {
         private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<StoreOrder> _userOrderRepository;
         private readonly IRepository<Warn> _warnRepository;
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="orderRepository"></param>
-        /// <param name="warnRepository"></param>
-        public BackgroundManager(IRepository<Order> orderRepository, IRepository<Warn> warnRepository)
+     /// <summary>
+     /// ctor
+     /// </summary>
+     /// <param name="orderRepository"></param>
+     /// <param name="warnRepository"></param>
+     /// <param name="userOrderRepository"></param>
+        public BackgroundManager(IRepository<Order> orderRepository, IRepository<Warn> warnRepository,
+            IRepository<StoreOrder> userOrderRepository)
         {
             _orderRepository = orderRepository;
             _warnRepository = warnRepository;
+            _userOrderRepository = userOrderRepository;
         }
 
         /// <summary>
@@ -61,6 +65,21 @@ namespace YT.ThreeData
          //   LogHelper.Logger.Warn(" url+" + p.Url + "?" + t + " ------------------------------" + result);
             var temp = JsonConvert.DeserializeObject<ResultItem>(result);
             await InsertOrder(temp.Record);
+        }
+        /// <summary>
+        /// 同步未成功订单状态为失败
+        /// </summary>
+        /// <returns></returns>
+        public async Task GenderOrderState()
+        {
+            var sql = @"UPDATE storeorder
+SET OrderState = 0
+WHERE
+	PayState = 1
+AND OrderState IS NULL
+AND OrderType = 1
+AND CreationTime <= SUBDATE(NOW(), INTERVAL 3 MINUTE)";
+            var result = MySqlHelper.ExecuteNonQuery(sql);
         }
         /// <summary>
         /// test

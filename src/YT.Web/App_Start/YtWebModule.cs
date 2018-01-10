@@ -99,6 +99,7 @@ namespace YT.Web
             //同步订单  每12分钟一次
             RecurringJob.AddOrUpdate(() => background.GenderOrder(), "1,12,24,36,48,59 * * * *");
             RecurringJob.AddOrUpdate(() => background.GenderTodayOrder(), "0 6,12,18,23 * * *");
+            RecurringJob.AddOrUpdate(() => background.GenderOrderState(), "0/5 * * * *");
             // RecurringJob.AddOrUpdate(() => background.GenderMonthOrder(), "0/59 * * * *");
             //  同步报警信息  15分钟一次
             RecurringJob.AddOrUpdate(() => controller.GenderWarning(), "0/15 * * * *");
