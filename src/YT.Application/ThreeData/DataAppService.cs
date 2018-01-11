@@ -626,8 +626,8 @@ namespace YT.ThreeData
                 .Where(c => c.OpenId != null || c.OpenId != "")
                 .WhereIf(input.OrderType.HasValue, c => c.OrderType == input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.State.HasValue&&input.State.Value, c => c.OrderState == input.State.Value)
-                .WhereIf(input.State.HasValue&&!input.State.Value, c => !c.OrderState.HasValue)
+                .WhereIf(input.State.HasValue&&input.State.Value, c => c.PayState == input.State.Value)
+                .WhereIf(input.State.HasValue&&!input.State.Value, c => !c.PayState.HasValue)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();
@@ -1432,8 +1432,8 @@ namespace YT.ThreeData
                 .Where(c => c.OpenId != null || c.OpenId != "")
                 .WhereIf(input.OrderType.HasValue, c => c.OrderType == input.OrderType.Value)
                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.State.HasValue && input.State.Value, c => c.OrderState == input.State.Value)
-                .WhereIf(input.State.HasValue && !input.State.Value, c => !c.OrderState.HasValue)
+                .WhereIf(input.State.HasValue && input.State.Value, c => c.PayState == input.State.Value)
+                .WhereIf(input.State.HasValue && !input.State.Value, c => !c.PayState.HasValue)
                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value)
                 .WhereIf(!input.Device.IsNullOrWhiteSpace(), c => c.DeviceNum.Contains(input.Device));
             var users = await _storeUserRepository.GetAllListAsync();

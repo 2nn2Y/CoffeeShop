@@ -645,7 +645,7 @@ namespace YT.ThreeData.Exporting
                     "订单类型",
                     "支付金额",
                     "支付状态",
-                    "订单状态",
+                  //  "订单状态",
                     "创建时间"
                      );
                  AddObjects(
@@ -658,10 +658,10 @@ namespace YT.ThreeData.Exporting
                      _ => _.OrderType == OrderType.Ice ? "冰山" : "技诺",
                      _ => _.Price,
                      _ => _.PayState.HasValue?_.PayState.Value?"支付成功":"支付失败":"未支付",
-                     _ => _.OrderState.HasValue?_.OrderState.Value?"成功":"失败":"未知",
+                   //  _ => _.OrderState.HasValue?_.OrderState.Value?"成功":"失败":"未知",
                      _ => _.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
                      );
-                 for (var i = 1; i <= 10; i++)
+                 for (var i = 1; i <= 9; i++)
                  {
                      sheet.Column(i).AutoFit();
                  }

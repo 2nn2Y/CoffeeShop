@@ -26,8 +26,8 @@
             <FormItem label="订单状态">
               <Select v-model="params.state" style="width:140px">
                 <Option value="">全部</Option>
-                <Option value="true" >已完成</Option>
-                <Option value="false">未完成</Option>
+                <Option value="true" >已支付</Option>
+                <Option value="false">未支付</Option>
               </Select>
             </FormItem>
             <FormItem label="开始时间">
@@ -103,7 +103,7 @@ export default {
           title: "订单状态",
           key: "orderState",
           render: (h, params) => {
-            return params.row.orderState ? "已完成" : "未完成";
+            return params.row.payState ? "已支付" : "未支付";
           }
         },
         {
