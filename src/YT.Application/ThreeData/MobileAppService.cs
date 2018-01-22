@@ -359,8 +359,16 @@ namespace YT.ThreeData
             var param = $@"ID={order.OrderNum}&PTYPE=FASTCODE&PID={order.ProductId}&VMC={
                 order.DeviceNum}&FASTCODE={order.FastCode}&USERNAME={"shuoyibuer"}&MAC={mac}";
             url = url + "?" + param;
-            var result = await HttpHandler.PostAsync<dynamic>(url);
-            return result;
+            try
+            {
+                var result = await HttpHandler.PostAsync<dynamic>(url);
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
         /// <summary>
         /// 取货
