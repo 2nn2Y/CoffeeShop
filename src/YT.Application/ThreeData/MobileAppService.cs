@@ -351,7 +351,7 @@ namespace YT.ThreeData
         /// <returns></returns>
         public async Task<dynamic> PickProductJack(StoreOrder order)
         {
-            var url = "http://103.231.67.143:8079/FASTCODE";
+            var url = "http://39.104.57.0:8079/FASTCODE";
             var temp = $@"ID={order.OrderNum}&USERNAME={"shuoyibuer"}&PASSWORD={"coffee888"}&VMC={
                 order.DeviceNum}&PTYPE=FASTCODE&PID={order.ProductId}&FASTCODE={order.FastCode}";
             var mac = ToMd5(temp);

@@ -81,22 +81,7 @@ AND OrderType = 1
 AND CreationTime <= SUBDATE(NOW(), INTERVAL 3 MINUTE)";
             var result = MySqlHelper.ExecuteNonQuery(sql);
         }
-        /// <summary>
-        /// test
-        /// </summary>
-        //public async Task GenderMonthOrder()
-        //{
-        //    var now = DateTime.Now.AddMonths(-1);
-        //    var time = now.ToString("yyyyMM");
-        //    var p =
-        // new QueryParams("HISTORY",month:time);
-        //    var param = $"QID={p.Qid}&QLEVEL={p.Qlevel}&USERNAME={p.Username}&MONTH={p.Month}&MAC={p.Mac}";
-
-        //   // http://103.231.67.143:8079/QUERY?QID=100003&QLEVEL=HISTORY&USERNAME=user&MONTH=201702&MAC=33a0fd9aa421b45aaafc4a0f39398109
-        //    var result = HttpHandler.Post(p.Url + "?" + param);
-        //    var temp = JsonConvert.DeserializeObject<ResultItem>(result);
-        //    await InsertOrder(temp.Record);
-        //}
+      
         /// <summary>
         /// 获取报警数据
         /// </summary>
@@ -118,7 +103,7 @@ AND CreationTime <= SUBDATE(NOW(), INTERVAL 3 MINUTE)";
         public async Task Test()
         {
             var url =
-                "http://103.231.67.143:8079/QUERY?QID=100003&QLEVEL=HISTORY&USERNAME=user&MONTH=201702&MAC=33a0fd9aa421b45aaafc4a0f39398109";
+                "http://39.104.57.0:8079/QUERY?QID=100003&QLEVEL=HISTORY&USERNAME=user&MONTH=201702&MAC=33a0fd9aa421b45aaafc4a0f39398109";
             var result = HttpHandler.Post(url);
             var temp = JsonConvert.DeserializeObject<ResultItem>(result);
             await InsertOrder(temp.Record);
@@ -222,11 +207,11 @@ AND CreationTime <= SUBDATE(NOW(), INTERVAL 3 MINUTE)";
         /// <summary>
         /// url
         /// </summary>
-        public string Url { get; set; } = "http://103.231.67.143:8079/QUERY";
+        public string Url { get; set; } = "http://39.104.57.0:8079/QUERY";
         /// <summary>
         /// 警告
         /// </summary>
-        public string Warn { get; set; } = "http://103.231.67.143:8079/WARNING";
+        public string Warn { get; set; } = "http://39.104.57.0:8079/WARNING";
         /// <summary>
         /// qid
         /// </summary>
